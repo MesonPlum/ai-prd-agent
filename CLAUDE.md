@@ -1,6 +1,8 @@
-# CLAUDE.md — 全局知识库
+# CLAUDE.md
 
-> Claude Code 自动读取此文件作为项目上下文。记录项目背景、规范和经验，无需每次手动引用。
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+> 项目规范与运行时知识库。记录工作流、质量门控和维护规范，命令执行时按需引用。
 
 ---
 
@@ -208,7 +210,20 @@
 | `evals/scripts/eval_runner.py` | 集成测试自动化 Runner（调用 Anthropic API 验证 AI 行为） |
 | `evals/scripts/requirements.txt` | 自动化脚本依赖：`anthropic`、`pyyaml` |
 
-**命令改动后维护规则**：修改任何 `.claude/commands/*.md` 后，须同步更新对应 `evals/commands/TC-*.md` 的预期行为，并重新运行 `pytest evals/scripts/test_unit.py`。
+**命令改动后维护规则**：修改任何 `.claude/commands/*.md` 后，须同步更新对应 `evals/commands/TC-*.md` 的预期行为，并重新运行以下测试：
+
+```bash
+# 安装依赖（首次）
+pip install -r evals/scripts/requirements.txt
+
+# 单元测试（无需 API，验证命令文件结构和规则完整性）
+pytest evals/scripts/test_unit.py -v
+
+# 集成测试（需要 ANTHROPIC_API_KEY）
+python evals/scripts/eval_runner.py --list              # 查看所有测试用例
+python evals/scripts/eval_runner.py --tc TC-new-prd     # 运行单个测试
+python evals/scripts/eval_runner.py -v                  # 显示 AI 输出和工具调用
+```
 
 ### rules/ AI 读取规则
 
@@ -287,7 +302,23 @@
 
 ### 命令变更规范
 
-> 修改任何斜杠命令时，必须同步"三件套"。详见 [`docs/contributing.md`](docs/contributing.md)。
+任何斜杠命令的新增或修改，必须同步以下三个文件（**三件套**）：
+
+| 文件 | 作用 |
+|------|------|
+| `.claude/commands/xxx.md` | 命令行为定义 |
+| `CLAUDE.md` 速查表 + 目录结构 + 工作流 | AI 和用户的认知对齐 |
+| `evals/commands/TC-xxx.md` | 行为验证基准 |
+
+三者不一致 = 变更未完成。以下情况也属于三件套变更范围：修改 context 文件的读取时机、新增/删除某命令对某 context 文件的读取、修改 rdd.md 的 frontmatter 字段结构。
+
+**模板 [AI-ONLY] 标记规则**：向 `templates/` 目录下任何 PRD 模板新增 AI 指引内容时，必须添加 `[AI-ONLY]` 前缀，否则内容会通过 `/new-prd` 直接泄露到生成的 PRD 中：
+
+```
+> **[AI-ONLY]** 这段内容仅供 AI 执行参考，不输出到 PRD
+```
+
+不需要标记的内容：面向 PRD 读者（非 AI）的说明，以及模板中作为实际内容占位的 blockquote。
 
 ---
 
