@@ -23,6 +23,7 @@
 | 企业控制台 | CONS | console | E-001 / F-007 |
 | 订单与计费 | ORD | order3 | E-001 |
 | 消息推送 | NOTIFY | data-push3 | E-001 |
+| APPID 配置管理 | CFG | —（运营后台 + 开放平台） | E-001（架构补录） |
 
 ---
 
@@ -40,6 +41,7 @@ graph TD
     ROOT --> CONS[CONS 企业控制台]
     ROOT --> ORD[ORD 订单与计费]
     ROOT --> NOTIFY[NOTIFY 消息推送]
+    ROOT --> CFG[CFG APPID 配置管理]
 
     AUTH --> A1[个人认证与授权]
     AUTH --> A2[机构认证与授权]
@@ -78,6 +80,10 @@ graph TD
 
     NOTIFY --> N1[Webhook 配置]
     NOTIFY --> N2[签署提醒推送]
+
+    CFG --> CF1[运营后台配置管理]
+    CFG --> CF2[开放平台开发者自助配置]
+    CFG --> CF3[配置可见性控制]
 ```
 
 ---

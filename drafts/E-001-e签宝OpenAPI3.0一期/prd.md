@@ -328,6 +328,8 @@ flowchart LR
     subgraph ESIGN["e签宝 OpenAPI 平台（V3）"]
         GW["API 网关<br/>签名鉴权 / OAuthToken"]
 
+        CFG["APPID 配置层<br/>认证方式 / 签署行为<br/>页面样式 / 计费 / 限流"]
+
         subgraph DOMAINS["业务域服务"]
             AUTH["auth3<br/>认证&授权"]
             TPL["file-and-template3<br/>文件&流程模板"]
@@ -366,6 +368,10 @@ flowchart LR
 
     APP -.->|短信/邮件链接| CLIENT
     CLIENT <-->|签署交互| ESIGN
+
+    PO -->|运营后台<br/>管理全量配置 / 控制可见性| CFG
+    APP -.->|开放平台<br/>自助修改可见配置| CFG
+    CFG -.->|约束范围 / 默认值| DOMAINS
 
     OPS -.->|查询流程详情/进度<br/>排查问题| SAAS_DB
 ```
