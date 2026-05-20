@@ -3,9 +3,9 @@ type: feature-prd
 id: F-001
 title: 认证授权与免登体系
 status: draft
-version: "1.0"
+version: "1.2"
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-20
 author: 门生
 feature-area: auth3
 epic: E-001
@@ -26,8 +26,8 @@ notes: "从 Epic E-001 §F-001 章节抽取并对照 assets/opendoc/auth3/ 全�
 | 产品线 | 认证授权（auth3） |
 | 需求类型 | 新功能（V3 标准化重构） |
 | 需求状态 | 草稿 |
-| 当前版本 | V1.0 |
-| 最后更新日期 | 2026-05-19 |
+| 当前版本 | V1.2 |
+| 最后更新日期 | 2026-05-20 |
 | 关键词（Tag） | 实名认证、用户授权、authFlowId、authorizedScopes、免登、回调 |
 | 关联需求卡片 | 暂无（从 Epic E-001 抽取，未走 /requirement-clarifier） |
 | 关联页面规格卡 | 待产出 |
@@ -40,6 +40,8 @@ notes: "从 Epic E-001 §F-001 章节抽取并对照 assets/opendoc/auth3/ 全�
 | --- | --- | --- | --- |
 | V0.1 | 2022-02-22 | 原始内容（Epic E-001 V0.1 中 F-001 部分），已归档至 archive/original-v0.1.md | 门生 |
 | V1.0 | 2026-05-19 | 从 Epic E-001 抽取 F-001 内容，对照 assets/opendoc/auth3/ 补充 §8 全量字段说明，重构为标准 Feature PRD 格式 | AI 生成（门生 review） |
+| V1.1 | 2026-05-20 | context 维护后一致性同步：§3.2 对齐 user-persona / §4 引用 business-glossary 精简术语 / §5.3 BR-01 引用 permission-model / §9.4 端清单对齐 platform-support 补足支付宝小程序+钉钉+飞书+企微 | AI 同步 |
+| V1.2 | 2026-05-20 | 与 feature-map.md AUTH 域 A1-A4 子节点对齐：CATEGORY 由 URL/AUTHZ/IDENT/FLOW/CB 重划为 PSN/ORG/FLOW/CB；6 个功能 ID 重命名（URL→PSN/ORG，AUTHZ→PSN/ORG，IDENT→PSN/ORG）；§5.1 Mermaid 引用 A1-A4 作为上层锚点；§7 新增「feature-map 归属」列 | AI 同步 |
 
 ## 3 需求概要
 
@@ -59,19 +61,22 @@ notes: "从 Epic E-001 §F-001 章节抽取并对照 assets/opendoc/auth3/ 全�
 
 ### 3.2 目标用户（概要）
 
-- **核心用户**：企业集成开发者（接入 OpenAPI 的第三方系统开发者），承担在自家业务系统中发起认证/授权、保存 psnId/orgId、订阅回调的工作
-- **次级用户**：被认证/授权的最终用户（个人用户、企业经办人），通过 e签宝 提供的认证授权页面完成实名与授权操作
-- **间接用户**：产品运营、技术支持，通过查询接口排查"为何签署被拒""授权是否过期"等问题
+> 用户画像参考：context/user-persona.md
+
+- **核心用户**：**P3 企业集成开发者**——承担在自家业务系统中发起认证/授权、保存 psnId/orgId、订阅回调的工作；主要痛点是文档与行为不一致、回调丢失乱序、错误码语义模糊
+- **次级用户**：**P6 任务执行者**（个人用户 / 机构经办人）——通过 e签宝 提供的认证授权页面完成实名与授权操作；主要诉求是入口顺畅、操作明确、能在多端（小程序/App/H5/PC）流畅完成
+- **间接用户**：**P2 平台运营人员**——通过查询类接口（AUTH-PSN-002/003、AUTH-ORG-002/003、AUTH-FLOW-001）排查"为何签署被拒""授权是否过期"等问题
 
 ### 3.3 方案概述
 
-提供 1 套覆盖"个人 / 机构"两类主体、"实名认证 / 授权认证"两种模式的认证授权能力，由 3 类接口组成：
+提供 1 套覆盖"个人 / 机构"两类主体、"实名认证 / 授权认证"两种模式的认证授权能力，按 feature-map.md AUTH 域的 4 个子节点组织：
 
-1. **入口类**（2 个）：获取个人/机构认证&授权页面链接，返回 `authUrl` + `authFlowId`
-2. **查询类**（5 个）：查询个人/机构的认证信息、授权信息、流程详情，分别面向"是否已实名""哪些 scope 已授权且未过期""一次具体流程的全貌"三种问询
-3. **回调类**（3 个）：实名通过、授权完成、授权范围变更，主动向开发者推送状态变化
+1. **A1 个人认证与授权**（3 项，AUTH-PSN-001/002/003）：个人入口链接 + 个人授权信息查询 + 个人认证信息查询
+2. **A2 机构认证与授权**（3 项，AUTH-ORG-001/002/003）：机构入口链接 + 机构授权信息查询 + 机构认证信息查询
+3. **A3 认证授权信息查询**（1 项，AUTH-FLOW-001）：按 authFlowId 查询流程完整详情，跨主体的统一排查入口
+4. **A4 授权变更回调**（3 项，AUTH-CB-001/002/003）：实名通过 / 授权完成 / 授权范围变更，主动向开发者推送状态变化
 
-所有接口遵守"appId ≠ 7488 且 URL 含 `/v3/`"则强制校验授权关系的全局规则。
+所有接口遵守"appId ≠ 7488 且 URL 含 `/v3/`"则强制校验授权关系的全局规则（BR-01，详见 context/permission-model.md）。
 
 ### 3.4 成功指标（3-5 项）
 
@@ -86,20 +91,16 @@ notes: "从 Epic E-001 §F-001 章节抽取并对照 assets/opendoc/auth3/ 全�
 
 ## 4 需求对象与概念模型
 
-> 业务术语参考：context/business-glossary.md（当前为初始化模板）
-> 以下列出本 PRD 引入的核心术语，应在 Glossary 完成初始化后回填至公共术语表。
+> 业务术语参考：context/business-glossary.md
+> 已在术语表收录、本 PRD 直接引用、不再重复定义的术语：psnId、orgId、authFlowId、authorizedScopes（授权范围）、实名认证、意愿认证、经办人、appId、V3 API。
+> 以下仅列出本 PRD **新引入**的术语与枚举。
 
-| 术语 | 定义 | 约束/备注 |
-| --- | --- | --- |
-| psnId | 个人账号唯一标识 | 实名认证完成后由 e签宝 生成并返回，开发者需自行保管，与手机号/邮箱建立映射 |
-| orgId | 机构账号唯一标识 | 机构实名认证完成后由 e签宝 生成并返回，与企业名称、统一社会信用代码建立映射 |
-| authFlowId | 一次认证授权流程的唯一标识 | 由「获取认证&授权页面链接」接口返回；可用于查询流程详情；回调通知中携带 |
-| authorizedScopes | 授权范围集合（list） | 取值为预定义的 scope 字符串（见 §4.1）；每个 scope 独立计算生效/过期时间 |
-| realnameStatus | 实名状态 | 0=未实名，1=已实名（仅描述实名状态，与授权状态独立） |
-| authorizedStatus | 授权流程状态 | 0=流程过期失效；1=已授权；2=授权中；3=审批未通过（仅对授权认证模式） |
-| 授权认证模式 | 配置 `authorizeConfig.authorizedScopes` 进入此模式 | 包含「实名认证 + 资源授权」，已实名用户仅需做意愿认证即可走完授权 |
-| 实名认证模式 | 不配置 `authorizeConfig` 或 `authorizedScopes` 为空 | 仅做实名认证；用户若已实名再次调用会报错"用户已实名"/"企业用户已实名" |
-| 经办人（transactor） | 代表机构发起认证授权操作的个人 | 由 `transactorInfo` 传入；首次为企业实名的经办人会自动成为企业管理员 |
+| 术语 | 类型 | 定义 | 约束/备注 |
+| --- | --- | --- | --- |
+| realnameStatus | 枚举值 | 用户在 e签宝 的实名认证状态 | 0=未实名 / 1=已实名；与 authorizedStatus 相互独立（BR-10） |
+| authorizedStatus | 枚举值 | 一次认证授权流程的授权状态 | 0=流程过期失效 / 1=已授权 / 2=授权中 / 3=审批未通过；3 仅出现在"经办人非管理员需企业审批"场景 |
+| 授权认证模式 | 枚举值 | 「获取认证&授权页面链接」接口的两种行为模式之一 | 触发条件：请求体含非空 `authorizeConfig.authorizedScopes`；行为：实名 + 资源授权一体化 |
+| 实名认证模式 | 枚举值 | 同上接口的另一种模式 | 触发条件：未传 `authorizeConfig` 或 `authorizedScopes` 为空；行为：仅做实名认证，已实名用户重复发起会被接口拒绝（BR-04） |
 
 ### 4.1 authorizedScopes 取值清单
 
@@ -133,24 +134,29 @@ notes: "从 Epic E-001 §F-001 章节抽取并对照 assets/opendoc/auth3/ 全�
 
 ### 5.1 本需求新增的功能节点
 
+> 本图与 context/product-feature-map.md AUTH 域的 A1-A4 子节点完全同构，仅展开本 PRD 的具体功能项。
+
 ```mermaid
 graph TD
-    AUTH[认证授权与免登体系 F-001] --> URL[入口·页面链接]
-    AUTH --> AUTHZ[查询·授权信息]
-    AUTH --> IDENT[查询·认证信息]
-    AUTH --> FLOW[查询·流程详情]
-    AUTH --> CB[回调·状态推送]
+    AUTH[AUTH 认证授权 / F-001]
+    AUTH --> A1[A1 个人认证与授权]
+    AUTH --> A2[A2 机构认证与授权]
+    AUTH --> A3[A3 认证授权信息查询]
+    AUTH --> A4[A4 授权变更回调]
 
-    URL --> URL1[获取个人认证&授权页面链接]
-    URL --> URL2[获取机构认证&授权页面链接]
-    AUTHZ --> AUTHZ1[查询个人授权信息]
-    AUTHZ --> AUTHZ2[查询机构授权信息]
-    IDENT --> IDENT1[查询个人认证信息]
-    IDENT --> IDENT2[查询机构认证信息]
-    FLOW --> FLOW1[查询认证授权流程详情]
-    CB --> CB1[实名认证通过 AUTH_PASS]
-    CB --> CB2[授权完成 AUTHORIZE_FINISH]
-    CB --> CB3[授权范围变更 AUTHORIZE_CHANGE]
+    A1 --> P1[AUTH-PSN-001 获取个人认证&授权页面链接]
+    A1 --> P2[AUTH-PSN-002 查询个人授权信息]
+    A1 --> P3[AUTH-PSN-003 查询个人认证信息]
+
+    A2 --> O1[AUTH-ORG-001 获取机构认证&授权页面链接]
+    A2 --> O2[AUTH-ORG-002 查询机构授权信息]
+    A2 --> O3[AUTH-ORG-003 查询机构认证信息]
+
+    A3 --> F1[AUTH-FLOW-001 查询认证授权流程详情]
+
+    A4 --> C1[AUTH-CB-001 实名认证通过 AUTH_PASS]
+    A4 --> C2[AUTH-CB-002 授权完成 AUTHORIZE_FINISH]
+    A4 --> C3[AUTH-CB-003 授权范围变更 AUTHORIZE_CHANGE]
 ```
 
 ### 5.2 本需求核心业务流程
@@ -181,7 +187,7 @@ graph TD
 
 | 规则编号 | 规则描述 | 备注 |
 | --- | --- | --- |
-| BR-01 | 仅当 `appId ≠ 7488` 且接口路径包含 `/v3/` 时，平台强制校验该应用是否拥有目标用户的对应 `authorizedScope`；不通过则接口层直接拒绝（详细错误码见 §8.x.3） | Epic E-001 §非功能需求·鉴权；appId 7488 为 e签宝 自有调用方，例外放行 |
+| BR-01 | 仅当 `appId ≠ 7488` 且接口路径包含 `/v3/` 时，平台强制校验该应用是否拥有目标用户的对应 `authorizedScope`；不通过则接口层直接拒绝（详细错误码见 §8.x.3） | 平台 ABAC 校验规则，详见 context/permission-model.md §校验规则；appId 7488 为 e签宝 自有调用方，例外放行 |
 | BR-02 | 一个 `authFlowId` 的认证授权长/短链接（`authUrl` / `authShortUrl`）有效期统一为 30 天；过期后须重新调用入口接口生成新链接 | opendoc rx8igf / kcbdu7 响应参数说明 |
 | BR-03 | `authorizedScopes` 中每个 scope 独立计算 `effectiveTime` / `expireTime`，过期后该 scope 单独失效，其他未过期 scope 不受影响；开发者应按 scope 维度判断而非整体 | opendoc nurtvw / ytn2tt 响应数据结构 |
 | BR-04 | 实名认证模式（未传 `authorizeConfig` 或 `authorizedScopes` 为空）下，若用户已实名，接口直接报错 `"个人用户已实名"` / `"企业用户已实名"`，不返回 `authUrl`；授权认证模式下不会报此错，允许已实名用户走授权流程 | opendoc rx8igf / kcbdu7 接口描述 |
@@ -281,21 +287,21 @@ graph TD
 
 ## 7 功能清单（AI 实现主清单）
 
-> 功能编号格式：`AUTH-[CATEGORY]-[SEQ]`，AUTH 为本 PRD 引入的 auth3 域前缀。
-> CATEGORY 取值：URL（入口·页面链接）/ AUTHZ（查询授权）/ IDENT（查询认证）/ FLOW（查询流程详情）/ CB（回调推送）。
+> 功能编号格式：`AUTH-[CATEGORY]-[SEQ]`，AUTH 为 auth3 域前缀（见 context/product-feature-map.md 前缀映射表）。
+> CATEGORY 与 feature-map.md AUTH 域 A1-A4 子节点一一对应：**PSN**（A1 个人认证与授权）/ **ORG**（A2 机构认证与授权）/ **FLOW**（A3 认证授权信息查询）/ **CB**（A4 授权变更回调）。
 
-| 功能编号 | 功能名称（全限定） | 功能描述（Job Story） | 优先级 | 需求来源 |
-| --- | --- | --- | --- | --- |
-| AUTH-URL-001 | 认证授权-入口-获取个人认证&授权页面链接 | 当开发者要为个人用户发起实名/授权时，我想要传入手机号或 psnId 拿到一个长/短链接，这样可以把链接透传给用户去完成操作 | P0 | opendoc auth3/rx8igf |
-| AUTH-URL-002 | 认证授权-入口-获取机构认证&授权页面链接 | 当开发者要为机构发起实名/授权时，我想要传入企业信息和经办人信息拿到链接，这样经办人可代企业完成认证授权 | P0 | opendoc auth3/kcbdu7 |
-| AUTH-AUTHZ-001 | 认证授权-查询-查询个人授权信息 | 当开发者需要确认当前应用对某个 psnId 的授权范围与有效期时，我想要按 psnId 查询授权列表，这样可在调用受授权接口前判断是否仍有效 | P0 | opendoc auth3/nurtvw |
-| AUTH-AUTHZ-002 | 认证授权-查询-查询机构授权信息 | 当开发者需要确认当前应用对某个 orgId 的授权范围与有效期时，我想要按 orgId 查询授权列表 | P0 | opendoc auth3/ytn2tt |
-| AUTH-IDENT-001 | 认证授权-查询-查询个人认证信息 | 当开发者需要判断个人用户是否在 e签宝 已实名时，我想要按 psnId / psnAccount / 证件号查询实名状态及身份信息 | P0 | opendoc auth3/vssvtu |
-| AUTH-IDENT-002 | 认证授权-查询-查询机构认证信息 | 当开发者需要判断企业是否在 e签宝 已实名时，我想要按 orgId / orgName / 统一社会信用代码查询实名状态及机构信息 | P0 | opendoc auth3/xxz4tc |
-| AUTH-FLOW-001 | 认证授权-查询-查询认证授权流程详情 | 当开发者要排查一次具体的认证授权流程时，我想要按 authFlowId 拿到完整流程信息（含使用的认证方式、流程时间戳、授权详情） | P0 | opendoc auth3/hlrs7s |
-| AUTH-CB-001 | 认证授权-回调-实名认证通过通知（AUTH_PASS） | 当用户在 e签宝 页面完成实名时，e签宝 主动通知开发者 notifyUrl，开发者从中取到 psnId / orgId | P0 | opendoc auth3/uozx98z5qom8ce5d |
-| AUTH-CB-002 | 认证授权-回调-授权完成通知（AUTHORIZE_FINISH） | 当用户在 e签宝 页面完成授权时，e签宝 主动推送授权完成事件，含本次授权的 scope 列表及有效期 | P0 | opendoc auth3/uozx98z5qom8ce5d |
-| AUTH-CB-003 | 认证授权-回调-授权范围变更通知（AUTHORIZE_CHANGE） | 当用户主动取消某个 scope 或 scope 自然过期时，e签宝 推送变更事件，开发者据此刷新本地缓存 | P0 | opendoc auth3/uozx98z5qom8ce5d |
+| 功能编号 | feature-map 归属 | 功能名称（全限定） | 功能描述（Job Story） | 优先级 | 需求来源 |
+| --- | --- | --- | --- | --- | --- |
+| AUTH-PSN-001 | A1 | 认证授权-个人-获取认证&授权页面链接 | 当开发者要为个人用户发起实名/授权时，传入手机号或 psnId 拿到长/短链接，把链接透传给用户去完成操作 | P0 | opendoc auth3/rx8igf |
+| AUTH-PSN-002 | A1 | 认证授权-个人-查询授权信息 | 当开发者需要确认当前应用对某个 psnId 的授权范围与有效期时，按 psnId 查询授权列表，可在调用受授权接口前判断是否仍有效 | P0 | opendoc auth3/nurtvw |
+| AUTH-PSN-003 | A1 | 认证授权-个人-查询认证信息 | 当开发者需要判断个人用户是否在 e签宝 已实名时，按 psnId / psnAccount / 证件号查询实名状态及身份信息 | P0 | opendoc auth3/vssvtu |
+| AUTH-ORG-001 | A2 | 认证授权-机构-获取认证&授权页面链接 | 当开发者要为机构发起实名/授权时，传入企业信息和经办人信息拿到链接，经办人可代企业完成认证授权 | P0 | opendoc auth3/kcbdu7 |
+| AUTH-ORG-002 | A2 | 认证授权-机构-查询授权信息 | 当开发者需要确认当前应用对某个 orgId 的授权范围与有效期时，按 orgId 查询授权列表 | P0 | opendoc auth3/ytn2tt |
+| AUTH-ORG-003 | A2 | 认证授权-机构-查询认证信息 | 当开发者需要判断企业是否在 e签宝 已实名时，按 orgId / orgName / 统一社会信用代码查询实名状态及机构信息 | P0 | opendoc auth3/xxz4tc |
+| AUTH-FLOW-001 | A3 | 认证授权-流程-查询认证授权流程详情 | 当开发者要排查一次具体的认证授权流程时，按 authFlowId 拿到完整流程信息（含使用的认证方式、流程时间戳、授权详情） | P0 | opendoc auth3/hlrs7s |
+| AUTH-CB-001 | A4 | 认证授权-回调-实名认证通过通知（AUTH_PASS） | 当用户在 e签宝 页面完成实名时，e签宝 主动通知开发者 notifyUrl，开发者从中取到 psnId / orgId | P0 | opendoc auth3/uozx98z5qom8ce5d |
+| AUTH-CB-002 | A4 | 认证授权-回调-授权完成通知（AUTHORIZE_FINISH） | 当用户在 e签宝 页面完成授权时，e签宝 主动推送授权完成事件，含本次授权的 scope 列表及有效期 | P0 | opendoc auth3/uozx98z5qom8ce5d |
+| AUTH-CB-003 | A4 | 认证授权-回调-授权范围变更通知（AUTHORIZE_CHANGE） | 当用户主动取消某个 scope 或 scope 自然过期时，e签宝 推送变更事件，开发者据此刷新本地缓存 | P0 | opendoc auth3/uozx98z5qom8ce5d |
 
 ---
 
@@ -303,7 +309,7 @@ graph TD
 
 ---
 
-### AUTH-URL-001 认证授权-入口-获取个人认证&授权页面链接 需求说明
+### AUTH-PSN-001 认证授权-个人-获取认证&授权页面链接 需求说明
 
 #### 8.1 任务故事（Job Story）
 
@@ -409,7 +415,7 @@ graph TD
 
 | 功能编号 | PRD 章节位置 | 页面规格卡区段 | 页面规格卡状态 | 一致性说明 |
 | --- | --- | --- | --- | --- |
-| AUTH-URL-001 | §8 | 待产出（认证授权页·个人版） | 待产出 | 待页面规格卡产出后回填 |
+| AUTH-PSN-001 | §8 | 待产出（认证授权页·个人版） | 待产出 | 待页面规格卡产出后回填 |
 
 #### 8.10 对外 OpenAPI 变更说明
 
@@ -419,7 +425,7 @@ graph TD
 
 ---
 
-### AUTH-URL-002 认证授权-入口-获取机构认证&授权页面链接 需求说明
+### AUTH-ORG-001 认证授权-机构-获取认证&授权页面链接 需求说明
 
 #### 8.1 任务故事
 
@@ -429,7 +435,7 @@ graph TD
 
 ##### Context（前置条件）
 
-- 与 AUTH-URL-001 相同的鉴权与域名前置条件
+- 与 AUTH-PSN-001 相同的鉴权与域名前置条件
 - 已采集企业信息（至少 `orgName` 或 `orgId` 之一）和经办人个人信息（至少 `psnAccount` 或 `psnId` 之一）
 - 若计划使用对公打款认证方式，已采集 `orgInfo.orgBankAccountNum`
 - 若使用"法定代表人本人意愿认证"，经办人需为法定代表人本人，且 `legalRepName` 与 `legalRepIDCardNum` 已采集
@@ -443,7 +449,7 @@ graph TD
 
 ##### Outcome（预期结果）
 
-1. **业务返回**：与 AUTH-URL-001 相同结构
+1. **业务返回**：与 AUTH-PSN-001 相同结构
 2. **页面行为**：用户访问后依序完成「机构实名 → 经办人个人实名 → 资源授权」三段；首次为企业实名的经办人会自动成为企业管理员，后续无需为其单独获取用印权限
 3. **数据变化**：流程绑定 appId、orgId（或 orgName）、经办人 psnAccount/psnId
 
@@ -454,9 +460,9 @@ graph TD
 | 企业已实名（实名模式下） | 未传 `authorizeConfig`，且 `orgName`/`orgId` 对应企业已实名 | 接口返回业务码非 0，message 含「企业用户已实名」 |
 | 企业名称与 e签宝 已有信息不一致（更名场景） | `orgIdentityVerify=true`，传入 `orgName` 与同一证件号下 e签宝 已有名称不一致 | 接口报错；若 `orgIdentityVerify=false`（默认），允许正常发起，用户登录页面后按当前传入信息重新做企业实名 |
 | 法人快捷认证条件不满足 | 经办人非法定代表人本人，却指定 `ORG_ALIPAY_CREDIT` 为默认认证方式 | 页面侧不展示法人快捷选项；用户改用其他方式 |
-| 经办人身份不一致 | `transactorInfo.psnIdentityVerify=true` 且传入信息与 e签宝 已有不一致 | 接口返回业务码非 0，message 同 §AUTH-URL-001 |
+| 经办人身份不一致 | `transactorInfo.psnIdentityVerify=true` 且传入信息与 e签宝 已有不一致 | 接口返回业务码非 0，message 同 §AUTH-PSN-001 |
 | 经办人为非管理员且需要用印 | `transactorUseSeal=true` 但当前不为授权认证模式 | 参数无效，不报错；用户不会自动获得用印权限 |
-| 其他错误 | 同 AUTH-URL-001：版本约束、域名未放行、签名失败、链接过期 | 同上 |
+| 其他错误 | 同 AUTH-PSN-001：版本约束、域名未放行、签名失败、链接过期 | 同上 |
 
 #### 8.4 业务流转图
 
@@ -482,7 +488,7 @@ graph TD
 
 #### 8.5 数据字典
 
-在 AUTH-URL-001 字段基础上，新增：
+在 AUTH-PSN-001 字段基础上，新增：
 
 | 字段名 | 来源页面 | 类型 | 逻辑约束 |
 | --- | --- | --- | --- |
@@ -505,13 +511,13 @@ graph TD
 
 #### 8.6 状态流转表
 
-与 AUTH-URL-001 相同，多了"机构实名 → 经办人实名"两阶段串接，单段失败可在页面内重试。
+与 AUTH-PSN-001 相同，多了"机构实名 → 经办人实名"两阶段串接，单段失败可在页面内重试。
 
 #### 8.7 权限矩阵
 
 | 角色 | 可见范围 | 可执行动作 | 数据范围约束 | 失败提示 |
 | --- | --- | --- | --- | --- |
-| 接入应用（appId） | 所有应用 | 调用本接口 | 仅能为传入企业 + 经办人创建流程 | 同 AUTH-URL-001 |
+| 接入应用（appId） | 所有应用 | 调用本接口 | 仅能为传入企业 + 经办人创建流程 | 同 AUTH-PSN-001 |
 | 经办人 | authUrl 页面 | 完成机构实名 + 个人实名 + 授权 | 一个 authFlowId 仅供本经办人 | 经办人非法人时无法选法人快捷 |
 | 企业管理员 | 企业控制台 | 审批经办人授权请求（授权认证模式且经办人非管理员） | 仅本企业 | 审批未通过则 authorizedStatus=3 |
 
@@ -524,7 +530,7 @@ graph TD
 
 | 功能编号 | PRD 章节位置 | 页面规格卡区段 | 页面规格卡状态 | 一致性说明 |
 | --- | --- | --- | --- | --- |
-| AUTH-URL-002 | §8 | 待产出（认证授权页·机构版） | 待产出 | 待页面规格卡产出后回填 |
+| AUTH-ORG-001 | §8 | 待产出（认证授权页·机构版） | 待产出 | 待页面规格卡产出后回填 |
 
 #### 8.10 对外 OpenAPI 变更说明
 
@@ -534,7 +540,7 @@ graph TD
 
 ---
 
-### AUTH-AUTHZ-001 认证授权-查询-查询个人授权信息 需求说明
+### AUTH-PSN-002 认证授权-个人-查询授权信息 需求说明
 
 #### 8.1 任务故事
 
@@ -562,7 +568,7 @@ graph TD
 | 异常场景 | 触发条件 | 系统行为 |
 | --- | --- | --- |
 | psnId 不存在 | psnId 拼写错误或对应账号未注册 | 业务码非 0，message 提示用户不存在 |
-| 当前 appId 从未对该 psnId 发起过授权 | 不曾通过 AUTH-URL-001 发起 | `data.authorizedInfo` 返回空数组（非报错），开发者据此判断需重新发起 |
+| 当前 appId 从未对该 psnId 发起过授权 | 不曾通过 AUTH-PSN-001 发起 | `data.authorizedInfo` 返回空数组（非报错），开发者据此判断需重新发起 |
 | 所有 scope 已过期 | 距上次授权 > 有效期 | 仅返回最近过期记录或空数组（取决于平台策略），开发者应以 expireTime 判断为准 |
 
 #### 8.4 业务流转图
@@ -605,7 +611,7 @@ graph TD
 
 ---
 
-### AUTH-AUTHZ-002 认证授权-查询-查询机构授权信息 需求说明
+### AUTH-ORG-002 认证授权-机构-查询授权信息 需求说明
 
 #### 8.1 任务故事
 
@@ -625,11 +631,11 @@ graph TD
 
 ##### Outcome
 
-结构与 AUTH-AUTHZ-001 一致，但 scope 取值范围为机构 scope（见 §4.1）。
+结构与 AUTH-PSN-002 一致，但 scope 取值范围为机构 scope（见 §4.1）。
 
 #### 8.3 异常处理要求
 
-参见 AUTH-AUTHZ-001（差异仅在主体）。
+参见 AUTH-PSN-002（差异仅在主体）。
 
 #### 8.4 业务流转图
 
@@ -650,11 +656,11 @@ graph TD
 
 #### 8.7 权限矩阵
 
-同 AUTH-AUTHZ-001。
+同 AUTH-PSN-002。
 
 #### 8.8 边界条件与并发规则
 
-同 AUTH-AUTHZ-001。
+同 AUTH-PSN-002。
 
 #### 8.9 PRD-页面规格卡映射
 
@@ -668,7 +674,7 @@ graph TD
 
 ---
 
-### AUTH-IDENT-001 认证授权-查询-查询个人认证信息 需求说明
+### AUTH-PSN-003 认证授权-个人-查询认证信息 需求说明
 
 #### 8.1 任务故事
 
@@ -751,7 +757,7 @@ graph TD
 
 ---
 
-### AUTH-IDENT-002 认证授权-查询-查询机构认证信息 需求说明
+### AUTH-ORG-003 认证授权-机构-查询认证信息 需求说明
 
 #### 8.1 任务故事
 
@@ -844,7 +850,7 @@ graph TD
 
 ---
 
-### AUTH-FLOW-001 认证授权-查询-查询认证授权流程详情 需求说明
+### AUTH-FLOW-001 认证授权-流程-查询认证授权流程详情 需求说明
 
 #### 8.1 任务故事
 
@@ -854,7 +860,7 @@ graph TD
 
 ##### Context
 
-- 调用方持有 authFlowId（来自 AUTH-URL-001 / AUTH-URL-002 的响应）
+- 调用方持有 authFlowId（来自 AUTH-PSN-001 / AUTH-ORG-001 的响应）
 
 ##### Action
 
@@ -893,12 +899,12 @@ graph TD
 | data.authUrl | response | string | 回显本次长链 |
 | data.authInfo.willingnessAuthModes | response | string | CODE_SMS / CODE_EMAIL / PSN_FACE_ALIPAY / PSN_FACE_TECENT / PSN_FACE_ESIGN / PSN_FACE_WECHAT |
 | data.authInfo.psnAuthMode | response | string | PSN_BANKCARD4 / PSN_MOBILE3 / PSN_BANKCARD4_DETAILS / PSN_MOBILE3_DETAILS / PSN_FACE |
-| data.authInfo.orgAuthMode | response | string | 同 AUTH-IDENT-002 |
+| data.authInfo.orgAuthMode | response | string | 同 AUTH-ORG-003 |
 | data.authInfo.authFlowCreateTime | response | int64 | Unix 毫秒 |
 | data.authInfo.authFlowUpdateTime | response | int64 | Unix 毫秒 |
 | data.authInfo.person.psnId / psnAccount / psnInfo / faceRecognitionInfo | response | object | 个人或机构经办人信息 |
 | data.authInfo.organization.orgId / orgName / orgInfo | response | object | 机构信息（仅 authType=ORG 时） |
-| data.authorizedInfo[] | response | array | 同 AUTH-AUTHZ-001 / 002 结构 |
+| data.authorizedInfo[] | response | array | 同 AUTH-PSN-002 / 002 结构 |
 
 **人脸识别附加信息（faceRecognitionInfo）默认不返回，需联系 e签宝 业务开通**：
 
@@ -1024,7 +1030,7 @@ graph TD
 
 ##### Context
 
-- 用户已通过 AUTH-URL-001 / AUTH-URL-002 进入授权认证模式且完成授权
+- 用户已通过 AUTH-PSN-001 / AUTH-ORG-001 进入授权认证模式且完成授权
 - 开发者已配置 notifyUrl
 
 ##### Action
@@ -1105,7 +1111,7 @@ graph TD
 ##### Outcome
 
 1. 开发者刷新本地缓存
-2. 推荐：开发者收到 AUTHORIZE_CHANGE 后立即调用 AUTH-AUTHZ-001 或 AUTH-AUTHZ-002 拉取最新授权列表，避免遗漏
+2. 推荐：开发者收到 AUTHORIZE_CHANGE 后立即调用 AUTH-PSN-002 或 AUTH-ORG-002 拉取最新授权列表，避免遗漏
 
 #### 8.3 异常处理要求
 
@@ -1157,8 +1163,8 @@ graph TD
 
 | 场景 | 要求 |
 | --- | --- |
-| 获取认证授权页面链接接口（AUTH-URL-001 / 002） | P95 < 1s；并发能力跟随 e签宝 SaaS 平台主接入层 |
-| 查询认证 / 授权 / 流程详情接口（AUTH-IDENT / AUTHZ / FLOW） | P95 < 500ms；GET 类接口；可缓存 1 分钟 |
+| 获取认证授权页面链接接口（AUTH-PSN-001 / 002） | P95 < 1s；并发能力跟随 e签宝 SaaS 平台主接入层 |
+| 查询类接口（AUTH-PSN-002/003、AUTH-ORG-002/003、AUTH-FLOW-001） | P95 < 500ms；GET 类接口；可缓存 1 分钟 |
 | 回调推送（AUTH-CB-*） | 首次推送延迟 < 30s；按 data-push3 重试策略保证最终送达，月度成功率 ≥ 99.5% |
 
 ### 9.2 安全要求
@@ -1178,15 +1184,22 @@ graph TD
 
 ### 9.4 兼容性要求
 
-> 端清单参考：context/platform-support.md（当前未初始化）
+> 端清单参考：context/platform-support.md
+> 本 PRD 涉及的端体验为**签署端**（用户接收 authUrl 后完成实名 + 授权操作的页面），触发端（开发者后端 API 调用）全端无差异。
+> 下表仅列出存在差异的端，未列出的端与 Web 端（基准实现）一致。
 
-| 端 | 差异说明 |
-| --- | --- |
-| PC Web | 完整支持；iframe 内嵌时不支持人脸识别（BR-09） |
-| H5 | 完整支持 |
-| iOS / Android App | 通过 H5 + appScheme 回跳；推荐用 H5 长链 |
-| 微信小程序 | 须使用 `authUrl` 长链；不可用短链 |
-| 鸿蒙 HarmonyOS | 跟随 Android H5 行为 |
+| 端 | 标识符 | 差异说明 |
+| --- | --- | --- |
+| Web 端（PC 浏览器） | `web` | 基准实现，完整支持 3 种实名认证方式 + 全部意愿认证方式；iframe 内嵌时不支持人脸识别（BR-09），须显式限制 `psnAvailableAuthModes` 为 PSN_MOBILE3 / PSN_BANKCARD4 |
+| 微信小程序 | `wechat_miniapp` | 必须使用 `data.authUrl` 长链；短链 `authShortUrl` 不能用于小程序 H5 内嵌；需配置 e签宝 OpenAPI 业务域名白名单 |
+| 支付宝小程序 | `alipay_miniapp` | 支持支付宝刷脸认证（PSN_FACE_ALIPAY），通过 `appScheme` 控制刷脸完成后回跳 |
+| iOS App | `ios` | 通过 H5 + `appScheme` 回跳开发者 App；推荐使用 `data.authUrl` 长链 |
+| Android App | `android` | 同 iOS，通过 H5 + `appScheme` 回跳 |
+| 鸿蒙 App（HarmonyOS） | `harmonyos` | 跟随 Android H5 行为 |
+| 钉钉端 | `dingtalk` | 需在钉钉后台配置 e签宝 OpenAPI 业务域名白名单 |
+| 飞书端 | `feishu` | 需配置业务域名白名单 |
+| 企业微信端 | `wecom` | 需配置业务域名白名单 |
+| H5（移动浏览器） | `h5` | 完整支持；与 Web 端一致 |
 
 ### 9.5 数据统计需求
 
@@ -1224,7 +1237,7 @@ graph TD
 - **小程序原生授权能力**：所有授权操作均通过 e签宝 提供的 H5/PC 页面承接，本期不提供小程序原生组件式授权
 - **批量授权**：本期不支持一次为多个 appId 或多个 scope 批量发起授权；多 scope 通过单个 authorizedScopes 列表实现
 - **运营侧人工干预授权**：当前不提供后台运营人员手动为用户创建授权关系的能力
-- **过期前主动续约**：本期不提供"在 expireTime 前自动续约 scope"的能力；过期后须重新发起 AUTH-URL-001 / 002
+- **过期前主动续约**：本期不提供"在 expireTime 前自动续约 scope"的能力；过期后须重新发起 AUTH-PSN-001 / 002
 - **回调推送签名详细规范**：详细见 data-push3 公共文档，本 PRD 不复述
 
 ---
@@ -1251,3 +1264,5 @@ graph TD
 | --- | --- | --- |
 | V0.1 | 2022-02-22 | 原始内容（Epic E-001 V0.1 中 F-001 部分），已归档至 archive/original-v0.1.md |
 | V1.0 | 2026-05-19 | 从 Epic E-001 抽取 F-001 内容，对照 assets/opendoc/auth3/ 全量补充 §8 字段、异常处理、状态机；建立 BR-01~BR-10 业务规则 |
+| V1.1 | 2026-05-20 | 与 context 维护后的一致性同步（§3.2 / §4 / §5.3 / §9.4 四处修订，详见 CHANGELOG.md） |
+| V1.2 | 2026-05-20 | 功能清单与 feature-map.md AUTH 域 A1-A4 子节点对齐：6 个 ID 重命名 + §5.1 Mermaid 重构 + §7 新增归属列（详见 CHANGELOG.md） |
