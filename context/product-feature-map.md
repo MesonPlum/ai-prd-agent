@@ -8,72 +8,127 @@
 
 ---
 
-## 初始化说明
-
-请在首次使用前填写以下内容。完成后删除本段说明。
-
-**需要填写的内容：**
-1. 产品的功能模块划分
-2. 各模块的英文前缀（用于功能编号）
-3. 功能结构树（Mermaid 图）
-4. 初始功能清单
-
----
-
 ## 功能编号前缀映射表
 
-> AI 为功能点生成编号时（格式：`[AREA]-[CATEGORY]-[SEQ]`），先查此表复用已有前缀；
-> 新模块才推导英文缩写，并追加到本表。
+> AI 为功能点生成编号时(格式：`[AREA]-[CATEGORY]-[SEQ]`),先查此表复用已有前缀;新模块才推导英文缩写,并追加到本表。
 
-| 业务模块名（中文） | 英文前缀（AREA） | 首次引入版本/PRD |
-|---|---|---|
-| （示例）用户管理 | USR | v1 基线 |
-| （示例）订单管理 | ORD | v1 基线 |
-| （请填写） | | |
+| 业务模块名(中文) | 英文前缀(AREA) | API 域标识 | 首次引入版本/PRD |
+|---|---|---|---|
+| 认证授权 | AUTH | auth3 | E-001 / F-001 |
+| 文件与流程模板 | TPL | file-and-template3 | E-001 / F-002 |
+| 签署流程 | SIGN | pdf-sign3 | E-001 / F-003 |
+| 印章管理 | SEAL | seal3 | E-001 / F-005 |
+| 企业成员管理 | EMP | employee | E-001 / F-006 |
+| 账号凭证管理 | ACC | account_3 | E-001 / F-008 |
+| 企业控制台 | CONS | console | E-001 / F-007 |
+| 订单与计费 | ORD | order3 | E-001 |
+| 消息推送 | NOTIFY | data-push3 | E-001 |
 
 ---
 
 ## 产品功能结构树
 
-> 使用 Mermaid 语法描述产品的功能结构
-
 ```mermaid
 graph TD
-    ROOT[产品名称] --> MOD1[模块1]
-    ROOT --> MOD2[模块2]
-    ROOT --> MOD3[模块3]
-    
-    MOD1 --> MOD1S1[子功能1]
-    MOD1 --> MOD1S2[子功能2]
-    
-    MOD2 --> MOD2S1[子功能1]
-    MOD2 --> MOD2S2[子功能2]
-    
-    MOD3 --> MOD3S1[子功能1]
+    ROOT[e签宝 OpenAPI 3.0]
+    ROOT --> AUTH[AUTH 认证授权]
+    ROOT --> TPL[TPL 文件与流程模板]
+    ROOT --> SIGN[SIGN 签署流程]
+    ROOT --> SEAL[SEAL 印章管理]
+    ROOT --> EMP[EMP 企业成员管理]
+    ROOT --> ACC[ACC 账号凭证管理]
+    ROOT --> CONS[CONS 企业控制台]
+    ROOT --> ORD[ORD 订单与计费]
+    ROOT --> NOTIFY[NOTIFY 消息推送]
+
+    AUTH --> A1[个人认证与授权]
+    AUTH --> A2[机构认证与授权]
+    AUTH --> A3[认证授权信息查询]
+    AUTH --> A4[授权变更回调]
+
+    TPL --> T1[文件模板管理]
+    TPL --> T2[流程模板管理]
+    TPL --> T3[控件与控件组]
+    TPL --> T4[自定义业务控件]
+    TPL --> T5[模板事件回调]
+
+    SIGN --> S1[创建签署流程]
+    SIGN --> S2[准备待签文件]
+    SIGN --> S3[修改签署配置]
+    SIGN --> S4[流程状态操作]
+    SIGN --> S5[流程查询与下载]
+    SIGN --> S6[PDF 验签]
+    SIGN --> S7[签署事件回调]
+
+    SEAL --> SE1[个人印章]
+    SEAL --> SE2[机构印章]
+    SEAL --> SE3[印章授权]
+    SEAL --> SE4[用印审批]
+    SEAL --> SE5[用印事件回调]
+
+    EMP --> E1[成员增删查]
+    EMP --> E2[成员角色管理]
+
+    ACC --> AC1[凭证绑定/解绑]
+
+    CONS --> C1[免登控制台]
+
+    ORD --> O1[套餐与余量]
+    ORD --> O2[订单与 License]
+
+    NOTIFY --> N1[Webhook 配置]
+    NOTIFY --> N2[签署提醒推送]
 ```
 
 ---
 
-## 功能清单（v1 基线）
+## Feature 清单(v1 基线)
 
-### 模块1（MOD1）
+> 来源：E-001 e签宝 OpenAPI 3.0 一期(v1.4)
+> "业务上线状态"指对外 API 是否已发布;"PRD 状态"指本工作区 Feature PRD 编写状态
 
-| 功能编号 | 功能名称 | 载体命令/文件 | 状态 |
-|----------|----------|--------------|------|
-| MOD1-F001 | 示例功能 | /示例命令 | ✅ 已实现 |
-| （请填写） | | | |
+| Feature ID | 功能名称 | 涉及功能域 | 业务上线状态 | PRD 状态 | PRD 路径 |
+|---|---|---|---|---|---|
+| F-001 | 认证授权与免登体系 | auth3 | ✅ 已上线 | 📝 草稿 | drafts/F-001-认证授权与免登体系/ |
+| F-002 | 文件&流程模板管理 | file-and-template3 | ✅ 已上线 | ⏳ 待创建 | — |
+| F-003 | 签署流程(含查询、下载) | pdf-sign3 | ✅ 已上线 | ⏳ 待创建 | — |
+| ~~F-004~~ | ~~(已废弃,E-001 v1.4 拆分至 F-001/F-003/F-007/F-008)~~ | — | — | — | 编号不再复用 |
+| F-005 | 印章管理 | seal3 | ✅ 已上线 | ⏳ 待创建 | — |
+| F-006 | 企业成员管理 | employee | ✅ 已上线 | ⏳ 待创建 | — |
+| F-007 | 企业控制台免登 | console | ✅ 已上线 | ⏳ 待创建 | — |
+| F-008 | 账号凭证管理 | account_3 | ✅ 已上线 | ⏳ 待创建 | — |
 
-### 模块2（MOD2）
+---
 
-| 功能编号 | 功能名称 | 载体命令/文件 | 状态 |
-|----------|----------|--------------|------|
-| （请填写） | | | |
+## 接口规范关联
+
+> 本文件不再维护接口清单,各模块的接口详情统一由 OpenAPI 规范文件管理。
+> 写 PRD §8 接口说明时,通过下表定位对应规范来源。
+
+| 模块 | API 域标识 | OpenAPI 规范路径 | 原始资料 | 状态 |
+|---|---|---|---|---|
+| 认证授权 | auth3 | context/openapi/auth3/ | assets/opendoc/auth3/ | ⏳ 待初始化 |
+| 文件与流程模板 | file-and-template3 | context/openapi/file-and-template3/ | assets/opendoc/file-and-template3/ | ⏳ 待初始化 |
+| 签署流程 | pdf-sign3 | context/openapi/pdf-sign3/ | assets/opendoc/pdf-sign3/ | ⏳ 待初始化 |
+| 印章管理 | seal3 | context/openapi/seal3/ | assets/opendoc/seal3/(约 37 个接口) | ⏳ 待初始化 |
+| 企业成员管理 | employee | context/openapi/employee/ | assets/opendoc/employee/ | ⏳ 待初始化 |
+| 账号凭证管理 | account_3 | context/openapi/account_3/ | assets/opendoc/account_3/ | ⏳ 待初始化 |
+| 企业控制台 | console | context/openapi/console/ | assets/opendoc/console/ | ⏳ 待初始化 |
+| 订单与计费 | order3 | context/openapi/order3/ | assets/opendoc/order3/ | ⏳ 待初始化 |
+| 消息推送 | data-push3 | context/openapi/data-push3/ | assets/opendoc/data-push3/ | ⏳ 待初始化 |
+
+**初始化方式**：对每个 API 域运行 `/import-openapi [api-name]`(如 `/import-openapi auth3`),系统会:
+1. 在 `context/openapi/[api-name]/` 创建规范文件
+2. 在 `context/api-registry.md` 注册该 API 域(注册表自身首次执行时一并创建,作为各 API 域规范的索引入口)
+3. 后续 PRD §8 接口变更时,通过 `/update-openapi [api-name]` 同步
+
+> **历史接口归属(来源 E-001 v1.4)**:F-001=auth3、F-002=file-and-template3、F-003=pdf-sign3、F-005=seal3、F-006=employee、F-007=console、F-008=account_3。
 
 ---
 
 ## PRD 中引用方式
 
-在 PRD §5「功能结构」章节，按以下格式引用：
+在 PRD §5「功能结构」章节,按以下格式引用：
 
 ```markdown
 ## 功能结构
