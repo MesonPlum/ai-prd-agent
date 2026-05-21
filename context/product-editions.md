@@ -25,11 +25,11 @@
 
 | 接口路径 | 说明 |
 |---------|------|
-| `GET /v3/collect-form/submitted-data-list` | 收集表单提交数据列表 |
-| `GET /v3/collect-form/submitted-data` | 收集表单提交数据详情 |
-| `GET /v2/oauth2/authKey` | OAuth2 鉴权 Key 获取 |
-| `POST /v3/contracts/paper-file-upload` | 纸质文件上传 |
-| `GET /v3/ledger/image-download-urls` | 台账图片下载链接 |
+| `POST /v3/collect-form/submitted-data-list` | 查询表单提交数据列表 |
+| `POST /v3/collect-form/submitted-data` | 查询表单提交数据详情 |
+| `? /v2/oauth2/authKey` | OAuth2 鉴权 Key 获取（Method 待确认，opendoc 暂未收录） |
+| `POST /v3/contracts/paper-file-upload` | 纸质合同上传归档 |
+| `GET /v3/ledger/image-download-urls` | 获取台账提取的图片下载地址 |
 
 ---
 
