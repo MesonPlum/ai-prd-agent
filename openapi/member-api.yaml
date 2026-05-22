@@ -1,0 +1,1230 @@
+# [2026-05-21] | 初始导入 | — | 从 assets/opendoc/account_3/ + employee/ 忠实导入
+# [待升级] 多处不合规项（忠实导入，后续渐进维护）
+
+openapi: 3.1.0
+info:
+  title: e签宝 企业成员管理 API
+  description: |
+    e签宝 SaaS API V3 — 企业成员与账号管理
+
+    关联 PRD：F-006
+
+    ## 鉴权说明
+    所有接口使用 e签宝签名鉴权，请求头需携带 `X-Tsign-Open-App-Id`、
+    `X-Tsign-Open-TIMESTAMP`、`X-Tsign-Open-SIGNATURE`、
+    `X-Tsign-Open-SIGNATURE-ALGORITHM` 四个请求头，详见公共请求格式文档。
+
+    ## 权限说明
+    企业成员与成员角色相关接口（除「查询个人用户是否为企业成员」外）均要求
+    企业用户已授权平台 appId 的 `manage_org_member` 权限。
+  version: "3.0"
+  contact:
+    name: e签宝开放平台
+    url: https://open.esign.cn
+
+servers:
+  - url: https://openapi.esign.cn
+    description: 正式环境
+  - url: https://smlopenapi.esign.cn
+    description: 沙箱环境
+
+tags:
+  - name: 账号管理
+    description: e签宝 SaaS 账号登录凭证的修改/新增与解绑，含页面跳转链接获取
+  - name: 企业成员
+    description: 企业机构成员的查询、添加、移除及归属校验
+  - name: 成员角色
+    description: 企业成员的角色（印章保管员/成员管理员/模板管理员）分配与删除
+
+components:
+  securitySchemes:
+    signatureAuth:
+      type: apiKey
+      in: header
+      name: X-Tsign-Open-App-Id
+      description: |
+        e签宝请求签名鉴权。请求头需同时携带以下四个字段：
+        - `X-Tsign-Open-App-Id`：应用 ID
+        - `X-Tsign-Open-TIMESTAMP`：毫秒级时间戳
+        - `X-Tsign-Open-SIGNATURE`：签名值（hmac-sha256）
+        - `X-Tsign-Open-SIGNATURE-ALGORITHM`：签名算法，固定值 `hmac-sha256`
+
+  schemas:
+    CommonResponse:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 业务码，0 表示成功，非 0 表示异常
+          example: 0
+        message:
+          type: string
+          description: 业务信息。请根据 code 判断错误情况，不应依赖 message 匹配，因为 message 可能会调整
+          example: 成功
+        data:
+          type: object
+          nullable: true
+          description: 业务数据
+
+    MemberRole:
+      type: string
+      description: |
+        成员角色枚举值（多个角色英文逗号隔开）：
+        - `1` - 普通成员
+        - `2` - 印章保管员（可对企业印章进行创建、删除、修改、查询等操作）
+        - `3` - 成员管理员（可对企业成员进行添加、移除、修改、查询等操作）
+        - `4` - 模板管理员（可对模板进行复制、新增、删除、开启、关闭、查询等操作）
+        - `98` - 企业法定代表人
+        - `99` - 企业管理员
+      example: "1,2,3"
+
+    AssignableRole:
+      type: string
+      description: |
+        可分配/删除的角色枚举值（多个角色英文逗号隔开）：
+        - `2` - 印章保管员
+        - `3` - 成员管理员
+        - `4` - 模板管理员
+      example: "2,3"
+
+    PsnAccount:
+      type: object
+      description: 个人用户账号标识
+      properties:
+        accountMobile:
+          type: string
+          nullable: true
+          description: 手机号（账号标识，用于登录 e签宝官网）
+          example: "166****61"
+        accountEmail:
+          type: string
+          nullable: true
+          description: 邮箱地址（账号标识，用于登录 e签宝官网）
+          example: "W****.cn"
+
+    Department:
+      type: object
+      description: 部门信息
+      properties:
+        departmentId:
+          type: string
+          description: 所在部门 ID
+          example: "796dc79000*****633be9915f2"
+        departmentName:
+          type: string
+          description: 所在部门名称
+          example: "交付组"
+
+    MemberInfo:
+      type: object
+      description: 企业成员信息
+      properties:
+        psnId:
+          type: string
+          description: 个人账号 ID
+          example: "626629f****99f1d8c1d"
+        psnName:
+          type: string
+          description: 企业成员已实名的姓名
+          example: "李四"
+        psnAccount:
+          $ref: '#/components/schemas/PsnAccount'
+        employeeNum:
+          type: string
+          nullable: true
+          description: 员工编号
+          example: "002"
+        memberName:
+          type: string
+          description: 姓名（昵称）
+          example: "Lisa"
+        role:
+          $ref: '#/components/schemas/MemberRole'
+        departments:
+          type: array
+          description: 员工所在部门信息。多个部门返回列表，无部门返回空数组
+          items:
+            $ref: '#/components/schemas/Department'
+
+    AdminInfo:
+      type: object
+      description: 企业管理员信息
+      properties:
+        psnId:
+          type: string
+          description: 管理员账号 ID
+          example: "c7e002***541e7"
+        psnName:
+          type: string
+          description: 管理员实名姓名
+          example: "赵四"
+        psnAccount:
+          $ref: '#/components/schemas/PsnAccount'
+        employeeNum:
+          type: string
+          nullable: true
+          description: 员工编号
+          example: "01"
+        memberName:
+          type: string
+          description: 员工姓名/昵称
+          example: "赵经理"
+
+    UnaddedMember:
+      type: object
+      description: 添加失败的成员信息
+      properties:
+        psnId:
+          type: string
+          description: 个人账号 ID
+          example: "ddc491d*****3a3bfe11"
+        failedReason:
+          type: string
+          description: |
+            失败原因：
+            - 用户已经是当前企业成员
+            - 用户不存在
+          example: "用户已经是当前企业成员"
+        existingMemberPsnId:
+          type: string
+          description: 已存在的成员的个人账号 ID
+          example: "ddc491d******3a3bfe11"
+
+    UndeletedMember:
+      type: object
+      description: 移除失败的成员信息
+      properties:
+        psnId:
+          type: string
+          description: 个人账号 ID
+          example: "5288e5*******45b80256c"
+        failedReason:
+          type: string
+          description: |
+            移除失败的原因：
+            - 用户不是企业成员
+            - 用户不存在
+          example: "用户不存在"
+
+security:
+  - signatureAuth: []
+
+paths:
+  # ─────────────────────────────────────────────
+  # 账号管理
+  # ─────────────────────────────────────────────
+  /v3/account-unbind-url:
+    post:
+      tags:
+        - 账号管理
+      summary: 获取账号解绑页面链接
+      description: |
+        当 e签宝 登录凭证（手机号/邮箱）与目前使用者的姓名、证件号不符时，
+        可通过该接口获取账号解绑页面链接。用户在页面验证通过后即可解绑原有证件信息。
+        页面支持 H5/PC 自动适配。
+
+        解绑成功后，e签宝会向开发者配置的回调地址发送 `ACCOUNT_UNBIND` 事件通知。
+      operationId: getAccountUnbindUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - account
+              properties:
+                account:
+                  type: string
+                  description: 用户登录凭证：手机号或邮箱。传入后会展示到页面上且禁止编辑
+                  example: "139XXXX0000"
+                hideTopBar:
+                  type: boolean
+                  default: false
+                  description: |
+                    是否隐藏顶部通栏：
+                    - `true` - 隐藏
+                    - `false` - 不隐藏（默认）
+                redirectUrl:
+                  type: string
+                  description: |
+                    账号解绑后页面重定向跳转地址。
+                    支持微信小程序场景传入固定值 `wechat://back`，解绑后自动跳回开发者小程序初始页
+                  example: "https://esign.cn"
+                customBizNum:
+                  type: string
+                  maxLength: 256
+                  description: |
+                    自定义业务编码（开发者可自定义标识本次操作）。
+                    该字段会在异步回调通知（账号解绑成功通知 `ACCOUNT_UNBIND`）中返回，
+                    也会在重定向跳转地址后拼接
+                  example: "标识本次解绑任务标识001"
+            example:
+              account: "139XXXX0000"
+              hideTopBar: false
+              redirectUrl: "https://esign.cn"
+              customBizNum: "标识本次解绑任务标识001"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          accountUnbindUrl:
+                            type: string
+                            description: 账号解绑长链接（有效期 7 天）。能获取到解绑链接不代表目前一定有绑定 e签宝 SaaS 账号；如果当前账号没有绑定证件，会在获取验证码后提示"该账号未绑定身份信息，无需解绑"
+                            example: "https://smlh5.esign.cn/usercenterFront/unbind?account=139XXXX0000&hideTopBar=false&redirectUrl=&customBizNum=&appId=7438XXXX96"
+                          accountUnbindShortUrl:
+                            type: string
+                            description: 账号解绑短链接（有效期 7 天）
+                            example: "https://smlt.esign.cn/WiPLaaR"
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  accountUnbindUrl: "https://smlh5.esign.cn/usercenterFront/unbind?account=139XXXX0000&hideTopBar=false&redirectUrl=&customBizNum=&appId=7438XXXX96"
+                  accountUnbindShortUrl: "https://smlt.esign.cn/WiPLaaR"
+      x-error-codes:
+        - code: 1563051
+          message: "account必填"
+        - code: 1563052
+          message: "account格式有误"
+        - code: 1563053
+          message: "customBizNum长度过长，不超过256"
+        - code: 1563053
+          message: "redirectUrl长度过长，不超过256"
+
+  /v3/account-binding-url:
+    post:
+      tags:
+        - 账号管理
+      summary: 获取账号修改/新增登录凭证页面链接
+      description: |
+        当 e签宝 登录凭证（手机号/邮箱）需要修改或者新增时，可使用该接口获取用户账号绑定页面链接。
+        用户需要输入新的手机号/邮箱，新旧手机号/邮箱都需要获取验证码并回填成功后方可操作成功。
+        页面支持 H5/PC 自动适配。
+
+        **注意：**
+        - 当用户之前没有当前登录方式时，则视为新增；有当前登录方式时，则视为修改。
+        - 当用户传入的新手机号/邮箱已被其他用户绑定时，则不能被当前用户绑定成功。
+      operationId: getAccountBindingUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - account
+              properties:
+                account:
+                  type: string
+                  description: 用户登录凭证：手机号或邮箱。传入后会展示到页面上且禁止编辑
+                  example: "198XXXX2222"
+                changeType:
+                  type: string
+                  enum:
+                    - mobile
+                    - email
+                  default: mobile
+                  description: |
+                    绑定账号的新登录凭证类型：
+                    - `mobile` - 手机号（默认）
+                    - `email` - 邮箱
+
+                    如果该类型的登录凭证之前已存在，则进行修改操作；如果不存在则进行新增绑定操作
+                hideTopBar:
+                  type: boolean
+                  default: false
+                  description: |
+                    是否隐藏顶部通栏：
+                    - `true` - 隐藏
+                    - `false` - 不隐藏（默认）
+                redirectUrl:
+                  type: string
+                  description: 账号绑定/修改后页面重定向跳转地址
+                  example: "https://open.esign.cn/"
+                customBizNum:
+                  type: string
+                  maxLength: 256
+                  description: |
+                    自定义业务编码（开发者可自定义标识本次操作）。
+                    该字段会在重定向跳转地址后拼接
+                  example: "标识本次修改或新增任务标识001"
+            example:
+              customBizNum: "标识本次修改或新增任务标识001"
+              account: "198XXXX2222"
+              changeType: "mobile"
+              hideTopBar: false
+              redirectUrl: "https://open.esign.cn/"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          accountBindUrl:
+                            type: string
+                            description: 账号修改/新增链接（有效期 7 天）
+                            example: "https://smlh5.esign.cn/usercenterFront/rebind?account=198****2222&contextId=4c9760988ded4e829e3d78909af7a595&changeType=mobile&hideTopBar=false&redirectUrl=&customBizNum=xxx&appId=1111028765"
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  accountBindUrl: "https://smlh5.esign.cn/usercenterFront/rebind?account=198****2222&contextId=4c9760988ded4e829e3d78909af7a595&changeType=mobile&hideTopBar=false&redirectUrl=&customBizNum=xxx&appId=1111028765"
+      x-error-codes:
+        - code: 1563051
+          message: "account必填"
+        - code: 1563052
+          message: "account格式有误"
+        - code: 1563053
+          message: "customBizNum长度过长，不超过256"
+        - code: 1563053
+          message: "redirectUrl长度过长，不超过256"
+
+  # ─────────────────────────────────────────────
+  # 企业成员
+  # ─────────────────────────────────────────────
+  /v3/organizations/{orgId}/member-list:
+    get:
+      tags:
+        - 企业成员
+      summary: 查询企业成员列表
+      description: |
+        用于查询指定企业机构下的所有成员信息（分页）。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: listOrgMembers
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。用户在 e签宝 注册实名后才有账号 ID，可通过【查询机构认证信息】接口获取
+          example: "xxx"
+        - name: pageNum
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          description: 查询页码
+          example: 1
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+          description: 单页展示的最大数量，最大 100
+          example: 100
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            format: int32
+                            description: 查询成员总数
+                            example: 3
+                          members:
+                            type: array
+                            description: 企业成员信息列表
+                            items:
+                              $ref: '#/components/schemas/MemberInfo'
+              example:
+                message: "成功"
+                code: 0
+                data:
+                  total: 3
+                  members:
+                    - psnId: "626629f****99f1d8c1d"
+                      psnAccount:
+                        accountMobile: "166****61"
+                        accountEmail: null
+                      employeeNum: "002"
+                      memberName: "Lisa"
+                      psnName: "李四"
+                      role: "1,2,3"
+                      departments:
+                        - departmentId: "796dc79000*****633be9915f2"
+                          departmentName: "交付组"
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+
+  /v3/organizations/{orgId}/administrators:
+    get:
+      tags:
+        - 企业成员
+      summary: 查询企业管理员
+      description: |
+        用于查询指定企业机构下的管理员信息。
+
+        **说明：**
+        - 企业机构默认管理员角色为首次操作企业实名认证的经办人员。企业机构实名认证通过后，自动将经办人设置为企业管理员。
+        - 如需变更企业机构的管理员，请登录 e签宝 SaaS 官网操作管理员转授。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: getOrgAdministrators
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。用户在 e签宝 注册实名后才有账号 ID，可通过【查询机构认证信息】接口获取
+          example: "0c5bd**8bfbf"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          administrators:
+                            type: array
+                            description: 企业管理员信息列表
+                            items:
+                              $ref: '#/components/schemas/AdminInfo'
+              example:
+                message: "执行成功"
+                code: 0
+                data:
+                  administrators:
+                    - psnId: "c7e002***541e7"
+                      psnAccount:
+                        accountMobile: "183****0101"
+                        accountEmail: null
+                      employeeNum: "01"
+                      memberName: "赵经理"
+                      psnName: "赵四"
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+
+  /v3/organizations/{orgId}/members:
+    post:
+      tags:
+        - 企业成员
+      summary: 添加企业机构成员
+      description: |
+        用于向实名企业中添加企业成员，支持批量添加多个成员账号（一次至多添加 10 个）。
+
+        **注意事项：**
+        - 请确保添加的 `psnId`（个人账号）已完成个人实名认证。
+        - 个人账号成功添加到企业机构成员中后默认设置为"普通成员"角色。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: addOrgMembers
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。用户在 e签宝 注册实名后才有账号 ID，可通过【查询机构认证信息】接口获取
+          example: "3c40c*****940279134e7"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - members
+              properties:
+                members:
+                  type: array
+                  maxItems: 10
+                  description: 待添加企业成员信息，一次至多 10 个
+                  items:
+                    type: object
+                    required:
+                      - psnId
+                      - memberName
+                    properties:
+                      psnId:
+                        type: string
+                        description: 已实名的个人账号 ID。可通过【查询个人认证信息】接口获取
+                        example: "d3fcf19***0ddc60a13"
+                      memberName:
+                        type: string
+                        description: 员工姓名/昵称（用户自定义昵称，用于区分企业成员）
+                        example: "成员1的姓名"
+                      employeeNum:
+                        type: string
+                        description: 员工编号（用户自定义，可以为企业工号）
+                        example: "100"
+                      role:
+                        $ref: '#/components/schemas/AssignableRole'
+            example:
+              members:
+                - psnId: "d3fcf19***0ddc60a13"
+                  memberName: "成员1的姓名"
+                  employeeNum: "100"
+                - psnId: "501a277***6b19b7211"
+                  memberName: "成员2的姓名"
+                  employeeNum: "101"
+      responses:
+        '200':
+          description: 请求成功（部分成员可能添加失败，详见 data.unaddedMembers）
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          addedMembers:
+                            type: array
+                            description: 本次添加成功的成员 psnId 列表
+                            items:
+                              type: string
+                            example:
+                              - "d3fcf19***0ddc60a13"
+                              - "501a277***6b19b7211"
+                          unaddedMembers:
+                            type: array
+                            description: 本次添加失败的成员列表
+                            items:
+                              $ref: '#/components/schemas/UnaddedMember'
+              example:
+                message: "成功"
+                code: 0
+                data:
+                  addedMembers:
+                    - "d3fcf19***0ddc60a13"
+                    - "501a277***6b19b7211"
+                  unaddedMembers: []
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+        - code: 1499014
+          message: "角色不存在:%s"
+
+    delete:
+      tags:
+        - 企业成员
+      summary: 移除企业机构成员
+      description: |
+        用于将企业成员从企业机构中移除，支持批量移除多个成员账号（一次至多移除 10 个）。
+
+        **注意事项：**
+        - 当企业成员角色为企业管理员时无法通过此接口移除。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: removeOrgMembers
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。用户在 e签宝 注册实名后才有账号 ID，可通过【查询机构认证信息】接口获取
+          example: "3c40c*****940279134e7"
+        - name: memberPsnIds
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 需移除的个人账号 ID 列表，多个账号使用英文逗号分隔。成员 psnId 可通过【查询企业成员列表】接口获取
+          example: "50d5eda*****0b1bd29c,00371e8******1ed09"
+      responses:
+        '200':
+          description: 请求成功（部分成员可能移除失败，详见 data.undeletedMembers）
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deletedMembers:
+                            type: array
+                            description: 本次移除成功的成员 psnId 列表
+                            items:
+                              type: string
+                            example:
+                              - "d3fcf19***0ddc60a13"
+                              - "501a277***6b19b7211"
+                          undeletedMembers:
+                            type: array
+                            description: 本次移除失败的成员列表
+                            items:
+                              $ref: '#/components/schemas/UndeletedMember'
+              example:
+                message: "成功"
+                code: 0
+                data:
+                  deletedMembers:
+                    - "d3fcf19***0ddc60a13"
+                    - "501a277***6b19b7211"
+                  undeletedMembers: []
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+
+  /v3/organizations/member:
+    get:
+      tags:
+        - 企业成员
+      summary: 查询个人用户是否为企业成员
+      description: |
+        用于确认 e签宝 SaaS 账号下某个个人用户是否为某个企业/机构的成员。
+
+        **注意：该接口可以不提前做认证授权。**
+
+        当一个人存在多个 e签宝 账号，只要证件号相同，则认为其存在于该企业中。
+        例如：张三使用手机号注册账号A加入甲企业，张三又使用邮箱注册账号B，使用账号B查询，返回结果也是张三在甲企业中的。
+      operationId: checkOrgMembership
+      parameters:
+        - name: orgId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID（企业的 e签宝 SaaS 账号）。可通过【查询机构认证信息】接口获取
+          example: "3c4047cc3****0279134e7"
+        - name: psnId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 个人账号 ID（个人的 e签宝 SaaS 账号）。可通过【查询个人认证信息】接口获取
+          example: "626629f48****f1d8c1d"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          memberCheck:
+                            type: boolean
+                            description: |
+                              个人用户是否在企业中：
+                              - `true` - 在企业中
+                              - `false` - 不在企业中
+                            example: true
+                          organLegalCheck:
+                            type: boolean
+                            description: |
+                              个人用户是否为企业法定代表人：
+                              - `true` - 是
+                              - `false` - 否
+                            example: false
+                          adminCheck:
+                            type: boolean
+                            description: |
+                              个人用户是否为企业管理员：
+                              - `true` - 是
+                              - `false` - 否
+                            example: true
+              example:
+                message: "成功"
+                code: 0
+                data:
+                  memberCheck: true
+                  adminCheck: true
+                  organLegalCheck: false
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1435203
+          message: "账号不存在或已注销：{orgId}"
+        - code: 1499004
+          message: "psnId不能为空"
+        - code: 72000046
+          message: "请求参数错误: 授权主体orgId不能为空"
+
+  # ─────────────────────────────────────────────
+  # 成员角色
+  # ─────────────────────────────────────────────
+  /v3/organizations/{orgId}/member/add-role:
+    post:
+      tags:
+        - 成员角色
+      summary: 添加成员角色
+      description: |
+        用于给企业/机构下的成员分配具体的身份角色（印章保管员、成员管理员、模板管理员）。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: addMemberRole
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。可通过【查询机构认证信息】接口获取
+          example: "3c40c*****940279134e7"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - memberPsnId
+              properties:
+                memberPsnId:
+                  type: string
+                  description: 成员个人账号 ID。可通过【查询企业成员列表】接口获取
+                  example: "ddc491dab*****bfe11"
+                addRole:
+                  $ref: '#/components/schemas/AssignableRole'
+            example:
+              memberPsnId: "ddc491dab*****bfe11"
+              addRole: "2,3"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        nullable: true
+                        description: 业务数据（扩展字段，目前返回 null）
+              example:
+                message: "成功"
+                code: 0
+                data: null
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1499014
+          message: "角色不存在:%s"
+        - code: 1499013
+          message: "用户未实名"
+        - code: 1499017
+          message: "用户不属于该企业，无法修改角色"
+        - code: 1499004
+          message: "%s不能为空"
+
+  /v3/organizations/{orgId}/member/delete-role:
+    post:
+      tags:
+        - 成员角色
+      summary: 删除成员角色
+      description: |
+        用于给企业/机构下的成员删除具体的身份角色（印章保管员、成员管理员、模板管理员）。
+
+        **前置条件**：企业用户已授予平台 appId 的 `manage_org_member` 权限。
+      operationId: deleteMemberRole
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号 ID。可通过【查询机构认证信息】接口获取
+          example: "3c40c*****940279134e7"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - memberPsnId
+              properties:
+                memberPsnId:
+                  type: string
+                  description: 成员个人账号 ID。可通过【查询企业成员列表】接口获取
+                  example: "ddc491da****q5b3a3bfe11"
+                deleteRole:
+                  $ref: '#/components/schemas/AssignableRole'
+            example:
+              memberPsnId: "ddc491da****q5b3a3bfe11"
+              deleteRole: "3"
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        nullable: true
+                        description: 业务数据（扩展字段，目前返回 null）
+              example:
+                message: "成功"
+                code: 0
+                data: null
+      x-error-codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1499014
+          message: "角色不存在:%s"
+        - code: 1499013
+          message: "用户未实名"
+        - code: 1499017
+          message: "用户不属于该企业，无法修改角色"
+        - code: 1499004
+          message: "%s不能为空"
+
+# ─────────────────────────────────────────────
+# Webhook 回调事件
+# ─────────────────────────────────────────────
+webhooks:
+  ACCOUNT_UNBIND:
+    post:
+      tags:
+        - 账号管理
+      summary: 账号解绑成功通知
+      description: |
+        **触发条件**：当在开发者发起的 e签宝 SaaS 账号解绑页面链接中操作账号解绑成功时触发。
+
+        **回调安全机制**：
+        - e签宝 通过 HTTP POST 方式推送 JSON 数据到开发者配置的回调 URL。
+        - 开发者可使用请求头中的签名信息（`X-Tsign-Open-SIGNATURE`）进行验签，算法为 `hmac-sha256`。
+        - 签名数据 = `X-Tsign-Open-TIMESTAMP` + query参数值（按key ASCII升序排序后拼接） + body字节流，使用 appSecret 计算。
+
+        **响应要求**：
+        - 返回 HTTP 状态码 200~299 即视为通知成功。
+        - 建议在 5 秒内响应，超时请使用异步方式处理业务。
+        - 通知失败后 e签宝 将最多重试 16 次。
+
+        **订阅方式**：在开放平台 Webhook 事件订阅中勾选「v3 账号管理」相关配置项。
+      operationId: onAccountUnbind
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - account
+                - customBizNum
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - ACCOUNT_UNBIND
+                  description: 通知的业务类型，固定值：`ACCOUNT_UNBIND`
+                  example: "ACCOUNT_UNBIND"
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知发送时间（如重试多次均返回第一次时间），毫秒级时间戳
+                  example: 1729763155255
+                account:
+                  type: string
+                  description: 解绑成功的用户登录凭证：手机号或邮箱
+                  example: "jilinXXXX@XXX.cn"
+                customBizNum:
+                  type: string
+                  description: 自定义业务编码（开发者发起时传入的自定义标识）
+                  example: "标识本次解绑任务标识001"
+            example:
+              customBizNum: "标识本次解绑任务标识001"
+              account: "jilinXXXX@XXX.cn"
+              timestamp: 1729763155255
+              action: "ACCOUNT_UNBIND"
+      responses:
+        '200':
+          description: 通知接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+              example:
+                code: "200"
+                msg: "success"
+
+  UPDATE_ORG_MEMBER:
+    post:
+      tags:
+        - 企业成员
+      summary: 企业成员变更通知
+      description: |
+        **触发条件**：当在页面进行企业成员变更（企业成员的添加或者移除）后触发此回调通知。
+
+        **说明**：
+        - 该通知来自 e签宝 全网回调通知服务（lmhlw4nlz46l3ohh）及企业控制台回调通知服务（nq8srh29bhbwzvf1），
+          两者推送的字段结构相同，action 值均为 `UPDATE_ORG_MEMBER`。
+        - 关于回调接收的通用说明（签名验签、重试机制等），请参阅账号管理回调通知接收说明。
+      operationId: onOrgMemberUpdated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - orgId
+                - orgName
+                - bizType
+                - memberPsnId
+                - memberPsnName
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - UPDATE_ORG_MEMBER
+                  description: 通知的业务类型，固定值：`UPDATE_ORG_MEMBER`
+                  example: "UPDATE_ORG_MEMBER"
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知发送时间（如重试多次均返回第一次时间），毫秒级时间戳
+                  example: 1730689105399
+                orgId:
+                  type: string
+                  description: 机构账号 ID
+                  example: "eb75d38e647d411111edaa7904"
+                orgName:
+                  type: string
+                  description: 机构名称
+                  example: "企业测试有限公司"
+                bizType:
+                  type: integer
+                  format: int32
+                  enum:
+                    - 1
+                    - 2
+                  description: |
+                    变更类型：
+                    - `1` - 新增成员
+                    - `2` - 删除成员
+                  example: 1
+                memberPsnId:
+                  type: string
+                  description: 新增/删除的成员账号 ID
+                  example: "c92520ec8111112b34862246bd9b50f"
+                memberPsnName:
+                  type: string
+                  description: 新增/删除的成员姓名
+                  example: "李四"
+            example:
+              orgName: "企业测试有限公司"
+              bizType: 1
+              memberPsnId: "c92520ec8111112b34862246bd9b50f"
+              memberPsnName: "李四"
+              orgId: "eb75d38e647d411111edaa7904"
+              timestamp: 1730689105399
+              action: "UPDATE_ORG_MEMBER"
+      responses:
+        '200':
+          description: 通知接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+              example:
+                code: "200"
+                msg: "success"
+
+# ─────────────────────────────────────────────
+# 全局错误码（企业机构成员服务 API V3）
+# ─────────────────────────────────────────────
+x-error-codes:
+  description: |
+    错误信息描述中的 %s 代表具体的参数值。
+    例如："参数错误:%s"，其中 %s 实际会返回请求参数中传入的某个具体值。
+  byEndpoint:
+    - endpoint: "POST /v3/organizations/{orgId}/members"
+      summary: 添加企业机构成员
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+        - code: 1499014
+          message: "角色不存在:%s"
+    - endpoint: "DELETE /v3/organizations/{orgId}/members"
+      summary: 移除企业机构成员
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+    - endpoint: "GET /v3/organizations/{orgId}/member-list"
+      summary: 查询企业成员列表
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+    - endpoint: "GET /v3/organizations/{orgId}/administrators"
+      summary: 查询企业管理员
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1000000
+          message: "%s"
+        - code: 10000001
+          message: "系统异常,请重试或联系e签宝服务人员"
+        - code: 10000007
+          message: "参数错误:%s"
+    - endpoint: "GET /v3/organizations/member"
+      summary: 查询个人用户是否为企业成员
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1435203
+          message: "账号不存在或已注销：{orgId}"
+        - code: 1499004
+          message: "psnId不能为空"
+        - code: 72000046
+          message: "请求参数错误: 授权主体orgId不能为空"
+    - endpoint: "POST /v3/organizations/{orgId}/member/add-role"
+      summary: 添加成员角色
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1499014
+          message: "角色不存在:%s"
+        - code: 1499013
+          message: "用户未实名"
+        - code: 1499017
+          message: "用户不属于该企业，无法修改角色"
+        - code: 1499004
+          message: "%s不能为空"
+    - endpoint: "POST /v3/organizations/{orgId}/member/delete-role"
+      summary: 删除成员角色
+      codes:
+        - code: 1499000
+          message: "用户未授权：{orgId}, manage_org_resource"
+        - code: 1499014
+          message: "角色不存在:%s"
+        - code: 1499013
+          message: "用户未实名"
+        - code: 1499017
+          message: "用户不属于该企业，无法修改角色"
+        - code: 1499004
+          message: "%s不能为空"
+    - endpoint: "POST /v3/account-unbind-url"
+      summary: 获取账号解绑页面链接（账号管理模块错误码）
+      codes:
+        - code: 1563051
+          message: "account必填"
+        - code: 1563052
+          message: "account格式有误"
+        - code: 1563053
+          message: "customBizNum长度过长，不超过256"
+        - code: 1563053
+          message: "redirectUrl长度过长，不超过256"
+    - endpoint: "POST /v3/account-binding-url"
+      summary: 获取账号修改/新增登录凭证页面链接（账号管理模块错误码）
+      codes:
+        - code: 1563051
+          message: "account必填"
+        - code: 1563052
+          message: "account格式有误"
+        - code: 1563053
+          message: "customBizNum长度过长，不超过256"
+        - code: 1563053
+          message: "redirectUrl长度过长，不超过256"

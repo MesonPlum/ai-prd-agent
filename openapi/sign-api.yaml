@@ -1,0 +1,3212 @@
+# [2026-05-21] | 初始导入 | — | 从 assets/opendoc/pdf-sign3/ + 相关 notify3/codemsg-v3 忠实导入
+# [待升级] 多处不合规项（忠实导入，后续渐进维护）
+
+openapi: 3.1.0
+info:
+  title: e签宝 合同签署 API
+  description: |
+    e签宝 SaaS API V3 — 合同签署服务（含发起、查询、下载、出证、解约、验签）
+
+    关联 PRD：F-003
+
+    ## 模块覆盖范围
+    - 签署发起（基于文件 / 通过页面 / 批量签）
+    - 文件操作（上传、追加待签文件、附属材料、签署区、关键字坐标检索）
+    - 流程查询（流程详情/列表、集成方企业流程、审批流程）
+    - 文件下载（签署中预览文件、已签署文件及附属材料）
+    - 流程操作（催签、延期、完结、撤销）
+    - 出证（申请出证、查询出证、区块链存证）
+    - 验签（PDF 签名核验、异步验签结果）
+    - 解约（API 发起解约、页面发起解约）
+    - 模板填写（基于模板生成文件、查询填写任务）
+    - OFD 文件处理
+
+    ## 鉴权说明
+    所有接口使用 e签宝签名鉴权，请求头需携带 `X-Tsign-Open-App-Id`、
+    `X-Tsign-Open-TIMESTAMP`、`X-Tsign-Open-SIGNATURE`、
+    `X-Tsign-Open-SIGNATURE-ALGORITHM` 四个请求头。
+
+    ## 主要错误码（1435 段为签署服务专属）
+    - 1435001：流程不存在或无权限
+    - 1435002：参数错误（含 ~80 类细分场景，详见各接口 x-error-codes）
+    - 1435003：业务规则冲突（如流程状态不允许操作）
+    - 1435011：自动签 / 自动开启配置错误
+    - 1435203：账号不存在或已注销
+    - 1435999：内部服务异常
+    - 401 / 403：鉴权失败 / IP 白名单不匹配
+  version: "3.0"
+  contact:
+    name: e签宝开放平台
+    url: https://open.esign.cn
+
+servers:
+  - url: https://openapi.esign.cn
+    description: 正式环境
+  - url: https://smlopenapi.esign.cn
+    description: 沙箱环境
+
+tags:
+  - name: 签署发起
+    description: 基于文件发起签署、通过页面发起、批量签等
+  - name: 文件操作
+    description: 文件上传、追加待签文件、附属材料、关键字坐标
+  - name: 签署区与定位
+    description: 追加/删除签署区、拖章定位页面
+  - name: 页面链接
+    description: 签署页面链接、用印审批页面链接
+  - name: 签署流程查询
+    description: 流程详情、流程列表、集成方企业流程列表
+  - name: 审批流程查询
+    description: 审批流程详情、审批流程列表
+  - name: 文件下载
+    description: 签署中预览文件、已签署文件及附属材料下载
+  - name: 模板填写文件查询
+    description: HTML/PDF 模板填写后文件查询
+  - name: 流程操作
+    description: 催签、延期、完结、撤销
+  - name: 出证
+    description: 申请出证、查询出证流程、区块链存证
+  - name: 验签
+    description: 合同文件签名有效性核验、异步验签
+  - name: 解约
+    description: API 发起解约、页面发起解约
+  - name: 模板填写
+    description: 基于模板填充生成文件、查询填写任务结果
+  - name: OFD文件处理
+    description: OFD 文件合并等
+  - name: 签署回调
+    description: 签署流程相关回调通知（发起结果、签署完成、已读、转交、加密完成等）
+  - name: 审批回调
+    description: 审批流程相关回调通知
+  - name: 解约回调
+    description: 解约发起、解约成功通知
+  - name: 出证回调
+    description: 异步出证完成通知
+
+components:
+  securitySchemes:
+    signatureAuth:
+      type: apiKey
+      in: header
+      name: X-Tsign-Open-App-Id
+      description: |
+        e签宝请求签名鉴权。请求头需同时携带四个字段：
+        - `X-Tsign-Open-App-Id`：应用 ID
+        - `X-Tsign-Open-TIMESTAMP`：毫秒级时间戳
+        - `X-Tsign-Open-SIGNATURE`：签名值（hmac-sha256）
+        - `X-Tsign-Open-SIGNATURE-ALGORITHM`：签名算法，固定值 `hmac-sha256`
+
+  schemas:
+    # ===== 通用响应 =====
+    CommonResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 业务码，0 表示成功，非 0 表示异常
+        message:
+          type: string
+          description: 业务信息（请根据 code 判断错误情况，不应依赖 message 匹配）
+        data:
+          type: object
+          nullable: true
+          description: 业务数据
+
+    EmptyDataResponse:
+      type: object
+      properties:
+        code: { type: integer, format: int32 }
+        message: { type: string }
+        data:
+          type: object
+          nullable: true
+
+    PsnAccount:
+      type: object
+      properties:
+        accountMobile: { type: string, description: 手机号（账号标识） }
+        accountEmail: { type: string, description: 邮箱（账号标识） }
+
+    PsnIDCardType:
+      type: string
+      enum: [CRED_PSN_CH_IDCARD, CRED_PSN_CH_HONGKONG, CRED_PSN_CH_MACAO, CRED_PSN_CH_TWCARD, CRED_PSN_PASSPORT, CRED_PSN_CH_GREEN_CARD]
+      description: |
+        个人证件类型：
+        CRED_PSN_CH_IDCARD-中国大陆居民身份证（默认）；
+        CRED_PSN_CH_HONGKONG-香港回乡证；
+        CRED_PSN_CH_MACAO-澳门回乡证；
+        CRED_PSN_CH_TWCARD-台胞证；
+        CRED_PSN_PASSPORT-护照；
+        CRED_PSN_CH_GREEN_CARD-外国人永久居留身份证
+
+    # ===== 请求侧公共模型（创建签署流程） =====
+    DocFile:
+      type: object
+      description: 待签署文件
+      required: [fileId]
+      properties:
+        fileId: { type: string, description: 待签署文件ID }
+        fileName:
+          type: string
+          maxLength: 100
+          description: 文件名称（需含真实后缀，禁用特殊字符 / \ : * " &lt; &gt; | ？及 emoji）
+        neededPwd: { type: boolean, default: false, description: 是否需要密码 }
+        fileEditPwd: { type: string, description: 文件编辑密码 }
+        contractBizTypeId: { type: string, description: 合同类型ID（智能台账） }
+        order: { type: integer, minimum: 1, maximum: 50, description: 文件展示顺序 }
+
+    Attachment:
+      type: object
+      description: 附属材料/合同附件（不参与签署）
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+
+    RedirectConfig:
+      type: object
+      properties:
+        redirectUrl: { type: string, description: 跳转页面（https/http） }
+        redirectDelayTime:
+          type: integer
+          format: int32
+          enum: [0, 3]
+          default: 3
+          description: 跳转延迟时间（秒）
+
+    NoticeConfig:
+      type: object
+      properties:
+        noticeTypes:
+          type: string
+          description: 通知类型（空-不通知，1-短信，2-邮件，3-钉钉，5-微信，6-企微，7-飞书，逗号分隔）
+        examineNotice: { type: boolean, description: 通知给企业印章用印审批人员 }
+
+    AuthConfig:
+      type: object
+      description: 流程整体认证配置项
+      properties:
+        willingnessAuthModes:
+          type: array
+          items:
+            type: string
+            enum: [CODE_SMS, PSN_FACE_ALIPAY, PSN_FACE_ESIGN, PSN_FACE_WECHAT, SIGN_PWD, PSN_FACE_TECENT, PSN_AUDIO_VIDEO_ESIGN, PSN_AUDIO_VIDEO_ALIPAY, PSN_AUDIO_VIDEO_WECHAT, PSN_MOBILE_FACE_AUTH]
+        psnAvailableAuthModes:
+          type: array
+          items:
+            type: string
+            enum: [PSN_MOBILE3, PSN_FACE, PSN_BANKCARD4, PSN_AUDIO_VIDEO_ESIGN]
+        psnAuthAdvancedEnabled:
+          type: array
+          items: { type: string }
+        orgAvailableAuthModes:
+          type: array
+          items:
+            type: string
+            enum: [ORG_BANK_TRANSFER, ORG_ALIPAY_CREDIT, ORG_LEGALREP_AUTHORIZATION, ORG_LEGALREP]
+        globalWillingness: { type: boolean, default: true }
+        globalAuthModes:
+          type: string
+          enum: [MAINLAND_REAL_NAME, NO_NEED, ACCESS_CODE]
+          default: MAINLAND_REAL_NAME
+        globalAccessCode: { type: string, minLength: 6, maxLength: 45 }
+        audioVideoTemplateId: { type: string }
+        audioVideoActiveField:
+          type: array
+          items:
+            type: object
+            properties:
+              key: { type: string }
+              value: { type: string }
+        uneditableFields:
+          type: array
+          items: { type: string, enum: [orgIDCardNum, psnIDCardType, psnMobile] }
+
+    ContractConfig:
+      type: object
+      properties:
+        contractSecrecy: { type: integer, enum: [1, 2], default: 1 }
+        allowToRescind: { type: boolean, default: true }
+        contractExpirationDate: { type: integer, format: int64 }
+
+    FlowSignConfig:
+      type: object
+      properties:
+        availableSignClientTypes: { type: string, default: "1,2" }
+        showBatchDropSealButton: { type: boolean, default: true }
+        signTipsTitle: { type: string, maxLength: 20 }
+        signTipsContent: { type: string, maxLength: 500 }
+        signMode: { type: string, enum: [NORMAL, GLOBAL], default: NORMAL }
+        dedicatedCloudId: { type: string }
+        signType: { type: string }
+        fdaLanguageMode: { type: string, enum: [CHINESE, ENGLISH], default: CHINESE }
+        fdaSigningReason:
+          type: array
+          items: { type: string }
+          maxItems: 5
+
+    SignFlowConfigRequest:
+      type: object
+      description: 签署流程配置项（请求侧）
+      required: [signFlowTitle]
+      properties:
+        signFlowTitle: { type: string }
+        signFlowExpireTime: { type: integer, format: int64 }
+        autoStart: { type: boolean, default: true }
+        autoFinish: { type: boolean, default: false }
+        identityVerify: { type: boolean, default: true }
+        notifyUrl: { type: string }
+        redirectConfig: { $ref: '#/components/schemas/RedirectConfig' }
+        signConfig: { $ref: '#/components/schemas/FlowSignConfig' }
+        noticeConfig: { $ref: '#/components/schemas/NoticeConfig' }
+        authConfig: { $ref: '#/components/schemas/AuthConfig' }
+        contractConfig: { $ref: '#/components/schemas/ContractConfig' }
+        contractGroupIds:
+          type: array
+          items: { type: string }
+          maxItems: 10
+        docsViewLimited: { type: boolean, default: false }
+
+    SignFlowInitiatorRequest:
+      type: object
+      description: 签署流程的发起方（请求侧）
+      properties:
+        orgInitiator:
+          type: object
+          properties:
+            orgId: { type: string }
+            transactor:
+              type: object
+              properties:
+                psnId: { type: string }
+        psnInitiator:
+          type: object
+          properties:
+            psnId: { type: string }
+        initialRemarks:
+          type: array
+          items: { type: string, maxLength: 300 }
+          maxItems: 1
+
+    SignerSignConfig:
+      type: object
+      properties:
+        signOrder: { type: integer, format: int32, minimum: 1, maximum: 255 }
+        forcedReadingTime: { type: integer, format: int32, minimum: 0, maximum: 999 }
+        fileForcedReadingTime: { type: integer, format: int32, minimum: 0, maximum: 999 }
+        agreeSkipWillingness: { type: boolean, default: false }
+        signTaskType: { type: integer, format: int32, enum: [0, 1], default: 0, description: 0-会签，1-或签 }
+        signTipsTitle: { type: string, maxLength: 20 }
+        signTipsContent: { type: string, maxLength: 500 }
+        signTipsFileId: { type: string }
+        uploadFiles:
+          type: array
+          items:
+            type: object
+            properties:
+              uploadDescription: { type: string }
+              required: { type: boolean, default: true }
+              fileOrder: { type: integer, minimum: 1, maximum: 50 }
+              multiple: { type: boolean, default: false }
+        docsViewType: { type: integer, format: int32, enum: [1, 2], default: 1 }
+        viewableFileIds:
+          type: array
+          items: { type: string }
+
+    OrgSignerInfo:
+      type: object
+      description: 企业/机构签署方信息
+      properties:
+        orgId: { type: string }
+        orgName: { type: string }
+        orgInfo:
+          type: object
+          properties:
+            legalRepName: { type: string }
+            legalRepIDCardNum: { type: string }
+            legalRepIDCardType:
+              type: string
+              enum: [CRED_PSN_CH_IDCARD, CRED_PSN_CH_HONGKONG, CRED_PSN_CH_MACAO, CRED_PSN_CH_TWCARD, CRED_PSN_PASSPORT]
+            orgIDCardNum: { type: string }
+            orgIDCardType:
+              type: string
+              enum: [CRED_ORG_USCC, CRED_ORG_REGCODE]
+        transactorInfo: { $ref: '#/components/schemas/TransactorInfo' }
+
+    TransactorInfo:
+      type: object
+      description: 企业/机构经办人信息（autoSign=true 不要传）
+      properties:
+        psnAccount: { type: string }
+        psnId: { type: string }
+        psnInfo:
+          type: object
+          required: [psnName]
+          properties:
+            psnName: { type: string }
+            psnIDCardNum: { type: string }
+            psnIDCardType:
+              $ref: '#/components/schemas/PsnIDCardType'
+            bankCardNum: { type: string }
+
+    PsnSignerInfo:
+      type: object
+      description: 个人签署方信息
+      properties:
+        psnAccount: { type: string }
+        psnId: { type: string }
+        psnInfo:
+          type: object
+          required: [psnName]
+          properties:
+            psnName: { type: string }
+            psnIDCardNum: { type: string }
+            psnIDCardType:
+              $ref: '#/components/schemas/PsnIDCardType'
+            psnMobile: { type: string }
+            bankCardNum: { type: string }
+
+    SignFieldPositionRequest:
+      type: object
+      description: 签署区位置（请求侧）
+      properties:
+        acrossPageMode:
+          type: string
+          enum: [ALL, AssignedPages]
+        positionPage: { type: string }
+        positionX: { type: number, format: float }
+        positionY: { type: number, format: float }
+
+    NormalSignFieldConfigRequest:
+      type: object
+      description: 签章区配置（signFieldType=0 时必传，请求侧）
+      properties:
+        freeMode: { type: boolean, default: false }
+        autoSign: { type: boolean, default: false }
+        movableSignField: { type: boolean, default: false }
+        assignedSealId: { type: string }
+        availableSealIds:
+          type: array
+          items: { type: string }
+        orgSealBizTypes: { type: string, default: ALL }
+        psnSealStyles: { type: string, default: "0,1" }
+        signFieldSize: { type: number, format: float }
+        signFieldWidth: { type: integer }
+        signFieldHeight: { type: integer }
+        signFieldStyle: { type: integer, format: int32, enum: [1, 2] }
+        sealRotationAngle: { type: integer, enum: [90, 180, 270] }
+        signFieldPosition:
+          $ref: '#/components/schemas/SignFieldPositionRequest'
+
+    RemarkSignFieldConfigRequest:
+      type: object
+      description: 备注区配置（signFieldType=1 时必传，请求侧，仅个人签署方）
+      properties:
+        freeMode: { type: boolean, default: false }
+        inputType: { type: integer, format: int32, enum: [1, 2], default: 1 }
+        aiCheck: { type: integer, format: int32, enum: [0, 1, 2], default: 0 }
+        remarkContent: { type: string }
+        movableSignField: { type: boolean, default: false }
+        remarkFontSize: { type: integer, format: int32, default: 14 }
+        signFieldHeight: { type: number, format: float }
+        signFieldWidth: { type: number, format: float }
+        signFieldPosition:
+          $ref: '#/components/schemas/SignFieldPositionRequest'
+
+    SignDateConfig:
+      type: object
+      properties:
+        dateFormat: { type: string, default: "yyyy年MM月dd日" }
+        fontSize: { type: integer, format: int32, default: 12 }
+        showSignDate: { type: integer, format: int32, enum: [0, 1, 2], default: 0 }
+        signDatePositionX: { type: number, format: float }
+        signDatePositionY: { type: number, format: float }
+
+    DateSignFieldConfigRequest:
+      type: object
+      description: 独立签署日期配置（signFieldType=2 时必传，请求侧）
+      properties:
+        autoSign: { type: boolean, default: false }
+        dateFormat: { type: string, default: "yyyy年MM月dd日" }
+        fontSize: { type: integer, default: 12, minimum: 5, maximum: 42 }
+        signDatePositionPage: { type: integer }
+        signDatePositionX: { type: number, format: float }
+        signDatePositionY: { type: number, format: float }
+
+    SignFieldRequest:
+      type: object
+      description: 签署区（请求侧）
+      required: [fileId]
+      properties:
+        fileId: { type: string }
+        customBizNum: { type: string }
+        signFieldType: { type: integer, format: int32, enum: [0, 1, 2], default: 0 }
+        mustSign: { type: boolean, default: true }
+        normalSignFieldConfig:
+          $ref: '#/components/schemas/NormalSignFieldConfigRequest'
+        remarkSignFieldConfig:
+          $ref: '#/components/schemas/RemarkSignFieldConfigRequest'
+        signDateConfig:
+          $ref: '#/components/schemas/SignDateConfig'
+        dateSignFieldConfig:
+          $ref: '#/components/schemas/DateSignFieldConfigRequest'
+
+    Signer:
+      type: object
+      description: 签署方信息（请求侧）
+      required: [signerType]
+      properties:
+        signConfig: { $ref: '#/components/schemas/SignerSignConfig' }
+        authConfig: { $ref: '#/components/schemas/AuthConfig' }
+        noticeConfig: { $ref: '#/components/schemas/NoticeConfig' }
+        signerType:
+          type: integer
+          format: int32
+          enum: [0, 1, 2, 3]
+          description: 签署方类型（0-个人，1-企业/机构，2-法定代表人，3-经办人）
+        signerRole: { type: string }
+        orgSignerInfo: { $ref: '#/components/schemas/OrgSignerInfo' }
+        psnSignerInfo: { $ref: '#/components/schemas/PsnSignerInfo' }
+        signFields:
+          type: array
+          items: { $ref: '#/components/schemas/SignFieldRequest' }
+
+    Copier:
+      type: object
+      properties:
+        copierOrgInfo:
+          type: object
+          properties:
+            orgName: { type: string }
+            orgId: { type: string }
+        copierPsnInfo:
+          type: object
+          properties:
+            psnAccount: { type: string }
+            psnId: { type: string }
+
+    # ===== 响应侧公共模型 =====
+    Transactor:
+      type: object
+      properties:
+        psnId: { type: string }
+        psnName: { type: string }
+        psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+
+    PsnSignerBrief:
+      type: object
+      properties:
+        psnId: { type: string }
+        psnName: { type: string }
+        psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+
+    OrgSignerBrief:
+      type: object
+      properties:
+        orgId: { type: string }
+        orgName: { type: string }
+        transactor: { $ref: '#/components/schemas/Transactor' }
+
+    SignFlowInitiator:
+      type: object
+      description: 签署流程发起方（响应侧）
+      properties:
+        psnInitiator:
+          type: object
+          nullable: true
+          properties:
+            psnId: { type: string }
+            psnName: { type: string }
+            psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+        orgInitiator:
+          type: object
+          nullable: true
+          properties:
+            orgId: { type: string }
+            orgName: { type: string }
+            transactor: { $ref: '#/components/schemas/Transactor' }
+
+    SignFlowConfig:
+      type: object
+      description: 签署流程配置项（响应侧）
+      properties:
+        signFlowTitle: { type: string }
+        contractGroupIds: { type: array, items: { type: string } }
+        autoFinish: { type: boolean }
+        signFlowExpireTime: { type: integer, format: int64 }
+        notifyUrl: { type: string }
+        chargeConfig:
+          type: object
+          properties:
+            chargeMode: { type: integer, enum: [0, 1] }
+            orderType: { type: string }
+            barrierCode: { type: string }
+        noticeConfig:
+          type: object
+          properties:
+            noticeTypes: { type: string }
+            examineNotice: { type: boolean, nullable: true }
+        signConfig:
+          type: object
+          properties:
+            availableSignClientTypes: { type: string }
+            showBatchDropSealButton: { type: boolean }
+            signMode: { type: string, enum: [NORMAL, GLOBAL] }
+            dedicatedCloudId: { type: string }
+            forcedNotarize: { type: boolean }
+            serviceCode: { type: string }
+        authConfig: { $ref: '#/components/schemas/AuthConfig' }
+
+    SignFlowDoc:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        fileEditPwd: { type: string }
+        contractNum: { type: string }
+        contractBizTypeId: { type: string }
+
+    SignFlowAttachment:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        signerUpload: { type: boolean }
+
+    SignFieldPositionDetail:
+      type: object
+      description: 签署区位置（响应侧）
+      properties:
+        positionPage: { type: string }
+        positionX: { type: number, format: float }
+        positionY: { type: number, format: float }
+
+    NormalSignFieldConfigDetail:
+      type: object
+      description: 签章区配置（响应侧）
+      properties:
+        freeMode: { type: boolean }
+        signFieldStyle: { type: integer, enum: [1, 2] }
+        signFieldPosition: { $ref: '#/components/schemas/SignFieldPositionDetail' }
+        movableSignField: { type: boolean }
+        autoSign: { type: boolean }
+        sealStyle: { type: string }
+        sealId: { type: string }
+        sealOwnerId: { type: string }
+        handWrittenFileKey: { type: string }
+
+    RemarkSignFieldConfigDetail:
+      type: object
+      description: 备注区配置（响应侧）
+      properties:
+        inputType: { type: integer, enum: [1, 2] }
+        movableSignField: { type: boolean }
+        freeMode: { type: boolean }
+        remarkContent: { type: string }
+        remarkImageFileKey: { type: string }
+        signFieldPositionBean: { $ref: '#/components/schemas/SignFieldPositionDetail' }
+        actualContent: { type: string }
+
+    DateSignFieldConfigDetail:
+      type: object
+      description: 独立签署日期配置（响应侧）
+      properties:
+        dateFormat: { type: string, enum: ["yyyy年MM月dd日", "yyyy-MM-dd", "yyyy/MM/dd"] }
+        fontSize: { type: integer }
+        signDatePositionPage: { type: integer }
+        signDatePositionX: { type: number, format: float }
+        signDatePositionY: { type: number, format: float }
+
+    SignFieldDetail:
+      type: object
+      description: 签署区（响应侧）
+      properties:
+        signFieldId: { type: string }
+        signFieldStatus:
+          type: string
+          enum: ["0", "1", "2", "3", "4"]
+          description: 0-等待执行，1-执行中，2-执行失败，3-审批中，4-执行完成
+        sealApprovalFlowId: { type: string }
+        statusUpdateTime: { type: integer, format: int64 }
+        failReason: { type: string }
+        customBizNum: { type: string }
+        fileId: { type: string }
+        signFieldType: { type: integer, enum: [0, 1, 2] }
+        mustSign: { type: boolean }
+        signFieldSealType: { type: integer, enum: [0, 1, 2, 3] }
+        normalSignFieldConfig: { $ref: '#/components/schemas/NormalSignFieldConfigDetail' }
+        remarkSignFieldConfig: { $ref: '#/components/schemas/RemarkSignFieldConfigDetail' }
+        dateSignFieldConfig: { $ref: '#/components/schemas/DateSignFieldConfigDetail' }
+
+    UploadFile:
+      type: object
+      properties:
+        uploadDescription: { type: string }
+        required: { type: boolean }
+        uploadFileId: { type: string }
+        uploadFileName: { type: string }
+
+    SignFlowSigner:
+      type: object
+      properties:
+        psnSigner: { $ref: '#/components/schemas/PsnSignerBrief' }
+        orgSigner: { $ref: '#/components/schemas/OrgSignerBrief' }
+        signerType: { type: integer, enum: [0, 1] }
+        signOrder: { type: integer }
+        signStatus:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+          description: 0-等待签署，1-签署中，2-已签署，3-等待审批，4-已拒签
+        notaryRole: { type: string, enum: [lender, borrower, guarantor] }
+        signTaskType: { type: integer, enum: [0, 1] }
+        uploadFiles:
+          type: array
+          items: { $ref: '#/components/schemas/UploadFile' }
+        signerIp: { type: string }
+        signerLocation: { type: string }
+        signFields:
+          type: array
+          items: { $ref: '#/components/schemas/SignFieldDetail' }
+
+    SignFlowDetail:
+      type: object
+      properties:
+        signFlowStatus:
+          type: integer
+          enum: [0, 1, 2, 3, 5, 7]
+          description: 0-草稿，1-签署中，2-完成，3-撤销，5-过期，7-拒签
+        signFlowDescription: { type: string }
+        rescissionStatus: { type: integer, enum: [0, 1, 2, 3] }
+        rescissionSignFlowIds: { type: array, items: { type: string } }
+        revokeReason: { type: string }
+        signFlowCreateTime: { type: integer, format: int64 }
+        signFlowStartTime: { type: integer, format: int64 }
+        signFlowFinishTime: { type: integer, format: int64 }
+        signFlowInitiator: { $ref: '#/components/schemas/SignFlowInitiator' }
+        signFlowConfig: { $ref: '#/components/schemas/SignFlowConfig' }
+        docs:
+          type: array
+          items: { $ref: '#/components/schemas/SignFlowDoc' }
+        attachments:
+          type: array
+          items: { $ref: '#/components/schemas/SignFlowAttachment' }
+        signers:
+          type: array
+          items: { $ref: '#/components/schemas/SignFlowSigner' }
+        copiers:
+          type: array
+          items: { $ref: '#/components/schemas/Copier' }
+
+    SignFlowListQueryRequest:
+      type: object
+      required: [pageNum, pageSize]
+      properties:
+        pageNum: { type: integer, format: int32, minimum: 1 }
+        pageSize: { type: integer, format: int32, minimum: 1, maximum: 100 }
+        signFlowStartTimeFrom: { type: integer, format: int64 }
+        signFlowStartTimeTo: { type: integer, format: int64 }
+        signFlowFinishTimeFrom: { type: integer, format: int64 }
+        signFlowFinishTimeTo: { type: integer, format: int64 }
+        signFlowStatus:
+          type: array
+          items: { type: integer, enum: [1, 2, 3, 5, 7] }
+        initiator:
+          type: object
+          properties:
+            initiatorOrgId: { type: string }
+            transactorPsnId: { type: string }
+            initiatorPsnId: { type: string }
+        operator:
+          type: object
+          properties:
+            psnAccount: { type: string }
+            psnId: { type: string }
+        organization:
+          type: object
+          properties:
+            orgId: { type: string }
+            orgName: { type: string }
+        signStatus:
+          type: array
+          items: { type: integer, enum: [0, 1, 2, 3, 4] }
+
+    OrgSignFlowListQueryRequest:
+      type: object
+      required: [pageNum, pageSize]
+      properties:
+        pageNum: { type: integer, format: int32, minimum: 1 }
+        pageSize: { type: integer, format: int32, minimum: 1, maximum: 100 }
+        signFlowStartTimeFrom: { type: integer, format: int64 }
+        signFlowStartTimeTo: { type: integer, format: int64 }
+        signFlowFinishTimeFrom: { type: integer, format: int64 }
+        signFlowFinishTimeTo: { type: integer, format: int64 }
+        signFlowStatus:
+          type: array
+          items: { type: integer, enum: [1, 2] }
+        operator:
+          type: object
+          properties:
+            psnAccount: { type: string }
+            psnId: { type: string }
+        organization:
+          type: object
+          properties:
+            orgId: { type: string }
+            orgName: { type: string }
+
+    SignFlowListItem:
+      type: object
+      properties:
+        signFlowId: { type: string }
+        signFlowStartTime: { type: integer, format: int64 }
+        signFlowEndTime: { type: integer, format: int64 }
+        signFlowTitle: { type: string }
+        signFlowStatus: { type: integer }
+        rescissionStatus: { type: integer, enum: [0, 1, 2, 3] }
+        signFlowInitiator: { $ref: '#/components/schemas/SignFlowInitiator' }
+        signers:
+          type: array
+          items:
+            type: object
+            properties:
+              signOrder: { type: integer, format: int32 }
+              signStatus: { type: integer, format: int32 }
+              psnSigner: { $ref: '#/components/schemas/PsnSignerBrief' }
+              orgSigner: { $ref: '#/components/schemas/OrgSignerBrief' }
+
+    SignFlowListData:
+      type: object
+      properties:
+        total: { type: integer, format: int32 }
+        signFlowInfos:
+          type: array
+          items: { $ref: '#/components/schemas/SignFlowListItem' }
+
+    ApprovalFlowDetail:
+      type: object
+      properties:
+        signFlowId: { type: string }
+        orgId: { type: string }
+        orgName: { type: string }
+        approvalFlowStatus: { type: integer, enum: [1, 2, 3, 4, 5] }
+        approvalNodes:
+          type: array
+          items:
+            type: object
+            properties:
+              approvalNodeNum: { type: integer }
+              approvalNodeId: { type: string }
+              approvalNodeType: { type: integer, enum: [1, 2] }
+              approvalNodeStatus: { type: integer, enum: [0, 1, 2, 3] }
+              approvers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    approvalOperateTime: { type: integer, format: int64 }
+                    psnId: { type: string }
+                    psnName: { type: string }
+
+    ApprovalFlowSummary:
+      type: object
+      properties:
+        signFlowId: { type: string }
+        approvalFlowId: { type: string }
+        approvalFlowStatus: { type: integer, enum: [1, 2, 3, 4, 5] }
+        approvalFlowCreateTime: { type: integer, format: int64 }
+        approvalFlowUpdateTime: { type: integer, format: int64 }
+
+    SignedFileItem:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        downloadUrl: { type: string }
+
+    SignedFilesDownloadData:
+      type: object
+      properties:
+        files:
+          type: array
+          items: { $ref: '#/components/schemas/SignedFileItem' }
+        attachments:
+          type: array
+          items: { $ref: '#/components/schemas/SignedFileItem' }
+        certificateDownloadUrl: { type: string, nullable: true }
+        aesSecret: { type: string, nullable: true }
+
+    EncryptedFileItem:
+      type: object
+      required: [fileId, fileName, downloadUrl]
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        downloadUrl: { type: string }
+
+    # ===== 模板填写文件相关 =====
+    ComponentPosition:
+      type: object
+      properties:
+        componentPositionX: { type: number, format: float }
+        componentPositionY: { type: number, format: float }
+        componentPageNum: { type: integer, format: int32 }
+
+    ComponentSize:
+      type: object
+      properties:
+        componentWidth: { type: number, format: float }
+        componentHeight: { type: number, format: float }
+
+    ComponentOption:
+      type: object
+      properties:
+        optionContent: { type: string }
+        optionOrder: { type: integer, format: int32 }
+        selected: { type: boolean }
+
+    ComponentSpecialAttribute:
+      type: object
+      properties:
+        dateFormat: { type: string, enum: ["yyyy年MM月dd日", "yyyy-MM-dd", "yyyy/MM/dd", "yyyy-MM-dd HH:mm:ss"] }
+        imageType: { type: string, enum: [IDCard_widthwise, IDCard_longitudinal, other] }
+        options:
+          type: array
+          items: { $ref: '#/components/schemas/ComponentOption' }
+        tableContent:
+          type: array
+          items: { type: object, additionalProperties: true }
+
+    HtmlTemplateComponent:
+      type: object
+      properties:
+        componentId: { type: string }
+        componentKey: { type: string }
+        componentName: { type: string }
+        componentType:
+          type: integer
+          format: int32
+          description: 1-单行文本，2-数字，3-日期，6-签章区域，8-多行文本，9-复选，10-单选，11-图片，14-下拉框，15-勾选框，16-身份证，17-备注区域，18-动态表格，19-手机号
+        componentDefaultValue: { type: string }
+        required: { type: boolean }
+        componentPosition: { $ref: '#/components/schemas/ComponentPosition' }
+        componentSpecialAttribute: { $ref: '#/components/schemas/ComponentSpecialAttribute' }
+        componentSize: { $ref: '#/components/schemas/ComponentSize' }
+        normalSignField:
+          type: object
+          properties:
+            showSignDate: { type: integer, enum: [0, 1] }
+            dateFormat: { type: string }
+            signFieldStyle: { type: integer, enum: [1, 2] }
+        remarkSignField:
+          type: object
+          properties:
+            aiCheck: { type: integer, enum: [0, 1, 2] }
+            inputType: { type: integer, enum: [1, 2] }
+            remarkContent: { type: string }
+            remarkFontSize: { type: string }
+
+    HtmlTemplateFilledFileDetail:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        fileTotalPageCount: { type: integer, format: int64 }
+        fileDownloadUrl: { type: string }
+        docTemplateId: { type: string }
+        docTemplateName: { type: string }
+        components:
+          type: array
+          items: { $ref: '#/components/schemas/HtmlTemplateComponent' }
+
+    PdfFileInfo:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileName: { type: string }
+        fileSize: { type: integer, format: int32 }
+        fileStatus:
+          type: integer
+          format: int32
+          description: 0-未上传，1-上传中，2-上传完成或已转换HTML，3-上传失败，4-等待PDF转换，5-PDF已转换，6-加水印中，7-加水印完毕，8-PDF转换中，9-PDF转换失败，10-等待HTML转换，11-HTML转换中，12-HTML转换失败
+        fileDownloadUrl: { type: string }
+        fileTotalPageCount: { type: integer, format: int32 }
+        pageWidth: { type: number, format: float }
+        pageHeight: { type: number, format: float }
+
+    # ===== 出证/验签/解约相关 =====
+    EvidenceReportApplyRequest:
+      type: object
+      required: [signFlowId]
+      properties:
+        signFlowId: { type: string }
+        notifyUrl: { type: string }
+        reportType:
+          type: string
+          enum: [TSIGN_REPORT, BLOCKCHAIN_REPORT, FINANCIAL_VERIFY_REPORT]
+          default: TSIGN_REPORT
+          description: TSIGN_REPORT-e签宝证据报告（默认）；BLOCKCHAIN_REPORT-全流程区块链证据报告；FINANCIAL_VERIFY_REPORT-e签宝电子文件验签报告
+        applicantId: { type: string, description: 出证申请方账号ID（需 apply_org_evidence 或 apply_psn_evidence 权限） }
+
+    EvidenceReportApplyData:
+      type: object
+      properties:
+        recordNum: { type: string, description: 申请出证编号 }
+
+    EvidenceReportQueryData:
+      type: object
+      required: [recordNum, status]
+      properties:
+        recordNum: { type: string }
+        status:
+          type: string
+          enum: [ACCEPTED, ISSUE_SUCCESS, ISSUE_FAILED]
+        downloadUrl: { type: string }
+        failReason: { type: string }
+
+    AntchainFileItem:
+      type: object
+      properties:
+        fileId: { type: string }
+        fileHash: { type: string }
+        antTransactionId: { type: string }
+        antTxHash: { type: string }
+        pushTime: { type: string }
+
+    AntchainFileInfoData:
+      type: object
+      properties:
+        antchainFiles:
+          type: array
+          items: { $ref: '#/components/schemas/AntchainFileItem' }
+
+    AntchainVerifyData:
+      type: object
+      properties:
+        fileHash: { type: string }
+        antTxHash: { type: string }
+        verifyResult: { type: boolean }
+        errorCode: { type: integer, format: int64 }
+        errorMessage: { type: string, nullable: true }
+        notaryTime: { type: integer, format: int64 }
+        notaryType: { type: string }
+        notaryPhase: { type: string, nullable: true }
+        blockHeight: { type: integer, format: int64 }
+        antTransactionId: { type: string }
+
+    SignCertInfo:
+      type: object
+      properties:
+        certOwner: { type: string }
+        certSN: { type: string }
+        effectiveTime: { type: string }
+        expireTime: { type: string }
+        issuerCN: { type: string }
+        certBase64: { type: string }
+
+    SignSignature:
+      type: object
+      properties:
+        modify: { type: boolean }
+        signTimeSource: { type: string }
+        signTime: { type: string }
+
+    SignInfoItem:
+      type: object
+      properties:
+        cert: { $ref: '#/components/schemas/SignCertInfo' }
+        signature: { $ref: '#/components/schemas/SignSignature' }
+        sealData: { type: string }
+
+    FileVerifyData:
+      type: object
+      properties:
+        verifyTaskId: { type: string, nullable: true }
+        signInfos:
+          type: array
+          items: { $ref: '#/components/schemas/SignInfoItem' }
+
+    AsyncVerifyResultData:
+      type: object
+      properties:
+        status: { type: integer, enum: [0, 1, 2] }
+        failReason: { type: string, nullable: true }
+        signInfos:
+          type: array
+          items: { $ref: '#/components/schemas/SignInfoItem' }
+
+    RescissionInitiator:
+      type: object
+      properties:
+        psnInitiator:
+          type: object
+          properties:
+            psnId: { type: string }
+        orgInitiator:
+          type: object
+          properties:
+            orgId: { type: string }
+            transactor:
+              type: object
+              properties:
+                psnId: { type: string }
+
+    RescissionInitiateRequest:
+      type: object
+      required: [rescindFileList, rescindReason, rescissionInitiator]
+      properties:
+        rescindFileList:
+          type: array
+          maxItems: 10
+          items: { type: string }
+        rescindReason:
+          type: string
+          enum: ['1', '2', '3', '4', '5']
+          description: 1-条款内容有误，2-印章选择错误，3-签署人信息错误，4-合作终止，5-其他
+        rescindReasonNotes: { type: string, maxLength: 200 }
+        rescissionInitiator: { $ref: '#/components/schemas/RescissionInitiator' }
+        signFlowConfig:
+          type: object
+          properties:
+            signFlowExpireTime: { type: integer, format: int64 }
+            signConfig:
+              type: object
+              properties:
+                availableSignClientTypes: { type: string }
+                psnSealStyles: { type: string }
+            noticeConfig:
+              type: object
+              properties:
+                noticeTypes: { type: string }
+                examineNotice: { type: boolean }
+            notifyUrl: { type: string }
+        autoSignOrg:
+          type: array
+          items:
+            type: object
+            properties:
+              orgId: { type: string }
+              orgName: { type: string }
+              sealId: { type: string }
+        orgSignerTransactor:
+          type: array
+          items:
+            type: object
+            properties:
+              orgId: { type: string }
+              orgName: { type: string }
+              transactorInfo:
+                type: object
+                properties:
+                  psnId: { type: string }
+                  psnAccount: { type: string }
+                  psnName: { type: string }
+
+    RescissionUrlRequest:
+      type: object
+      required: [rescissionInitiator]
+      properties:
+        rescissionInitiator: { $ref: '#/components/schemas/RescissionInitiator' }
+        signFlowConfig:
+          type: object
+          properties:
+            redirectConfig:
+              type: object
+              properties:
+                redirectUrl: { type: string }
+                redirectDelayTime: { type: integer, format: int32, default: 3 }
+            noticeConfig:
+              type: object
+              properties:
+                noticeTypes: { type: string }
+            notifyUrl: { type: string }
+            clientType: { type: string, enum: [H5, PC, ALL], default: ALL }
+
+    CreateFileByTemplateRequest:
+      type: object
+      required: [docTemplateId, fileName, components]
+      properties:
+        docTemplateId: { type: string }
+        fileName: { type: string, maxLength: 100 }
+        components:
+          type: array
+          items: { $ref: '#/components/schemas/TemplateComponentFill' }
+        requiredCheck: { type: boolean, default: false }
+
+    TemplateComponentFill:
+      type: object
+      properties:
+        componentId: { type: string }
+        componentKey: { type: string }
+        componentValue: { type: string }
+
+    FillTaskResultData:
+      type: object
+      properties:
+        fillTaskStatus:
+          type: string
+          enum: ['1', '2', '3']
+          description: 1-待填写，2-填写完成，3-填写任务已过期
+        fileId: { type: string }
+        components:
+          type: array
+          items:
+            type: object
+            properties:
+              componentId: { type: string }
+              componentKey: { type: string }
+              componentValue: { type: string }
+              originCustomComponentId: { type: string }
+
+    # ===== Webhook payload 公共字段 =====
+    WebhookOperator:
+      type: object
+      properties:
+        psnId: { type: string }
+        psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+
+    WebhookOrganization:
+      type: object
+      properties:
+        orgId: { type: string }
+        orgName: { type: string }
+
+    SealPositionComponent:
+      type: object
+      required: [fileId, componentType, componentPosition, componentSize]
+      properties:
+        fileId: { type: string }
+        signerRole: { type: string }
+        componentType: { type: string, description: 6-普通签署区，17-备注签署区 }
+        componentPosition:
+          type: object
+          required: [componentPositionX, componentPageNum]
+          properties:
+            componentPositionX: { type: number, format: float }
+            componentPositionY: { type: number, format: float }
+            componentPageNum: { type: integer, format: int32 }
+        componentSize:
+          type: object
+          required: [componentWidth, componentHeight]
+          properties:
+            componentWidth: { type: number, format: float }
+            componentHeight: { type: number, format: float }
+        normalSignField:
+          type: object
+          properties:
+            showSignDate: { type: integer, enum: [0, 1] }
+            dateFormat: { type: string }
+            signFieldStyle: { type: integer, enum: [1, 2] }
+            sealSpecs: { type: integer, enum: [1, 2] }
+        remarkSignField:
+          type: object
+          properties:
+            aiCheck: { type: integer, enum: [0, 1, 2] }
+            inputType: { type: integer, enum: [1, 2] }
+            remarkContent: { type: string }
+            remarkFontSize: { type: string }
+
+security:
+  - signatureAuth: []
+
+paths:
+  # ============ 签署发起 ============
+  /v3/sign-flow/create-by-file:
+    post:
+      tags: [签署发起]
+      summary: 基于文件发起签署（精简版/完整版）
+      operationId: createSignFlowByFile
+      description: |
+        基于已上传的合同文件或模板填充生成的文件来发起签署流程。
+        精简版（nxhgcl3bfgqz8qlz）与完整版（su5g42）共用同一个接口，参数集相同；
+        精简版根据常用参数做了精简描述。
+        限制：单流程文件 ≤50；单文件 ≤50MB；单页 ≤20MB；流程总大小 ≤500MB；
+        一次性签署方 ≤10（流程总上限 50）；签署区总和 ≤300。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signFlowConfig]
+              properties:
+                docs:
+                  type: array
+                  items: { $ref: '#/components/schemas/DocFile' }
+                  maxItems: 50
+                attachments:
+                  type: array
+                  items: { $ref: '#/components/schemas/Attachment' }
+                signFlowConfig: { $ref: '#/components/schemas/SignFlowConfigRequest' }
+                signFlowInitiator: { $ref: '#/components/schemas/SignFlowInitiatorRequest' }
+                signers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Signer' }
+                  maxItems: 10
+                copiers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Copier' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      signFlowId: { type: string }
+      x-error-codes:
+        - { code: 401, message: INVALID_SIGNATURE / TOKEN错误 / 无效的应用 }
+        - { code: 403, message: IP白名单不匹配 }
+        - { code: 1435002, message: "参数错误：signFlowConfig/signFlowTitle/signers/signFields/fileId 不能为空、签署方/经办人/印章/坐标/签署模式相关参数校验失败" }
+        - { code: 1435011, message: "机构签署账号不允许自动签署 / 自动开启场景文档和签署人信息不能为空" }
+        - { code: 1435203, message: "账号不存在: %s" }
+
+  /v3/sign-flow/{signFlowId}/start:
+    post:
+      tags: [签署发起]
+      summary: 开启签署流程
+      operationId: startSignFlow
+      description: |
+        签署流程开启之后，签署任务会按照流程既定配置开始执行，流程为"签署中"状态。
+        流程开启后不允许再添加或删除文件（含待签文件和附属材料）。
+        autoFinish=true 流程不允许再追加签署区/签署方。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：signFlowId 不存在或状态不允许开启" }
+
+  /v3/sign-flow/sign-flow-initiate-url/by-file:
+    post:
+      tags: [签署发起]
+      summary: 通过页面发起签署
+      operationId: createSignFlowInitiateUrlByFile
+      description: |
+        获取一个发起签署可视化页面（免登录），由用户在此页面选择签署文件、签署方等并设置签署区。
+        页面发起签署成功后，通过【签署发起成功通知】回调返回 signFlowId。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signFlowConfig]
+              properties:
+                initiatePageConfig:
+                  type: object
+                  properties:
+                    customBizNum: { type: string }
+                    initiateButtons: { type: string, default: "1,2" }
+                    redirectUrl: { type: string }
+                    redirectDelayTime: { type: integer, enum: [0, 3], default: 3 }
+                    orgSealType: { type: string }
+                    uneditableFields:
+                      type: array
+                      items:
+                        type: string
+                        enum: [signFlowTitle, docs, signers, signFields, signFlowExpireTime, copiers, attachments]
+                signFlowConfig: { $ref: '#/components/schemas/SignFlowConfigRequest' }
+                docs:
+                  type: array
+                  items: { $ref: '#/components/schemas/DocFile' }
+                attachments:
+                  type: array
+                  items: { $ref: '#/components/schemas/Attachment' }
+                signFlowInitiator: { $ref: '#/components/schemas/SignFlowInitiatorRequest' }
+                signers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Signer' }
+                copiers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Copier' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      signFlowInitiateUrl: { type: string, description: 发起签署页面链接（有效期 30 天，使用一次后失效） }
+                      signFlowInitiateLongUrl: { type: string }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：signFlowConfig/signFlowTitle 不能为空、initiatePageConfig 校验失败" }
+
+  /v3/sign-flow/batch-sign-url:
+    post:
+      tags: [签署发起]
+      summary: 获取批量签页面链接（多流程）
+      operationId: createBatchSignUrl
+      description: |
+        获取指定签署人名下的待签合同文件列表页面，签署人进行一次认证可同时完成多个流程签署。
+        最多支持 1000 个流程；超过 100 个走异步签署，需接收【批量签署结果回调通知】。
+        仅支持传入状态为"签署中"的流程ID。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [operatorId, signFlowIds]
+              properties:
+                operatorId: { type: string }
+                signFlowIds:
+                  type: array
+                  items: { type: string }
+                  maxItems: 1000
+                noticeTypes: { type: string }
+                forcedRead: { type: boolean, default: false }
+                clientType: { type: string, enum: [ALL, H5, PC], default: ALL }
+                redirectUrl: { type: string }
+                appScheme: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      batchSerialId: { type: string }
+                      batchSignUrl: { type: string }
+                      batchSignShortUrl: { type: string }
+                      batchSignUrlWithoutLogin: { type: string }
+                      batchSignShortUrlWithoutLogin: { type: string }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：operatorId/signFlowIds 不能为空、流程状态非签署中" }
+
+  # ============ 文件操作 ============
+  /v3/files/file-upload-url:
+    post:
+      tags: [文件操作]
+      summary: 上传本地文件 - 获取文件上传地址
+      operationId: getFileUploadUrl
+      description: |
+        上传本地文件第一步：获取上传地址 fileUploadUrl 和 fileId（fileId 此时为"未上传状态"）。
+        第二步使用 PUT 将文件流上传至 fileUploadUrl（请求头 Content-MD5、Content-Type 与本接口入参一致）。
+        总大小 ≤50MB；单页 ≤20MB；fileName 必须含真实后缀且不超过 100 字符；
+        非 PDF 文件如需用于签署，需设 convertToPDF=true。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contentMd5, contentType, fileName, fileSize]
+              properties:
+                contentMd5: { type: string }
+                contentType:
+                  type: string
+                  enum: [application/octet-stream, application/pdf]
+                fileName: { type: string, maxLength: 100 }
+                fileSize: { type: integer, format: int64 }
+                convertToPDF: { type: boolean, default: false }
+                convertToHTML: { type: boolean, default: false }
+                convertToOFD: { type: boolean, default: false }
+                dedicatedCloudId: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      fileId: { type: string }
+                      fileUploadUrl: { type: string, description: 文件上传地址（PUT 上传，有效期 60 分钟） }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：contentMd5/contentType/fileName/fileSize 不能为空" }
+
+  /v3/files/{fileId}:
+    get:
+      tags: [文件操作]
+      summary: 查询文件上传状态 / 查询PDF模板填写后文件
+      operationId: getFileStatus
+      description: |
+        查询文件在 e签宝服务端的上传状态（含 PDF/HTML 转换状态、文件名、下载链接）。
+        当 fileStatus=2 或 5 时文件才可应用到签署流程中。
+        同一接口同时承担 "查询 PDF 模板填写后文件" 用途（pdf-sign3 oq5w1ug1algfeo90）。
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: pageSize
+          in: query
+          required: false
+          schema: { type: boolean, default: false }
+          description: 是否返回文件首页长宽值
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/PdfFileInfo' }
+
+  /v3/sign-flow/{signFlowId}/unsigned-files:
+    post:
+      tags: [文件操作]
+      summary: 追加待签文件
+      operationId: appendUnsignedFiles
+      description: |
+        向草稿状态的签署流程中追加待签署文件（仅限流程开启之前允许追加）。
+        autoStart=true 的流程不允许追加；追加的文件按计费规则扣除合同份额。
+        若仅需阅读不签章，建议改用【追加附属材料】。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [unsignedFiles]
+              properties:
+                unsignedFiles:
+                  type: array
+                  items:
+                    type: object
+                    required: [fileId]
+                    properties:
+                      fileId: { type: string }
+                      fileName: { type: string }
+                      neededPwd: { type: integer, format: int32, enum: [0, 1], default: 0 }
+                      fileEditPwd: { type: string }
+                      contractBizTypeId: { type: string }
+                      order: { type: integer, minimum: 1, maximum: 50 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：unsignedFiles/fileId 不能为空、流程状态不允许追加" }
+    delete:
+      tags: [文件操作]
+      summary: 删除待签文件
+      operationId: deleteUnsignedFiles
+      description: 向已创建的签署流程中删除待签署文件（仅限流程开启之前允许删除）。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: fileIds
+          in: query
+          required: true
+          schema: { type: string }
+          description: 待签署文件ID（多个使用英文逗号分隔）
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  /v3/sign-flow/{signFlowId}/attachments:
+    post:
+      tags: [文件操作]
+      summary: 追加附属材料
+      operationId: appendAttachments
+      description: |
+        为流程添加附件，附件无需签署，仅作为签署过程中的参考（录音、视频、图片、文档等）。
+        附件文件需先通过【上传本地文件】获取 fileId；此接口所追加的文件仅可阅读不能签章。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [attachmentList]
+              properties:
+                attachmentList:
+                  type: array
+                  items:
+                    type: object
+                    required: [fileId]
+                    properties:
+                      fileId: { type: string }
+                      fileName: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+    delete:
+      tags: [文件操作]
+      summary: 删除附属材料
+      operationId: deleteAttachments
+      description: 从流程中删除附件，流程开启前可删除，流程开启后只能追加不能删除。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: fileIds
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  /v3/files/{fileId}/keyword-positions:
+    post:
+      tags: [文件操作]
+      summary: 检索文件关键字坐标（推荐）
+      operationId: searchKeywordPositions
+      description: |
+        检索 PDF 文件中所含关键字的所有 XY 坐标信息，用于定位签署区。
+        仅适用文本类内容的 PDF；扫描或图片生成的 PDF 无法查询；最多 30 个关键字。
+        计算的是关键字第一个字的左下角坐标位置。
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [keywords]
+              properties:
+                keywords:
+                  type: array
+                  maxItems: 30
+                  items: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      keywordPositions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            keyword: { type: string }
+                            searchResult: { type: boolean }
+                            positions:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  pageNum: { type: integer, format: int32 }
+                                  coordinates:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        positionX: { type: number, format: float }
+                                        positionY: { type: number, format: float }
+    get:
+      tags: [文件操作]
+      summary: 检索文件关键字坐标（GET，不推荐）
+      operationId: searchKeywordPositionsByGet
+      description: 原有 GET 请求方式仍保留，但因请求头签名涉及 URL 编码问题，不再推荐。
+      deprecated: true
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: keywords
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommonResponse' }
+
+  # ============ 签署区与定位 ============
+  /v3/sign-flow/{signFlowId}/signers/sign-fields:
+    post:
+      tags: [签署区与定位]
+      summary: 追加签署区
+      operationId: appendSignFields
+      description: |
+        向已创建的签署流程中追加签署方、签署区。
+        追加签署区前需确保流程在开启之前已添加该签署区所在的待签署文件。
+        流程在"草稿"和"签署中"状态时允许追加；autoFinish=true 流程不支持。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signers]
+              properties:
+                identityVerify: { type: boolean, default: true }
+                signers:
+                  type: array
+                  items: { $ref: '#/components/schemas/Signer' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        signFieldId: { type: string }
+                        fileId: { type: string }
+                        psnId: { type: string }
+                        psnAccount: { type: string }
+                        orgId: { type: string }
+                        orgName: { type: string }
+      x-error-codes:
+        - { code: 1435002, message: "参数错误：signers/signFields/fileId 不能为空、流程状态不允许追加、自动完结流程不允许追加签署区" }
+    delete:
+      tags: [签署区与定位]
+      summary: 删除签署区
+      operationId: deleteSignFields
+      description: 向已创建的签署流程中删除指定的签署区（仅限于未签署状态下的签署区）。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: signFieldIds
+          in: query
+          required: true
+          schema: { type: string }
+          description: 签署区ID（多个使用英文逗号分隔）
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      deleteResults:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            signFieldId: { type: string }
+                            deleteResult: { type: string }
+                            failedReason: { type: string, nullable: true }
+
+  /v3/files/get-seal-position-url:
+    post:
+      tags: [签署区与定位]
+      summary: 获取拖章定位页面
+      operationId: getSealPositionUrl
+      description: |
+        通过文件ID（PDF）获取 e签宝的拖章定位页面，设置好位置后通过【获取签章位置信息通知】
+        接收位置坐标，用于后续基于文件发起签署接口的辅助定位。
+        页面链接有效期一天，保存一次后失效。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [customBizNum, fileId, signerRoles]
+              properties:
+                customBizNum: { type: string, description: 自定义业务编码（回调原样返回） }
+                fileId: { type: string }
+                signerRoles:
+                  type: array
+                  items: { type: string }
+                redirectUrl: { type: string }
+                clientType: { type: string, enum: [ALL, H5, PC], default: ALL }
+                signFieldType:
+                  type: array
+                  items: { type: integer, enum: [1, 2, 3] }
+                urlType: { type: integer, enum: [1, 2], default: 2 }
+                signComponents:
+                  type: array
+                  items: { $ref: '#/components/schemas/SealPositionComponent' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      getSealPositionUrl: { type: string, description: 拖章定位页面链接（有效期一天，保存一次后失效） }
+
+  # ============ 页面链接 ============
+  /v3/sign-flow/{signFlowId}/sign-url:
+    post:
+      tags: [页面链接]
+      summary: 获取签署页面链接
+      operationId: getSignUrl
+      description: |
+        获取合同的签署/预览链接。签署流程开启后才可以获取到文件的签署链接。
+        operator 字段为大多数场景下的必传字段；若不传将默认使用 appId 主体（平台方默认发起场景）。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [operator]
+              properties:
+                needLogin: { type: boolean, default: false }
+                urlType: { type: integer, format: int32, enum: [1, 2], default: 2 }
+                operator:
+                  type: object
+                  properties:
+                    psnAccount: { type: string }
+                    psnId: { type: string }
+                organization:
+                  type: object
+                  properties:
+                    orgId: { type: string }
+                    orgName: { type: string }
+                redirectConfig: { $ref: '#/components/schemas/RedirectConfig' }
+                clientType: { type: string, enum: [ALL, H5, PC], default: ALL }
+                appScheme: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      shortUrl: { type: string, description: 签署短链接（有效期 90 天） }
+                      url: { type: string, description: 签署长链接（永久有效） }
+
+  /v3/approval/approval-url:
+    post:
+      tags: [页面链接]
+      summary: 获取用印审批页面链接
+      operationId: getApprovalUrl
+      description: |
+        当签署流程中有用印审批流程触发后，通过审批流程ID获取当前审批人待审批的页面链接。
+        仅支持：(1) 当前 appId 通过接口发起的签署流程；(2) 当前应用所属 SaaS 企业在
+        e签宝官网发起的签署流程。需提前获得 org_approval_info 或 manage_org_resource 权限。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [approvalFlowId, approverPsnId]
+              properties:
+                approvalFlowId: { type: string }
+                approverPsnId: { type: string }
+                needLogin: { type: boolean, default: true }
+                clientType: { type: string, enum: [ALL, H5, PC], default: ALL }
+                redirectConfig: { $ref: '#/components/schemas/RedirectConfig' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      approvalTaskId: { type: string }
+                      approvalShortUrl: { type: string }
+                      approvalUrl: { type: string }
+
+  # ============ 签署流程查询 ============
+  /v3/sign-flow/{signFlowId}/detail:
+    get:
+      tags: [签署流程查询]
+      summary: 查询签署流程详情
+      operationId: getSignFlowDetail
+      description: |
+        查询签署流程的基本信息。
+        如发起签署时有指定发起方，必须确保有 org_initiate_sign / psn_initiate_sign 权限。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/SignFlowDetail' }
+      x-error-codes:
+        - { code: 1435001, message: 流程不存在或无权限 }
+        - { code: 1435002, message: 参数错误 }
+        - { code: 1435999, message: 内部服务异常 }
+
+  /v3/sign-flow/sign-flow-list:
+    post:
+      tags: [签署流程查询]
+      summary: 查询签署流程列表
+      operationId: querySignFlowList
+      description: |
+        支持查询指定时间段内、指定状态/发起方/签署人的签署流程列表。
+        仅能查询当前应用 appId 通过接口发起的签署流程。
+        时间区间最长不超过 1 年，只能查询近 5 年；发起时间区间和完结时间区间不可同时为空。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SignFlowListQueryRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/SignFlowListData' }
+
+  /v3/organizations/sign-flow-list:
+    post:
+      tags: [签署流程查询]
+      summary: 查询集成方企业流程列表
+      operationId: queryOrgSignFlowList
+      description: |
+        查询集成方企业（当前 appId 对应的企业主体）名下发起的签署流程列表。
+        支持 API 接口发起和 e签宝 SaaS 官网发起的签署流程。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OrgSignFlowListQueryRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/SignFlowListData' }
+
+  /v3/approval/{approvalFlowId}/detail:
+    get:
+      tags: [审批流程查询]
+      summary: 查询审批流程详情
+      operationId: getApprovalFlowDetail
+      description: |
+        查询本次签署中审批流程的详细信息（仅查询当前 appId 发起的签署流程产生的审批任务）。
+        需要提前让盖章主体公司对调用方企业应用 ID 做授权
+        （org_approval_info 或 manage_org_resource 权限范围）。
+      parameters:
+        - name: approvalFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/ApprovalFlowDetail' }
+
+  /v3/approval/approval-task-list:
+    post:
+      tags: [审批流程查询]
+      summary: 查询审批流程列表
+      operationId: queryApprovalFlowList
+      description: 查询某个企业下或某企业经办人下的全部审批流程列表（仅当前 appId 发起的流程）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pageNum, pageSize, orgId]
+              properties:
+                pageNum: { type: integer, format: int32, minimum: 1 }
+                pageSize: { type: integer, format: int32, minimum: 1, maximum: 100 }
+                orgId: { type: string }
+                operatorPsnId: { type: string }
+                queryType: { type: integer, enum: [1, 2], description: 1-我参与的，2-待我审批 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      total: { type: integer, format: int32 }
+                      approvalFlowList:
+                        type: array
+                        items: { $ref: '#/components/schemas/ApprovalFlowSummary' }
+
+  # ============ 文件下载 ============
+  /v3/sign-flow/{signFlowId}/preview-file-download-url:
+    get:
+      tags: [文件下载]
+      summary: 下载签署中文件
+      operationId: downloadPreviewFile
+      description: |
+        下载流程正在签署中的文件用于预览查看。文件不支持验签和出证，
+        会带有"本文档仅供预览查看"水印。仅支持 PDF 签署文件，不支持 OFD/附件。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: docFileId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: urlAvailableDate
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 3600, default: 3600 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      fileId: { type: string }
+                      fileName: { type: string }
+                      fileDownloadUrl: { type: string }
+
+  /v3/sign-flow/{signFlowId}/file-download-url:
+    post:
+      tags: [文件下载]
+      summary: 下载已签署文件及附属材料（推荐）
+      operationId: downloadSignedFilesV2
+      description: |
+        流程结束后获取签署完成文件及附属材料下载链接。
+        2025-12-11 起新增 POST 方式，原 GET 方式保留但不再推荐。
+        未签署完成流程会报错"流程非签署完成状态，不允许下载文档"。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                urlAvailableDate: { type: integer, minimum: 1, maximum: 3600, default: 3600 }
+                internalUrl: { type: boolean, default: false }
+                aesEncrypt: { type: boolean, default: false }
+                rsaSecret: { type: string }
+                rsaSecretKey: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/SignedFilesDownloadData' }
+    get:
+      tags: [文件下载]
+      summary: 下载已签署文件及附属材料（GET，不推荐）
+      operationId: downloadSignedFilesV1
+      deprecated: true
+      description: 不再推荐使用，保留兼容。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: urlAvailableDate
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 3600, default: 3600 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/SignedFilesDownloadData' }
+
+  /v3/files/{fileId}/detail:
+    get:
+      tags: [模板填写文件查询]
+      summary: 查询HTML模板填写后文件
+      operationId: getHtmlTemplateFilledFileDetail
+      description: |
+        查询 HTML 模板填写内容转换为 PDF 后，各签署区域的坐标位置（X/Y 值），
+        为后续发起签署提供精准定位。HTML 样式可能导致布局变化，签署区坐标
+        仅在模板转为 PDF 后生效。
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/HtmlTemplateFilledFileDetail' }
+
+  # ============ 流程操作 ============
+  /v3/sign-flow/{signFlowId}/urge:
+    post:
+      tags: [流程操作]
+      summary: 催签流程中签署人
+      operationId: urgeSigner
+      description: |
+        向当前轮到签署但还未签署的签署人发送催签提醒，支持指定签署人。
+        发起签署之后前半小时不可催签；两次催签至少间隔 10 分钟。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                noticeTypes: { type: string }
+                urgedOperator:
+                  type: object
+                  properties:
+                    psnAccount: { type: string }
+                    psnId: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  /v3/sign-flow/{signFlowId}/delay:
+    post:
+      tags: [流程操作]
+      summary: 延长签署截止时间
+      operationId: delaySignFlow
+      description: |
+        延长已发起签署流程的截止时间。仅限往后延期 1 次，新截止时间可在当前接口调用
+        时间基础上最多延长 90 天，且不可早于原截止时间。
+        2023-06-30 起支持对已过期的流程延期 1 次。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signFlowExpireTime]
+              properties:
+                signFlowExpireTime: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  /v3/sign-flow/{signFlowId}/finish:
+    post:
+      tags: [流程操作]
+      summary: 完结签署流程
+      operationId: finishSignFlow
+      description: |
+        完结签署流程。完结后不允许再添加/删除签章区，也不允许撤销。
+        所有签署方完成签章后才可完结。autoFinish=true 时自动完结无需调用此接口；
+        autoFinish=false 时需主动调用此接口。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  /v3/sign-flow/{signFlowId}/revoke:
+    post:
+      tags: [流程操作]
+      summary: 撤销签署流程
+      operationId: revokeSignFlow
+      description: |
+        撤销签署中的流程，撤销后变为已撤销状态。
+        当签署方已完成签字盖章后撤销存在法律风险，必须先获得全部已盖章签署方同意。
+        仅指定发起方经办人场景才支持 e签宝 SaaS 官网撤回，默认平台方发起仅能通过接口撤销。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                revokeReason: { type: string, maxLength: 50 }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmptyDataResponse' }
+
+  # ============ 出证 ============
+  /v3/evidence-report/apply:
+    post:
+      tags: [出证]
+      summary: 申请出证
+      operationId: applyEvidenceReport
+      description: |
+        通过 SaaS API 接口的签署流程ID 申请对应的电子版证据报告。
+        接口为异步出证，出证成功后通过回调地址返回出证报告 zip 压缩包下载地址。
+        会校验当前申请出证的应用 ID（appID）对应的主体企业是否是签署流程的参与方。
+        需购买对应套餐后方可使用。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EvidenceReportApplyRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/EvidenceReportApplyData' }
+
+  /v3/evidence-report/query:
+    get:
+      tags: [出证]
+      summary: 查询出证流程详情
+      operationId: queryEvidenceReport
+      description: 通过申请出证编号查询出证状态及对应的报告下载地址。
+      parameters:
+        - name: recordNum
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/EvidenceReportQueryData' }
+
+  /v3/antchain-file-info:
+    post:
+      tags: [出证]
+      summary: 获取区块链存证信息
+      operationId: getAntchainFileInfo
+      description: |
+        通过签署流程编号获取已推送到蚂蚁区块链的存证信息，如文件哈希值、蚂蚁区块链统一证据
+        编号和上链编号等。当签署流程中的全部文件完成签署且签署流程完结后，e签宝会将文件
+        哈希值推送至蚂蚁区块链。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signFlowId]
+              properties:
+                signFlowId: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/AntchainFileInfoData' }
+
+  /v3/antchain-file-info/verify:
+    post:
+      tags: [出证]
+      summary: 核验区块链存证文件
+      operationId: verifyAntchainFile
+      description: 核验当前已签署合同 PDF 文件信息与蚂蚁区块链上已存证信息是否一致。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileHash, antTxHash]
+              properties:
+                fileHash: { type: string }
+                antTxHash: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/AntchainVerifyData' }
+
+  # ============ 验签 ============
+  /v3/files/{fileId}/verify:
+    post:
+      tags: [验签]
+      summary: 核验合同文件签名有效性
+      operationId: verifyFileSignature
+      description: |
+        解析合同 PDF 文件中签署者数字证书信息，验证已签署的合同 PDF 文件内容或签名是否存在篡改。
+        指定状态为已完成的签署流程ID 和签署流程中的文件ID 来验证合同文件签名有效性。
+        仅对本地 PDF 文件验签时，请先将待验签文件通过【上传本地文件】接口上传来获取 fileId。
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                signFlowId:
+                  type: string
+                  description: 签署流程ID（本地 PDF 验签时传空字符串；签署流程内文件验签时传具体 ID 且流程需已完成）
+                async: { type: boolean, default: false }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/FileVerifyData' }
+
+  /v3/files/verify-result:
+    post:
+      tags: [验签]
+      summary: 查询异步验签结果
+      operationId: queryAsyncVerifyResult
+      description: 当使用核验合同文件签名有效性接口指定异步验签时，通过此接口查询验证结果。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [verifyTaskId]
+              properties:
+                verifyTaskId: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/AsyncVerifyResultData' }
+
+  # ============ 解约 ============
+  /v3/sign-flow/{signFlowId}/initiate-rescission:
+    post:
+      tags: [解约]
+      summary: 发起合同解约
+      operationId: initiateRescission
+      description: |
+        原流程中的合同文件在签署方均已完成签署的前提下，其中的任一签署方或原流程的发起方
+        可以申请发起合同解约。仅限已完成状态流程中的签署方或发起方来发起合同解约。
+        单方签署的流程不支持发起解约（流程中必须包含 2 个及以上签署方）。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RescissionInitiateRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      signFlowId: { type: string, description: 解约协议签署流程ID }
+
+  /v3/sign-flow/{signFlowId}/rescission-url:
+    post:
+      tags: [解约]
+      summary: 通过页面发起合同解约
+      operationId: getRescissionUrl
+      description: |
+        e签宝提供发起合同解约的页面，通过页面发起解约成功后，签署方收到解约协议签署链接。
+        原名"获取合同解约链接"，2023-06-16 起更名为"通过页面发起合同解约"。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RescissionUrlRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      rescissionUrl: { type: string, description: 发起合同解约页面长链地址（永久有效） }
+                      rescissionShortUrl: { type: string, description: 发起合同解约页面短链地址（有效期 180 天） }
+
+  # ============ 模板填写 ============
+  /v3/files/create-by-doc-template:
+    post:
+      tags: [模板填写]
+      summary: 填写模板生成文件
+      operationId: createFileByDocTemplate
+      description: |
+        基于合同模板编号 docTemplateId 和模板中的控件来填充自定义的内容，最终生成一份 PDF。
+        使用 HTML 动态模板时，填充的表格行数不能超过 2000 行（性能限制）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateFileByTemplateRequest' }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      fileId: { type: string }
+                      fileDownloadUrl: { type: string }
+
+  /v3/doc-templates/fill-task-result:
+    post:
+      tags: [模板填写]
+      summary: 查询填写合同模板任务结果
+      operationId: queryFillTaskResult
+      description: 查询用户在"填写文件模板页面"上输入的内容及填写任务状态等信息。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [docTemplateId, fillTaskId]
+              properties:
+                docTemplateId: { type: string }
+                fillTaskId: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data: { $ref: '#/components/schemas/FillTaskResultData' }
+
+  # ============ OFD 文件处理 ============
+  /v3/files/merge-ofd-files:
+    post:
+      tags: [OFD文件处理]
+      summary: OFD文件合并
+      operationId: mergeOfdFiles
+      description: |
+        将两份 OFD 文件合并成一份 OFD 文件（有且仅支持两份文件）。
+        主要用于电子保函场景，将密文保函和明文保函合并。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [finishFileId, addFileId, mergeFileName]
+              properties:
+                finishFileId: { type: string, description: 已完成签署的 OFD 文件（密文保函） }
+                addFileId: { type: string, description: 明文追加 OFD 文件（不包含电子签名） }
+                mergeFileName: { type: string }
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: integer, format: int32 }
+                  message: { type: string }
+                  data:
+                    type: object
+                    properties:
+                      mergeFileId: { type: string, description: 合并后的 OFD 文件ID（合并是异步过程，需轮询查询文件状态接口） }
+
+# ============ webhooks ============
+webhooks:
+  SIGN_FLOW_INITIATED:
+    post:
+      tags: [签署回调]
+      summary: 签署发起成功通知
+      operationId: webhookSignFlowInitiated
+      description: 用户通过页面发起签署流程后触发（API 直接创建的流程不触发）。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, customBizNum]
+              properties:
+                action: { type: string, enum: [SIGN_FLOW_INITIATED] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                customBizNum: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  SIGN_FLOW_INITIATE_RESULT:
+    post:
+      tags: [签署回调]
+      summary: 签署流程发起结果通知
+      operationId: webhookSignFlowInitiateResult
+      description: |
+        合同拟定后签署过程发起的结果通知，可能因计费不足、文件转换等问题失败。
+        仅支持事件订阅方式配置。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, result]
+              properties:
+                action: { type: string, enum: [SIGN_FLOW_INITIATE_RESULT] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                result: { type: string, enum: [SUCCESS, FAIL] }
+                failReason:
+                  type: string
+                  description: 失败原因（仅失败时返回）：1-扣费方套餐余量不足；2-文档格式转换失败；99-服务异常
+      responses:
+        '200': { description: 回调接收成功 }
+
+  SIGN_MISSON_COMPLETE:
+    post:
+      tags: [签署回调]
+      summary: 签署方-签署结果（含拒签）通知
+      operationId: webhookSignMissonComplete
+      description: 签署方签署完成或拒签时触发，以签署方维度通知。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, operateTime, signResult, resultDescription, signOrder, operator]
+              properties:
+                action: { type: string, enum: [SIGN_MISSON_COMPLETE] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                operateTime: { type: integer, format: int64 }
+                signResult: { type: integer, enum: [2, 4], description: 2-签署完成，4-拒签 }
+                resultDescription: { type: string }
+                signOrder: { type: integer, format: int32 }
+                customBizNum: { type: string }
+                operator: { $ref: '#/components/schemas/WebhookOperator' }
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  SIGN_FLOW_COMPLETE:
+    post:
+      tags: [签署回调]
+      summary: 签署流程结束（含拒签/撤销）通知
+      operationId: webhookSignFlowComplete
+      description: |
+        整个签署流程完结时触发。触发场景：autoFinish=true 全部签完自动完结；
+        autoFinish=false 调用 finish 成功；任一方拒签；截止日到期；发起方撤销。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, signFlowTitle, signFlowStatus, statusDescription, signFlowCreateTime, signFlowStartTime, signFlowFinishTime]
+              properties:
+                action: { type: string, enum: [SIGN_FLOW_COMPLETE] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                signFlowTitle: { type: string }
+                signFlowStatus:
+                  type: string
+                  enum: ["2", "3", "5", "7"]
+                  description: 2-已完成，3-已撤销，5-已过期，7-已拒签
+                statusDescription: { type: string }
+                signFlowCreateTime: { type: integer, format: int64 }
+                signFlowStartTime: { type: integer, format: int64 }
+                signFlowFinishTime: { type: integer, format: int64 }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  OPERATOR_READ:
+    post:
+      tags: [签署回调]
+      summary: 签署方-已读通知
+      operationId: webhookOperatorRead
+      description: 签署人通过签署链接首次进入签署页面时触发，多次进入不重复触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, signOrder, readTime, operator]
+              properties:
+                action: { type: string, enum: [OPERATOR_READ] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                customBizNum: { type: string }
+                signOrder: { type: string }
+                readTime: { type: string, description: "yyyy-MM-dd HH:mm:ss" }
+                operator: { $ref: '#/components/schemas/WebhookOperator' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  COPIER_READ:
+    post:
+      tags: [签署回调]
+      summary: 抄送方-已读通知
+      operationId: webhookCopierRead
+      description: |
+        抄送人通过通知链接首次进入合同详情页面时触发。需联系 e签宝技术人员将签署完成页面
+        配置改为 H5（默认微信小程序端不触发）。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, readTime, copier]
+              properties:
+                action: { type: string, enum: [COPIER_READ] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                readTime: { type: string }
+                copier:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  TRANSMISS_SIGN:
+    post:
+      tags: [签署回调]
+      summary: 经办人转交签署任务通知
+      operationId: webhookTransmissSign
+      description: |
+        触发场景：(1) 企业自动转交（企业空间配置接收人和自动转交）；
+        (2) 经办人在页面主动转交给同企业其他人（需联系 e签宝开启签署页面转交按钮）。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, transmissTime, organization, transactor, newTransactor]
+              properties:
+                action: { type: string, enum: [TRANSMISS_SIGN] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                customBizNum: { type: string }
+                transmissTime: { type: string }
+                organization:
+                  type: object
+                  required: [orgId, orgName]
+                  properties:
+                    orgId: { type: string }
+                    orgName: { type: string }
+                transactor:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+                newTransactor:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  BATCH_SIGN_FLOW_COMPLETE:
+    post:
+      tags: [签署回调]
+      summary: 批量签署结果通知
+      operationId: webhookBatchSignFlowComplete
+      description: 用户一次性批量签署超过 100 份时页面会异步签署，通过此回调接收结果。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, batchSerialId]
+              properties:
+                action: { type: string, enum: [BATCH_SIGN_FLOW_COMPLETE] }
+                timestamp: { type: integer, format: int64 }
+                batchSerialId: { type: string }
+                signFlowList:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      signFlowId: { type: string }
+                      status: { type: integer, enum: [0, 1] }
+                      failReason: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  FILE_ENCRYPT_FINISH:
+    post:
+      tags: [签署回调]
+      summary: 签署文件加密完成通知
+      operationId: webhookFileEncryptFinish
+      description: 调用下载已签署文件接口使用 RSA 文件加密时，通过该回调接收文件下载地址。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, rsaSecretKey, aesSecret, files]
+              properties:
+                action: { type: string, enum: [FILE_ENCRYPT_FINISH] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                rsaSecretKey: { type: string }
+                aesSecret: { type: string }
+                files:
+                  type: array
+                  items: { $ref: '#/components/schemas/EncryptedFileItem' }
+                attachments:
+                  type: array
+                  items: { $ref: '#/components/schemas/EncryptedFileItem' }
+                certificateDownloadUrl: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  OPERATOR_CORRECT_IDENTITY:
+    post:
+      tags: [签署回调]
+      summary: 签署人更正个人信息回调通知
+      operationId: webhookOperatorCorrectIdentity
+      description: 签署人进入签署页面发现信息不一致时，填写正确信息告知开发者。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, operateType, timestamp, signFlowId, operator, operatorCorrectInfo]
+              properties:
+                action: { type: string, enum: [OPERATOR_CORRECT_IDENTITY] }
+                operateType: { type: integer, enum: [0, 1], description: 0-修正开发者传入身份信息，1-修正 e签宝账号已绑定身份信息 }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                operator:
+                  type: object
+                  required: [psnName, psnIDCardNum, psnIDCardType]
+                  properties:
+                    psnId: { type: string }
+                    psnAccount: { $ref: '#/components/schemas/PsnAccount' }
+                    psnName: { type: string }
+                    psnIDCardNum: { type: string }
+                    psnIDCardType: { $ref: '#/components/schemas/PsnIDCardType' }
+                operatorCorrectInfo:
+                  type: object
+                  required: [psnName, psnAccount, psnIDCardNum, psnIDCardType]
+                  properties:
+                    psnName: { type: string }
+                    psnAccount: { type: string }
+                    psnIDCardNum: { type: string }
+                    psnIDCardType: { $ref: '#/components/schemas/PsnIDCardType' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  GET_SEAL_POSITION:
+    post:
+      tags: [签署回调]
+      summary: 获取签章位置信息通知
+      operationId: webhookGetSealPosition
+      description: 通过获取拖章定位页面接口拖好章并提交后触发此通知。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, customBizNum, components]
+              properties:
+                action: { type: string, enum: [GET_SEAL_POSITION] }
+                timestamp: { type: integer, format: int64 }
+                customBizNum: { type: string }
+                components:
+                  type: array
+                  items: { $ref: '#/components/schemas/SealPositionComponent' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  DRAFT_MISSON_COMPLETE:
+    post:
+      tags: [签署回调]
+      summary: 流程填写人填写状态通知
+      operationId: webhookDraftMissonComplete
+      description: 开发者开启拟定流程后，当前流转到的用户在页面已填写或拒填状态通知。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, draftOrder, operateTime, draftResult, operator, components]
+              properties:
+                action: { type: string, enum: [DRAFT_MISSON_COMPLETE] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                draftOrder: { type: integer }
+                operateTime: { type: integer, format: int64 }
+                draftResult: { type: integer, enum: [3, 4], description: 3-已填写，4-拒填 }
+                resultDescription: { type: string }
+                operator: { $ref: '#/components/schemas/WebhookOperator' }
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+                components:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      componentId: { type: string }
+                      componentKey: { type: string }
+                      componentValue: { type: string }
+                      originCustomComponentId: { type: string }
+                fillTaskId: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  INITIATE_APPROVAL:
+    post:
+      tags: [审批回调]
+      summary: 发起审批流程通知
+      operationId: webhookInitiateApproval
+      description: 签署流程中某个审批任务成功发起（目前只有签署中企业印章的用印审批类型）。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, approvalFlowId, operator]
+              properties:
+                action: { type: string, enum: [INITIATE_APPROVAL] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                approvalFlowId: { type: string }
+                operator:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnName: { type: string }
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  APPROVAL_TASK_START:
+    post:
+      tags: [审批回调]
+      summary: 审批任务开启通知
+      operationId: webhookApprovalTaskStart
+      description: 在一个审批流程中，某个审批节点的审批人的审批任务开启后触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, approvalFlowId, approvalNodeId, approvalNodeType, approvalTaskId, approvalUrl, approvalShortUrl, approver]
+              properties:
+                action: { type: string, enum: [APPROVAL_TASK_START] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                approvalFlowId: { type: string }
+                approvalNodeId: { type: string }
+                approvalNodeType: { type: integer, enum: [1, 2], description: 1-或审，2-会审 }
+                approvalTaskId: { type: string }
+                approvalUrl: { type: string }
+                approvalShortUrl: { type: string }
+                approver:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnName: { type: string }
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  APPROVAL_TASK_COMPLETE:
+    post:
+      tags: [审批回调]
+      summary: 审批任务完成通知
+      operationId: webhookApprovalTaskComplete
+      description: 在一个审批流程中，某个审批节点的审批人审批任务完成后触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, approvalFlowId, approvalNodeId, approvalNodeType, approvalTaskId, approvalTaskResult, approver]
+              properties:
+                action: { type: string, enum: [APPROVAL_TASK_COMPLETE] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                approvalFlowId: { type: string }
+                approvalNodeId: { type: string }
+                approvalNodeType: { type: integer, enum: [1, 2] }
+                approvalTaskId: { type: string }
+                approvalTaskResult: { type: integer, enum: [1, 2], description: 1-通过，2-驳回 }
+                description: { type: string }
+                approver:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnName: { type: string }
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  APPROVAL_TASK_TRANS:
+    post:
+      tags: [审批回调]
+      summary: 审批任务转交通知
+      operationId: webhookApprovalTaskTrans
+      description: 审批经办人在审批页面主动转交审批任务后触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, approvalFlowId, approvalTaskId, organization, approver, newApprover]
+              properties:
+                action: { type: string, enum: [APPROVAL_TASK_TRANS] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                approvalFlowId: { type: string }
+                approvalTaskId: { type: string }
+                organization:
+                  type: object
+                  required: [orgId, orgName]
+                  properties:
+                    orgId: { type: string }
+                    orgName: { type: string }
+                approver:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnName: { type: string }
+                newApprover:
+                  type: object
+                  properties:
+                    psnId: { type: string }
+                    psnName: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  APPROVAL_FINISH:
+    post:
+      tags: [审批回调]
+      summary: 完结审批流程通知
+      operationId: webhookApprovalFinish
+      description: 在一个签署流程中，某个签署任务的审批流程结束时触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, approvalFlowId, approvalFlowStatus]
+              properties:
+                action: { type: string, enum: [APPROVAL_FINISH] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                approvalFlowId: { type: string }
+                approvalFlowStatus:
+                  type: integer
+                  enum: [2, 3, 4, 5]
+                  description: 2-审批通过，3-审批驳回，4-审批撤回，5-审批终止（超时未审批）
+                organization: { $ref: '#/components/schemas/WebhookOrganization' }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  EVIDENCE_REPORT_FINISH:
+    post:
+      tags: [出证回调]
+      summary: 异步出证完成通知
+      operationId: webhookEvidenceReportFinish
+      description: 申请出证流程完成后（成功或失败）触发的回调通知。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, recordNum, status]
+              properties:
+                action: { type: string, enum: [EVIDENCE_REPORT_FINISH] }
+                recordNum: { type: string }
+                status: { type: string, enum: [ISSUE_SUCCESS, ISSUE_FAILED] }
+                downloadUrl: { type: string }
+                failReason: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  SIGN_FILE_RESCISSION_INITIATE:
+    post:
+      tags: [解约回调]
+      summary: 合同发起解约通知
+      operationId: webhookRescissionInitiate
+      description: 当签署人在页面上发起解约后触发。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, rescissionSignFlowId, rescissionFileIds, rescindReason]
+              properties:
+                action: { type: string, enum: [SIGN_FILE_RESCISSION_INITIATE] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string, description: 原签署流程ID }
+                rescissionSignFlowId: { type: string, description: 对应的解约协议签署流程ID }
+                rescissionFileIds:
+                  type: array
+                  items: { type: string }
+                rescindReason: { type: string }
+                additionalComments: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+  SIGN_FILE_RESCINDED:
+    post:
+      tags: [解约回调]
+      summary: 合同解约成功通知
+      operationId: webhookRescinded
+      description: 当签署人发起解约，且解约协议由相关签署方签署完成并自动完结后触发该通知。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, timestamp, signFlowId, rescissionSignFlowId, rescissionFileIds]
+              properties:
+                action: { type: string, enum: [SIGN_FILE_RESCINDED] }
+                timestamp: { type: integer, format: int64 }
+                signFlowId: { type: string }
+                rescissionSignFlowId: { type: string }
+                rescissionFileIds:
+                  type: array
+                  items: { type: string }
+      responses:
+        '200': { description: 回调接收成功 }
+
+# ============ 错误码汇总（按错误码维度，详细 message 见各 endpoint 内 x-error-codes） ============
+x-error-codes:
+  - code: 401
+    message: 鉴权失败（INVALID_SIGNATURE / TOKEN 错误 / 无效的应用）
+    endpoint: 签署服务全部接口
+  - code: 403
+    message: IP 白名单不匹配
+    endpoint: 签署服务全部接口
+  - code: 1435001
+    message: 流程不存在或无权限
+    endpoint: 流程查询/操作类接口
+  - code: 1435002
+    message: 参数错误（含 ~80 类细分场景，详见各接口 x-error-codes）
+    endpoint: 签署服务全部接口
+  - code: 1435003
+    message: 业务规则冲突（如流程状态不允许操作）
+    endpoint: 流程操作类接口
+  - code: 1435011
+    message: 自动签 / 自动开启配置错误（机构签署账号不允许自动签署等）
+    endpoint: /v3/sign-flow/create-by-file
+  - code: 1435203
+    message: "账号不存在或已注销: %s"
+    endpoint: 涉及账号校验的接口
+  - code: 1435999
+    message: 内部服务异常
+    endpoint: 签署服务全部接口

@@ -1,0 +1,2904 @@
+# [2026-05-21] | 初始导入 | — | 从 assets/opendoc/file-and-template3/ 忠实导入
+# [待升级] 多处不合规项（忠实导入，后续渐进维护）
+
+openapi: 3.1.0
+info:
+  title: e签宝 文件与流程模板 API
+  description: |
+    e签宝 SaaS API V3 — 文件管理与流程模板（流程模板 CRUD、控件管理、控件组、合同拟定）
+    关联 PRD：F-002
+
+    ## 鉴权说明
+    所有接口均需在请求头中携带签名鉴权信息，具体签名算法见 e签宝开放平台公共请求头格式说明。
+    核心请求头：
+    - X-Tsign-Open-App-Id：应用ID
+    - X-Tsign-Open-TIMESTAMP：时间戳（毫秒）
+    - X-Tsign-Open-SIGNATURE-ALGORITHM：签名算法（固定 hmac-sha256）
+    - X-Tsign-Open-SIGNATURE：签名值
+  version: "3.0"
+
+servers:
+  - url: https://openapi.esign.cn
+    description: 正式环境
+  - url: https://smlopenapi.esign.cn
+    description: 沙箱环境
+
+tags:
+  - name: 流程模板
+    description: 流程模板的创建、查询、编辑、开启/停用、删除、复制
+  - name: 控件管理
+    description: 自定义业务控件的创建、编辑、删除、查询
+  - name: 控件组
+    description: 自定义控件组的创建、编辑、重命名、删除、查询
+  - name: 合同拟定
+    description: 基于流程模板发起合同拟定、获取填写链接、查询详情与状态、撤销、催填
+
+components:
+  securitySchemes:
+    signatureAuth:
+      type: apiKey
+      in: header
+      name: X-Tsign-Open-App-Id
+      description: |
+        e签宝签名鉴权。请求头还需包含：
+        X-Tsign-Open-TIMESTAMP（毫秒时间戳）、
+        X-Tsign-Open-SIGNATURE-ALGORITHM（固定 hmac-sha256）、
+        X-Tsign-Open-SIGNATURE（HMAC-SHA256签名值）
+
+  schemas:
+    CommonResponse:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 业务码，0表示成功，非0表示异常
+          example: 0
+        message:
+          type: string
+          description: 业务信息。请根据 code 判断错误，不应依赖 message 匹配
+          example: "成功"
+        data:
+          type: object
+          nullable: true
+          description: 业务数据
+
+    ComponentTextFormat:
+      type: object
+      description: 控件字符样式
+      properties:
+        font:
+          type: integer
+          description: "填充字体，默认1。1-宋体，2-新宋体，4-黑体，5-楷体"
+          example: 1
+        fontSize:
+          type: number
+          format: float
+          description: "填充字体大小，默认12（小四）。可选：42/36/26/24/22/19/16/15/14/12/10.5/9"
+          example: 12.0
+        textColor:
+          type: string
+          description: 字体颜色，默认 #000000
+          example: "#000000"
+        bold:
+          type: boolean
+          description: 是否加粗，默认false
+          example: false
+        italic:
+          type: boolean
+          description: 是否斜体，默认false
+          example: false
+        horizontalAlignment:
+          type: string
+          description: "水平对齐，默认LEFT。可选：LEFT/CENTER/RIGHT"
+          enum: [LEFT, CENTER, RIGHT]
+          example: LEFT
+        verticalAlignment:
+          type: string
+          description: "垂直对齐，默认TOP（适用于多行文本）。可选：TOP/MIDDLE/BOTTOM"
+          enum: [TOP, MIDDLE, BOTTOM]
+          example: TOP
+        textLineSpacing:
+          type: number
+          format: float
+          description: 行间距，默认1.0，最多一位小数，最大2.0（适用于多行文本）
+          example: 1.0
+
+    ComponentSize:
+      type: object
+      description: 控件尺寸
+      properties:
+        componentWidth:
+          type: integer
+          description: 控件宽度（矩形左右边距距离，单位px）
+          example: 160
+        componentHeight:
+          type: integer
+          description: 控件高度（矩形上下边距距离，单位px）
+          example: 15
+
+    ComponentSpecialAttribute:
+      type: object
+      description: 控件特有属性
+      properties:
+        numberFormat:
+          type: string
+          nullable: true
+          description: "数字格式（数字控件）。整数：0；保留一位小数：0.0；保留两位小数：0.00；通用数字：ANY"
+        dateFormat:
+          type: string
+          nullable: true
+          description: "日期格式（日期控件）。可选：yyyy/MM/dd、yyyy-MM-dd、yyyy年MM月dd日"
+        imageType:
+          type: string
+          nullable: true
+          description: "图片类型（图片控件）。IDCard_widthwise-身份证横向锁比例；IDCard_longitudinal-身份证纵向锁比例；other-其他不锁比例"
+        options:
+          type: array
+          nullable: true
+          description: 选项（下拉选择控件、单选控件、多选控件）
+          items:
+            type: object
+            properties:
+              optionOrder:
+                type: integer
+                description: 选项顺序
+              optionContent:
+                type: string
+                description: 选项内容
+              selected:
+                type: boolean
+                description: 是否默认选中
+
+    ComponentItem:
+      type: object
+      description: 自定义控件详情
+      properties:
+        componentId:
+          type: string
+          description: 控件ID
+        customBizNum:
+          type: string
+          description: 自定义业务编码
+        componentName:
+          type: string
+          description: 控件名称
+        componentType:
+          type: integer
+          description: "控件类型：1-文本，2-数字，3-日期，8-多行文本，9-复选，10-单选，11-图片，14-下拉选择，15-勾选框，16-身份证，19-手机号"
+        componentDefaultValue:
+          type: string
+          nullable: true
+          description: 控件默认值
+        required:
+          type: boolean
+          description: 是否必填，默认true
+        componentOrder:
+          type: integer
+          description: 控件展示顺序，默认1
+        componentSize:
+          $ref: '#/components/schemas/ComponentSize'
+        componentTextFormat:
+          $ref: '#/components/schemas/ComponentTextFormat'
+        componentSpecialAttribute:
+          $ref: '#/components/schemas/ComponentSpecialAttribute'
+
+    SignTemplateParticipantComponent:
+      type: object
+      description: 流程模板中参与方的控件信息
+      properties:
+        componentId:
+          type: string
+          nullable: true
+          description: 控件ID
+        componentKey:
+          type: string
+          nullable: true
+          description: 控件key（模板制作时由用户填写的控件标识）
+        componentName:
+          type: string
+          description: 控件名称
+        required:
+          type: boolean
+          description: 是否必填
+        componentType:
+          type: integer
+          description: "控件类型：1-文本，2-数字，3-日期，6-普通签署区，8-多行文本，9-复选，10-单选，11-图片，14-下拉选择，15-勾选框，16-身份证，17-备注签署区，18-动态表格，19-手机号"
+        componentDefaultValue:
+          type: string
+          nullable: true
+        componentPosition:
+          type: object
+          nullable: true
+          properties:
+            componentPositionX:
+              type: number
+              format: float
+            componentPositionY:
+              type: number
+              format: float
+            componentPageNum:
+              type: integer
+        componentSize:
+          $ref: '#/components/schemas/ComponentSize'
+        componentTextFormat:
+          $ref: '#/components/schemas/ComponentTextFormat'
+        componentSpecialAttribute:
+          type: object
+          nullable: true
+          properties:
+            dateFormat:
+              type: string
+              nullable: true
+            imageType:
+              type: string
+              nullable: true
+            options:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  optionOrder:
+                    type: integer
+                  optionContent:
+                    type: string
+                  selected:
+                    type: boolean
+                  optionPositionX:
+                    type: number
+                    format: float
+                  optionPositionY:
+                    type: number
+                    format: float
+                  optionWidth:
+                    type: number
+                    format: float
+                  optionHeight:
+                    type: number
+                    format: float
+            tableContent:
+              type: array
+              nullable: true
+              items:
+                type: object
+            numberFormat:
+              type: string
+              nullable: true
+            componentMaxLength:
+              type: string
+              nullable: true
+        normalSignField:
+          type: object
+          nullable: true
+          description: 普通签章区属性
+          properties:
+            showSignDate:
+              type: integer
+              description: "是否显示签署日期：0-不显示，1-显示"
+            dateFormat:
+              type: string
+              nullable: true
+            signFieldStyle:
+              type: integer
+              description: "签章区样式：1-单页签章区，2-骑缝签章区"
+            sealSpecs:
+              type: integer
+              description: "落章规则：1-以实际印章规格加盖，2-自定义印章规格加盖"
+            sealType:
+              type: integer
+              nullable: true
+              description: "印章类型：1-企业章，2-法人章，3-企业经办人章"
+            mustSign:
+              type: boolean
+            designatedSealNum:
+              type: integer
+            designatedSealIds:
+              type: array
+              items:
+                type: object
+                properties:
+                  sealId:
+                    type: string
+                  orgId:
+                    type: string
+        remarkSignField:
+          type: object
+          nullable: true
+          description: 备注签字区属性
+          properties:
+            inputType:
+              type: integer
+              description: "备注文字输入方式：1-手写抄录输入，2-键盘自由输入"
+            aiCheck:
+              type: integer
+              description: "是否开启AI手写抄录校验：0-不开启，1-开启AI校验，2-强制AI校验"
+            remarkContent:
+              type: string
+              nullable: true
+            remarkFontSize:
+              type: integer
+        originCustomComponentId:
+          type: string
+          nullable: true
+          description: 来源自定义控件ID
+        fileId:
+          type: string
+          nullable: true
+          description: 控件所属文件ID
+
+    OrgTransactor:
+      type: object
+      description: 企业参与方经办人
+      properties:
+        transactorPsnId:
+          type: string
+          nullable: true
+          description: 经办人个人ID
+        transactorPsnAccount:
+          type: string
+          nullable: true
+          description: 经办人手机号/邮箱
+        transactorName:
+          type: string
+          nullable: true
+          description: 经办人姓名
+
+    PsnAccount:
+      type: object
+      description: 个人账号
+      properties:
+        accountMobile:
+          type: string
+          nullable: true
+          description: e签宝服务个人登录手机号
+        accountEmail:
+          type: string
+          nullable: true
+          description: e签宝服务个人登录邮箱
+
+security:
+  - signatureAuth: []
+
+paths:
+
+  # ===== 流程模板 =====
+
+  /v3/sign-templates/sign-template-create-url:
+    post:
+      tags:
+        - 流程模板
+      summary: 获取《创建流程模板》页面链接
+      operationId: createSignTemplateUrl
+      description: |
+        获取企业用户授权后的流程模板制作页面链接。应用ID所属平台企业无需做授权。
+        链接有效期30分钟，无需登录即可访问。
+        创建完成后回调通知：开放平台订阅 CREATE_SIGN_TEMPLATE 事件。
+        开发者可在重定向地址上获取拼接的 signTemplateId。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orgId
+                - transactorPsnId
+                - redirectUrl
+              properties:
+                orgId:
+                  type: string
+                  description: 机构账号ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人账号ID（必须有模板操作权限，建议使用管理员账号）
+                redirectUrl:
+                  type: string
+                  description: 创建完成后重定向地址（最长1024字符）。重定向地址上会拼接 signTemplateId
+                hiddenOriginComponents:
+                  type: boolean
+                  default: false
+                  description: "是否隐藏原始控件。true-隐藏，false-不隐藏"
+                customComponentGroups:
+                  type: array
+                  description: 要展示的自定义控件组ID列表
+                  items:
+                    type: string
+                customComponents:
+                  type: array
+                  description: 要展示的自定义控件ID列表
+                  items:
+                    type: string
+                customBizNum:
+                  type: string
+                  description: 自定义业务编号，用于标识业务与模板对应关系，在回调中原样返回
+                uneditableFields:
+                  type: array
+                  description: "禁止用户在页面上修改或追加的内容。docs-待签文件，participants-参与方"
+                  items:
+                    type: string
+                    enum: [docs, participants]
+                fileIds:
+                  type: array
+                  description: 待签署底稿文件ID列表（最多50份，仅支持PDF）
+                  items:
+                    type: string
+                participants:
+                  type: array
+                  description: 参与方信息
+                  items:
+                    type: object
+                    required:
+                      - participantFlag
+                      - participantType
+                      - participateBizType
+                      - participantSetMode
+                    properties:
+                      participantFlag:
+                        type: string
+                        description: 参与方标识（同一模板中不可重复，建议设为甲方/乙方等）
+                      participantType:
+                        type: integer
+                        description: "参与方类型：1-企业，2-个人"
+                        enum: [1, 2]
+                      participateBizType:
+                        type: string
+                        description: "参与方式：1-填写，2-签署，既填又签用逗号分隔：\"1,2\""
+                      draftOrder:
+                        type: integer
+                        description: 填写顺序，默认1，可指定1-255，不同参与人不可重复
+                      signOrder:
+                        type: integer
+                        description: 签署顺序，默认1，可指定1-255，不同参与人可重复
+                      participantSetMode:
+                        type: integer
+                        description: "参与要求：1-使用模板时指定，2-固定成员，3-发起人本人"
+                        enum: [1, 2, 3]
+                      orgParticipant:
+                        type: object
+                        description: 企业参与方（participantType=1且participantSetMode=2时生效）
+                        required:
+                          - orgName
+                          - transactor
+                        properties:
+                          orgName:
+                            type: string
+                          transactor:
+                            type: object
+                            required:
+                              - transactorPsnAccount
+                              - transactorName
+                            properties:
+                              transactorPsnAccount:
+                                type: string
+                                description: 经办人手机号/邮箱
+                              transactorName:
+                                type: string
+                                description: 经办人姓名
+                      psnParticipant:
+                        type: object
+                        description: 个人参与方（participantType=2且participantSetMode=2时生效）
+                        required:
+                          - psnAccount
+                          - psnName
+                        properties:
+                          psnAccount:
+                            type: string
+                            description: 个人手机号/邮箱
+                          psnName:
+                            type: string
+                            description: 个人姓名
+                dedicatedCloudId:
+                  type: string
+                  description: 专属云项目ID（购买专属云服务时使用）
+            example:
+              orgId: "6b498644****11b590803b800"
+              transactorPsnId: "498644******b590803b120"
+              redirectUrl: "https://****.cn"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          signTemplateCreateUrl:
+                            type: string
+                            description: 流程模板创建页面链接（无需登录，有效期30分钟）
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  signTemplateCreateUrl: "https://smlh5.esign.cn/auth/guide?loginId=2a8***-3f**-4b60-a***-ded31***d61"
+
+  /v3/sign-templates/enable:
+    post:
+      tags:
+        - 流程模板
+      summary: 开启流程模板
+      operationId: enableSignTemplate
+      description: |
+        流程模板开启后才可用于发起合同拟定、签署流程等。
+        模板被停用并编辑后，需通过此接口再次开启。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orgId
+                - transactorPsnId
+                - signTemplateId
+              properties:
+                orgId:
+                  type: string
+                  description: 机构用户ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人个人用户ID（必须有模板操作权限）
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+            example:
+              orgId: "842ec8ce3fc*****fc91662f"
+              transactorPsnId: "7ffca******1d8f0ef0a8f6"
+              signTemplateId: "a3924a089******fd8203aa2"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/sign-templates/disable:
+    post:
+      tags:
+        - 流程模板
+      summary: 停用流程模板
+      operationId: disableSignTemplate
+      description: |
+        停用流程模板后，模板不可使用。
+        如需编辑原有模板，模板必须先做停用设置，才可再次编辑。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orgId
+                - transactorPsnId
+                - signTemplateId
+              properties:
+                orgId:
+                  type: string
+                  description: 机构用户ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人个人用户ID（必须有模板操作权限）
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+            example:
+              orgId: "842ec8ce3fc*****fc91662f"
+              transactorPsnId: "7ffca******1d8f0ef0a8f6"
+              signTemplateId: "a3924a089******fd8203aa2"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/sign-templates/{signTemplateId}/sign-template-edit-url:
+    post:
+      tags:
+        - 流程模板
+      summary: 获取《编辑流程模板》页面链接
+      operationId: editSignTemplateUrl
+      description: |
+        当模板需要修改，可通过原模板ID再次获取模板设置页面进行编辑。
+        前置条件：
+        1. 企业用户已授予资源管理权限（manage_org_resource）
+        2. 模板必须处于停用状态才可编辑
+        链接有效期30分钟，无需登录即可访问。
+      parameters:
+        - name: signTemplateId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 流程模板ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orgId
+                - transactorPsnId
+                - redirectUrl
+              properties:
+                orgId:
+                  type: string
+                  description: 机构用户ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人个人用户ID（必须有模板操作权限）
+                redirectUrl:
+                  type: string
+                  description: 编辑完成后重定向地址（最长1024字符）
+                hiddenOriginComponents:
+                  type: boolean
+                  default: false
+                  description: "是否隐藏原始控件"
+                customComponentGroups:
+                  type: array
+                  description: 要展示的自定义控件组ID列表
+                  items:
+                    type: string
+                customComponents:
+                  type: array
+                  description: 要展示的自定义控件ID列表
+                  items:
+                    type: string
+                uneditableFields:
+                  type: array
+                  description: "禁止用户在页面上修改或追加的内容。docs-待签文件，participants-参与方"
+                  items:
+                    type: string
+                    enum: [docs, participants]
+            example:
+              orgId: "6b498644****11b590803b800"
+              transactorPsnId: "498644******b590803b120"
+              redirectUrl: "https://****.cn"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          signTemplateEditUrl:
+                            type: string
+                            description: 编辑流程模板页面链接（无需登录，有效期30分钟）
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  signTemplateEditUrl: "https://smlh5.esign.cn/auth/guide?loginId=1cfb81fe-3***-4042-a8**-8a39b1***48"
+
+  /v3/sign-templates/detail:
+    get:
+      tags:
+        - 流程模板
+      summary: 查询流程模板详情
+      operationId: getSignTemplateDetail
+      description: 查询企业用户下某一流程模板的详情，包括文件信息、参与人信息及控件信息。
+      parameters:
+        - name: signTemplateId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 流程模板ID
+        - name: orgId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 机构账号ID
+        - name: queryComponents
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: "是否需要查询控件信息。true-是，false-否（默认）"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orgId:
+                            type: string
+                            description: 机构账号ID
+                          signTemplateId:
+                            type: string
+                            description: 流程模板ID
+                          signTemplateName:
+                            type: string
+                            description: 流程模板名称
+                          signTemplateStatus:
+                            type: integer
+                            description: "流程模板可用状态：0-停用，1-启用"
+                            enum: [0, 1]
+                          docs:
+                            type: array
+                            description: 底稿文件信息
+                            items:
+                              type: object
+                              properties:
+                                fileId:
+                                  type: string
+                                fileName:
+                                  type: string
+                                fileNameConversion:
+                                  type: string
+                                  description: 文件转换后的文件名称
+                                fileDownloadUrl:
+                                  type: string
+                                  description: 文件底稿PDF下载链接（有效期60分钟）
+                          participants:
+                            type: array
+                            description: 参与方列表
+                            items:
+                              type: object
+                              properties:
+                                participantId:
+                                  type: string
+                                  description: 参与方ID（需保存用于后续发起时使用）
+                                participantFlag:
+                                  type: string
+                                  description: 参与方标识
+                                participantType:
+                                  type: integer
+                                  description: "参与方类型：1-企业，2-个人"
+                                participateBizType:
+                                  type: string
+                                  description: "参与方式：1-填写，2-签署，逗号分隔"
+                                participantSetMode:
+                                  type: integer
+                                  description: "参与要求：1-使用模板时指定，2-固定成员，3-发起人本人，4-固定企业"
+                                orgParticipant:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    orgId:
+                                      type: string
+                                      nullable: true
+                                    orgName:
+                                      type: string
+                                      nullable: true
+                                    transactor:
+                                      $ref: '#/components/schemas/OrgTransactor'
+                                psnParticipant:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    psnId:
+                                      type: string
+                                      nullable: true
+                                    psnAccount:
+                                      type: string
+                                      nullable: true
+                                    psnName:
+                                      type: string
+                                      nullable: true
+                                draftOrder:
+                                  type: integer
+                                  nullable: true
+                                  description: 填写顺序
+                                signOrder:
+                                  type: integer
+                                  description: 签署顺序
+                                sealTypes:
+                                  type: string
+                                  description: "可选签章方式（逗号分隔）：1-企业章，2-法定代表人章，3-个人手绘签名，4-个人模板章，5-个人AI手绘签名"
+                                willingnessAuthModes:
+                                  type: string
+                                  description: "签署人可选意愿方式（逗号分隔）：1-人脸认证，2-短信验证码，3-邮箱验证码，4-签署密码"
+                                components:
+                                  type: array
+                                  description: 控件列表
+                                  items:
+                                    $ref: '#/components/schemas/SignTemplateParticipantComponent'
+                          copiers:
+                            type: array
+                            nullable: true
+                            description: 抄送方列表
+                            items:
+                              type: object
+                              properties:
+                                copierPsnInfo:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    psnId:
+                                      type: string
+                                    psnAccount:
+                                      type: string
+                                    psnName:
+                                      type: string
+                                copierOrgInfo:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    orgId:
+                                      type: string
+                                    orgName:
+                                      type: string
+                          attachments:
+                            type: array
+                            nullable: true
+                            description: 附件（无需签名的文件）信息
+                            items:
+                              type: object
+                              properties:
+                                fileId:
+                                  type: string
+                                fileName:
+                                  type: string
+                                downloadUrl:
+                                  type: string
+                                  description: 文件下载地址（30天有效）
+                          dedicatedCloudId:
+                            type: string
+                            nullable: true
+                            description: 专属云项目ID
+
+  /v3/sign-templates:
+    get:
+      tags:
+        - 流程模板
+      summary: 查询流程模板列表
+      operationId: listSignTemplates
+      description: 查询企业用户下的全部流程模板列表，可根据状态筛选。
+      parameters:
+        - name: orgId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 机构账号ID
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 20
+          description: 每页显示的数量，最大值20（默认20）
+        - name: pageNum
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: 查询页码（默认1）
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+          description: "流程模板可用状态，默认查询全部。0-停用，1-启用"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            description: 查询结果中的流程模板总数量
+                          signTemplates:
+                            type: array
+                            description: 流程模板列表
+                            items:
+                              type: object
+                              properties:
+                                signTemplateName:
+                                  type: string
+                                  description: 流程模板名称
+                                signTemplateId:
+                                  type: string
+                                  description: 流程模板ID
+                                createTime:
+                                  type: integer
+                                  format: int64
+                                  description: 创建时间（时间戳）
+                                updateTime:
+                                  type: integer
+                                  format: int64
+                                  description: 更新时间（时间戳）
+                                status:
+                                  type: integer
+                                  description: "流程模板可用状态：0-停用，1-启用"
+                                  enum: [0, 1]
+                                signTemplateSource:
+                                  type: integer
+                                  description: "流程模板来源（扩展字段，固定返回1）"
+
+  /v3/sign-templates/permission:
+    get:
+      tags:
+        - 流程模板
+      summary: 查询用户在某企业下能否编辑或使用某流程模板
+      operationId: getSignTemplatePermission
+      description: 查询某用户在某企业下能否编辑、使用某流程模板。
+      parameters:
+        - name: psnId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 个人账号ID
+        - name: orgId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 机构账号ID
+        - name: signTemplateId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 流程模板ID
+        - name: permission
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [1, 2]
+          description: "流程模板编辑或使用权限，默认查询全部。1-编辑权限，2-使用权限"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          editPermission:
+                            type: boolean
+                            description: "编辑权限。true-可使用，false-不可使用"
+                          usingPermission:
+                            type: boolean
+                            description: "使用权限。true-可使用，false-不可使用"
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  editPermission: true
+                  usingPermission: true
+
+  /v3/sign-templates/delete:
+    post:
+      tags:
+        - 流程模板
+      summary: 删除流程模板
+      operationId: deleteSignTemplate
+      description: |
+        删除已存在的流程模板，模板删除后不可恢复，只能重新制作。
+        **【谨慎操作】**
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - signTemplateId
+                - orgId
+                - transactorPsnId
+              properties:
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+                orgId:
+                  type: string
+                  description: 机构用户ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人个人用户ID（必须有模板操作权限）
+            example:
+              orgId: "842ec8ce3*****c91662f"
+              transactorPsnId: "7ffcaed8****1d8f0ef0a8f6"
+              signTemplateId: "a3924a08******4fd8203aa2"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/sign-templates/copy:
+    post:
+      tags:
+        - 流程模板
+      summary: 复制流程模板
+      operationId: copySignTemplate
+      description: |
+        将原有流程模板复制一份副本到当前企业空间，或到其他企业空间。
+        复制到当前企业空间时，新模板名称规则：原名称 + "_副本"（复制到其他企业空间不加"_副本"）。
+        复制到其他企业空间需提前通过用户授权接口获取 manage_org_template 权限。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orgId
+                - transactorPsnId
+                - signTemplateId
+              properties:
+                orgId:
+                  type: string
+                  description: 机构账号ID
+                transactorPsnId:
+                  type: string
+                  description: 经办人个人账号ID（必须有模板复制权限）
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+                copyToExternalOrg:
+                  type: boolean
+                  default: false
+                  description: "是否复制到外部企业。true-是，false-否（默认）"
+                externalOrgId:
+                  type: string
+                  description: 外部企业的机构账号ID（copyToExternalOrg=true时必传）
+                externalTransactorPsnId:
+                  type: string
+                  description: 外部企业的经办人个人账号ID（copyToExternalOrg=true时必传）
+            example:
+              orgId: "842ec8ce******5fc91662f"
+              transactorPsnId: "7ffcaed8******d8f0ef0a8f6"
+              signTemplateId: "6f5aa0fc*****756b42f71adb"
+              copyToExternalOrg: true
+              externalOrgId: "3c4047cc*****279134e7"
+              externalTransactorPsnId: "10fcaed*****0ef0a8zn"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          copiedSignTemplateId:
+                            type: string
+                            description: 复制出来的新流程模板ID
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  copiedSignTemplateId: "c73a84b28c******e2bfa312ed"
+
+  # ===== 合同拟定 =====
+
+  /v3/sign-flow/create-by-sign-template:
+    post:
+      tags:
+        - 合同拟定
+      summary: 通过流程模板创建合同拟定和签署流程
+      operationId: createSignFlowByTemplate
+      description: |
+        使用 signTemplateId（流程模板ID）发起合同的拟定（用户填写）和签署流程。
+        发起方企业必须和流程模板ID的拥有企业一致，否则报错"流程模板拥有者不匹配"。
+        当指定发起方为非应用ID所属企业时，需先经过用户授权（代个人/企业用户发起合同签署权限）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - signTemplateId
+                - signFlowConfig
+              properties:
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+                signFlowInitiator:
+                  type: object
+                  description: 发起方信息（不传则默认为应用ID所属企业发起）
+                  properties:
+                    orgId:
+                      type: string
+                      description: 机构账号ID
+                    transactor:
+                      type: object
+                      description: 机构发起方经办人（模板参与方设置为发起人本人时，必须在此指定）
+                      properties:
+                        psnId:
+                          type: string
+                          description: 经办人账号ID
+                    initialRemarks:
+                      type: array
+                      description: 合同备注信息（最多1条，最多300字符）
+                      items:
+                        type: string
+                signFlowConfig:
+                  type: object
+                  required:
+                    - signFlowTitle
+                  description: 签署流程配置项
+                  properties:
+                    signFlowTitle:
+                      type: string
+                      description: 签署任务主题（不可含：/ \\ : * \" < > | ？及emoji表情）
+                    signFlowExpireTime:
+                      type: integer
+                      format: int64
+                      description: 签署截止时间（Unix毫秒时间戳，默认开启后90天截止）
+                    autoStart:
+                      type: boolean
+                      default: true
+                      description: "合同拟定完成后是否自动开启签署流程。true-自动开启（默认），false-非自动"
+                    autoFinish:
+                      type: boolean
+                      default: false
+                      description: "所有签署方签署完成后是否自动完结。true-自动，false-非自动（需调用完结接口）"
+                    notifyUrl:
+                      type: string
+                      description: 接收相关回调通知的Web地址
+                    signConfig:
+                      type: object
+                      properties:
+                        availableSignClientTypes:
+                          type: string
+                          description: "签署终端类型（逗号分隔，默认1和2）：1-网页，2-支付宝，3-微信小程序，4-e签宝app"
+                          example: "1,2"
+                        autoFillAndSubmit:
+                          type: boolean
+                          default: false
+                          description: "必填控件已预填值情况下是否自动跳过该参与方填写步骤"
+                        editComponentValue:
+                          type: boolean
+                          default: true
+                          description: "用户填写页面是否可以修改系统预填内容"
+                    noticeConfig:
+                      type: object
+                      properties:
+                        noticeTypes:
+                          type: string
+                          description: "通知类型（逗号分隔）：空字符串-不通知（默认），1-短信通知，2-邮件通知"
+                          example: "1"
+                        examineNotice:
+                          type: boolean
+                          description: "通知给企业印章用印审批人员。true-发送，false-不发送。不传则取noticeTypes配置"
+                    authConfig:
+                      type: object
+                      properties:
+                        psnAvailableAuthModes:
+                          type: array
+                          description: "个人实名认证方式：PSN_MOBILE3-运营商三要素，PSN_FACE-刷脸，PSN_BANKCARD4-银行卡四要素"
+                          items:
+                            type: string
+                            enum: [PSN_MOBILE3, PSN_FACE, PSN_BANKCARD4]
+                        orgAvailableAuthModes:
+                          type: array
+                          description: "机构实名认证方式：ORG_BANK_TRANSFER-对公打款，ORG_ALIPAY_CREDIT-企业支付宝，ORG_LEGALREP_AUTHORIZATION-授权委托书，ORG_LEGALREP-法定代表人本人"
+                          items:
+                            type: string
+                            enum: [ORG_BANK_TRANSFER, ORG_ALIPAY_CREDIT, ORG_LEGALREP_AUTHORIZATION, ORG_LEGALREP]
+                    contractConfig:
+                      type: object
+                      properties:
+                        allowToRescind:
+                          type: boolean
+                          default: true
+                          description: "该签署流程是否允许发起解约"
+                    chargeConfig:
+                      type: object
+                      properties:
+                        chargeMode:
+                          type: integer
+                          default: 0
+                          description: "计费模式：0-接口集成方付费，1-发起方企业付费，2-签署方付费"
+                          enum: [0, 1, 2]
+                        orderType:
+                          type: string
+                          description: "订单套餐类型，默认普通订单套餐。DISTRIBUTION-生态伙伴订单套餐"
+                participants:
+                  type: array
+                  description: |
+                    参与方信息。
+                    当模板参与方配置为"使用模板时指定"或"固定企业"时必传（需通过查询流程模板详情接口获取参与方ID）。
+                    当模板参与方配置为"固定成员"或"发起人本人"时不传。
+                  items:
+                    type: object
+                    required:
+                      - participantId
+                    properties:
+                      participantId:
+                        type: string
+                        description: 参与方ID（通过查询流程模板详情接口获取）
+                      orgParticipant:
+                        type: object
+                        description: 企业参与方
+                        properties:
+                          orgId:
+                            type: string
+                            description: 企业ID（与orgName二选一）
+                          orgName:
+                            type: string
+                            description: 企业名称（与orgId二选一）
+                          sealOwnerId:
+                            type: string
+                            description: 印章所属主体企业ID（印章跨企业授权场景使用）
+                          transactor:
+                            type: object
+                            properties:
+                              transactorPsnId:
+                                type: string
+                                description: 经办人个人ID（传orgId时必传）
+                              transactorPsnAccount:
+                                type: string
+                                description: 经办人手机号/邮箱（传orgName时必传）
+                              transactorName:
+                                type: string
+                                description: 经办人姓名（传orgName时必传）
+                              transactorPsnIDCardNum:
+                                type: string
+                                description: 经办人证件号
+                              transactorPsnIDCardType:
+                                type: string
+                                description: "经办人证件类型：CRED_PSN_CH_IDCARD（默认）/CRED_PSN_CH_HONGKONG/CRED_PSN_CH_MACAO/CRED_PSN_CH_TWCARD/CRED_PSN_PASSPORT"
+                      psnParticipant:
+                        type: object
+                        description: 个人参与方
+                        properties:
+                          psnId:
+                            type: string
+                            description: 个人ID（与psnAccount二选一）
+                          psnAccount:
+                            type: string
+                            description: 个人手机号/邮箱（与psnId二选一）
+                          psnName:
+                            type: string
+                            description: 个人姓名（传psnAccount时必传；传psnId时不能传）
+                          psnIDCardNum:
+                            type: string
+                            description: 个人证件号
+                          psnIDCardType:
+                            type: string
+                            description: "个人证件类型：CRED_PSN_CH_IDCARD（默认）等"
+                addCopiers:
+                  type: array
+                  description: 添加抄送方
+                  items:
+                    type: object
+                    properties:
+                      copierPsnInfo:
+                        type: object
+                        description: 个人抄送方信息
+                        properties:
+                          psnId:
+                            type: string
+                          psnAccount:
+                            type: string
+                          psnName:
+                            type: string
+                      copierOrgInfo:
+                        type: object
+                        description: 机构抄送方信息
+                        properties:
+                          orgId:
+                            type: string
+                          orgName:
+                            type: string
+                addAttachments:
+                  type: array
+                  description: 添加合同附件（无需签名，仅用于查看）
+                  items:
+                    type: object
+                    properties:
+                      fileId:
+                        type: string
+                        description: 合同附件的文件ID
+                      fileName:
+                        type: string
+                        description: 合同附件名称（不可含特殊字符）
+                components:
+                  type: array
+                  description: 控件列表（用于模板控件的开发者预填内容）
+                  items:
+                    type: object
+                    properties:
+                      fileId:
+                        type: string
+                        description: 控件所属文件ID
+                      componentId:
+                        type: string
+                        description: 控件ID（与componentKey二选一）
+                      componentKey:
+                        type: string
+                        description: 控件key（与componentId二选一）
+                      componentValue:
+                        type: string
+                        description: 控件填充值
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          signFlowId:
+                            type: string
+                            description: 签署流程ID
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  signFlowId: "ae87ca*******0d3e25d"
+
+  /v3/sign-flow/{signFlowId}/draft-url:
+    post:
+      tags:
+        - 合同拟定
+      summary: 获取填写页面链接
+      operationId: getDraftUrl
+      description: |
+        通过 signFlowId 获取用户的合同拟定（填写）页面链接。
+        需登录链接永久有效；免登录链接默认30分钟有效。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 签署流程ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - operator
+              properties:
+                operator:
+                  type: object
+                  description: 填写操作人（个人填写方本人为操作人，机构填写方经办人为操作人）
+                  properties:
+                    psnId:
+                      type: string
+                      description: 填写人账号ID（与psnAccount二选一，同时传优先取psnId）
+                    psnAccount:
+                      type: string
+                      description: 填写人账号，手机号或邮箱（与psnId二选一）
+                needLogin:
+                  type: boolean
+                  default: true
+                  description: "是否需要登录打开填写链接。true-需登录（默认），false-免登录（30分钟有效）"
+                urlType:
+                  type: integer
+                  default: 2
+                  description: "填写链接类型。1-预览链接，2-填写链接（默认）"
+                  enum: [1, 2]
+                clientType:
+                  type: string
+                  default: ALL
+                  description: "指定客户端类型。ALL-自动适配（默认），H5-移动端，PC-PC端。微信小程序场景需指定H5"
+                  enum: [ALL, H5, PC]
+                redirectConfig:
+                  type: object
+                  description: 重定向配置项
+                  properties:
+                    redirectUrl:
+                      type: string
+                      description: 重定向地址
+                    redirectDelayTime:
+                      type: integer
+                      description: "操作完成后页面重定向延迟时间（秒，默认3秒）。0-不展示结果页直接跳转；X-倒计时X秒后跳转"
+            example:
+              operator:
+                psnAccount: "138****8888"
+              needLogin: false
+              urlType: 2
+              clientType: "ALL"
+              redirectConfig:
+                redirectUrl: "http://esign.cn"
+                redirectDelayTime: 3
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          draftUrl:
+                            type: string
+                            description: 长链地址（需要登录永久有效，免登录30分钟有效）
+                          draftShortUrl:
+                            type: string
+                            description: 短链地址（需要登录30天有效，免登录30分钟有效）
+
+  /v3/sign-flow/{signFlowId}/draft-detail:
+    get:
+      tags:
+        - 合同拟定
+      summary: 查询合同拟定详情
+      operationId: getDraftDetail
+      description: 查询流程中合同拟定的具体详情信息，包括拟定状态、填写方信息、文件信息等。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 签署流程ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          draftStatus:
+                            type: integer
+                            description: "拟定流程状态：1-拟定中，2-完成，3-撤销，4-拒填，5-过期"
+                            enum: [1, 2, 3, 4, 5]
+                          draftStartTime:
+                            type: integer
+                            format: int64
+                            description: 拟定流程开启时间（时间戳）
+                          draftEndTime:
+                            type: integer
+                            format: int64
+                            description: 拟定流程结束时间（时间戳）
+                          signTemplateId:
+                            type: string
+                            description: 签署流程模板ID
+                          signFlowInitiator:
+                            type: object
+                            description: 签署流程发起方
+                            properties:
+                              orgId:
+                                type: string
+                                nullable: true
+                                description: 机构发起方的ID
+                              transactor:
+                                type: object
+                                nullable: true
+                                description: 机构发起方的发起人
+                                properties:
+                                  psnId:
+                                    type: string
+                                    description: 发起人的个人ID
+                          signFlowConfig:
+                            type: object
+                            description: 签署流程配置
+                            properties:
+                              signFlowTitle:
+                                type: string
+                              signFlowExpireTime:
+                                type: integer
+                                format: int64
+                              autoStart:
+                                type: boolean
+                              autoFinish:
+                                type: boolean
+                              notifyUrl:
+                                type: string
+                              chargeConfig:
+                                type: object
+                                properties:
+                                  chargeMode:
+                                    type: integer
+                                  orderType:
+                                    type: string
+                                    nullable: true
+                              noticeConfig:
+                                type: object
+                                properties:
+                                  noticeTypes:
+                                    type: string
+                                  examineNotice:
+                                    type: boolean
+                                    nullable: true
+                              signConfig:
+                                type: object
+                                properties:
+                                  availableSignClientTypes:
+                                    type: string
+                              authConfig:
+                                type: object
+                                properties:
+                                  psnAvailableAuthModes:
+                                    type: array
+                                    items:
+                                      type: string
+                                  orgAvailableAuthModes:
+                                    type: array
+                                    items:
+                                      type: string
+                          drafters:
+                            type: array
+                            description: 填写方信息
+                            items:
+                              type: object
+                              properties:
+                                participantId:
+                                  type: string
+                                participantFlag:
+                                  type: string
+                                draftOrder:
+                                  type: integer
+                                draftStatus:
+                                  type: integer
+                                  description: "填写状态：1-未填写，2-填写中，3-已填写，4-拒填"
+                                  enum: [1, 2, 3, 4]
+                                statusUpdateTime:
+                                  type: integer
+                                  format: int64
+                                orgDrafter:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    orgId:
+                                      type: string
+                                    orgName:
+                                      type: string
+                                    transactor:
+                                      type: object
+                                      nullable: true
+                                      properties:
+                                        transactorPsnId:
+                                          type: string
+                                        transactorPsnAccount:
+                                          type: string
+                                        transactorName:
+                                          type: string
+                                psnDrafter:
+                                  type: object
+                                  nullable: true
+                                  properties:
+                                    psnId:
+                                      type: string
+                                    psnAccount:
+                                      type: string
+                                    psnName:
+                                      type: string
+                          docs:
+                            type: array
+                            description: 待签名文件信息
+                            items:
+                              type: object
+                              properties:
+                                fileId:
+                                  type: string
+                                fileName:
+                                  type: string
+                                downloadUrl:
+                                  type: string
+                                  description: 文件下载地址（合同完成拟定后才返回，有效期60分钟）
+
+  /v3/sign-flow/list:
+    post:
+      tags:
+        - 合同拟定
+      summary: 查询合同拟定流程列表
+      operationId: listDraftFlows
+      description: |
+        查询指定时间段内，接口发起的全部合同拟定流程列表信息。
+        仅能查询当前应用ID（appId）通过接口发起的合同拟定流程列表。
+        时间范围最长不超过1年，且只能查询近5年的流程。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pageNum
+                - pageSize
+                - signFlowStartTimeFrom
+                - signFlowStartTimeTo
+              properties:
+                pageNum:
+                  type: integer
+                  minimum: 1
+                  description: 页码（大于0，最小值为1）
+                pageSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: 每页展示的数量（1~100）
+                signFlowStartTimeFrom:
+                  type: integer
+                  format: int64
+                  description: 开始时间（流程发起时间，毫秒级时间戳）
+                signFlowStartTimeTo:
+                  type: integer
+                  format: int64
+                  description: 结束时间（流程发起时间，毫秒级时间戳）
+                initiator:
+                  type: object
+                  description: 发起方
+                  properties:
+                    initiatorOrgId:
+                      type: string
+                      description: 机构发起方ID
+                    transactorPsnId:
+                      type: string
+                      description: 机构发起方经办人ID
+                operator:
+                  type: object
+                  description: 填写操作人
+                  properties:
+                    psnId:
+                      type: string
+                      description: 填写操作人个人ID
+                    psnAccount:
+                      type: string
+                      description: 填写操作人个人账号
+                organization:
+                  type: object
+                  description: 机构填写方
+                  properties:
+                    orgId:
+                      type: string
+                    orgName:
+                      type: string
+                draftStatus:
+                  type: array
+                  description: "拟定流程状态（默认全部）：1-拟定中，2-完成，3-撤销，4-拒填，5-过期"
+                  items:
+                    type: integer
+                    enum: [1, 2, 3, 4, 5]
+                fillStatus:
+                  type: array
+                  description: "某个填写人的填写状态（默认全部）：1-未填写，2-填写中，3-已填写，4-拒填。查询此状态必须传operator"
+                  items:
+                    type: integer
+                    enum: [1, 2, 3, 4]
+            example:
+              pageNum: 1
+              pageSize: 20
+              signFlowStartTimeFrom: 1674295319000
+              signFlowStartTimeTo: 1676973733064
+              draftStatus:
+                - 1
+                - 2
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            description: 查询总数
+                          draftInfos:
+                            type: array
+                            description: 拟定流程信息列表
+                            items:
+                              type: object
+                              properties:
+                                signFlowId:
+                                  type: string
+                                signFlowTitle:
+                                  type: string
+                                draftStatus:
+                                  type: integer
+                                  description: "1-拟定中，2-完成，3-撤销，4-拒填，5-过期"
+                                draftStartTime:
+                                  type: integer
+                                  format: int64
+                                draftFinishTime:
+                                  type: integer
+                                  format: int64
+                                  nullable: true
+                                signFlowInitiator:
+                                  type: object
+                                  properties:
+                                    orgId:
+                                      type: string
+                                    orgName:
+                                      type: string
+                                    transactor:
+                                      type: object
+                                      nullable: true
+                                drafters:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      draftOrder:
+                                        type: integer
+                                      fillStatus:
+                                        type: integer
+                                      psnDrafter:
+                                        type: object
+                                        nullable: true
+                                        properties:
+                                          psnId:
+                                            type: string
+                                          psnAccount:
+                                            $ref: '#/components/schemas/PsnAccount'
+                                      orgDrafter:
+                                        type: object
+                                        nullable: true
+                                        properties:
+                                          orgId:
+                                            type: string
+                                          orgName:
+                                            type: string
+                                          transactor:
+                                            type: object
+                                            nullable: true
+                                            properties:
+                                              psnId:
+                                                type: string
+                                              psnAccount:
+                                                $ref: '#/components/schemas/PsnAccount'
+
+  /v3/sign-flow/{signFlowId}/status:
+    get:
+      tags:
+        - 合同拟定
+      summary: 查询合同拟定和签署流程状态
+      operationId: getSignFlowStatus
+      description: 查询流程的具体状态，包含合同拟定状态和签署状态。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 签署流程ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          draftStatus:
+                            type: integer
+                            nullable: true
+                            description: "合同拟定状态：1-拟定中，2-完成，3-撤销，4-拒填，5-过期。合同拟定完成后才流转到签署阶段"
+                            enum: [1, 2, 3, 4, 5]
+                          signFlowStatus:
+                            type: integer
+                            nullable: true
+                            description: "签署流程状态：0-草稿，1-签署中，2-完成，3-撤销，5-过期，7-拒签。若流程未流转到签署阶段则返回null"
+                            enum: [0, 1, 2, 3, 5, 7]
+                          rescissionStatus:
+                            type: integer
+                            nullable: true
+                            description: "签署流程的解约状态：0-未解约，1-解约中，2-部分解约，3-已解约。签署流程完成后才允许发起解约"
+                            enum: [0, 1, 2, 3]
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  draftStatus: 2
+                  signFlowStatus: 1
+                  rescissionStatus: 0
+
+  /v3/sign-flow/{signFlowId}/rescind:
+    post:
+      tags:
+        - 合同拟定
+      summary: 撤销合同拟定
+      operationId: rescindDraft
+      description: |
+        撤销合同拟定过程中的合同。拟定流程撤销后，该流程作废，需要重新发起新的流程。
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 签署流程ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: {}
+
+  /v3/sign-flow/{signFlowId}/urge-filling:
+    post:
+      tags:
+        - 合同拟定
+      summary: 催填流程中填写人
+      operationId: urgeFilling
+      description: |
+        向当前轮到填写但还未填写的填写人发送催填提醒，支持指定填写人。
+        注意事项：
+        - 发起填写后的前半小时不可催填
+        - 与上一次催填至少间隔十分钟
+      parameters:
+        - name: signFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 填写流程ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                urgedOperator:
+                  type: object
+                  description: 指定被催填的填写人（为空则催填所有当前轮到但未填写的填写人）
+                  properties:
+                    psnAccount:
+                      type: string
+                      description: 被催填人账号标识（手机号/邮箱）
+                    psnId:
+                      type: string
+                      description: 被催填人账号ID
+            example:
+              urgedOperator:
+                psnAccount: "183****0101"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  # ===== 控件管理 =====
+
+  /v3/custom-components/create:
+    post:
+      tags:
+        - 控件管理
+      summary: 创建自定义业务控件
+      operationId: createCustomComponents
+      description: |
+        为开发者提供自定义控件的能力，关联到自身系统中的业务字段，以便后续实现控件内容从开发者系统中提取并自动填写到模板中。
+        注意：
+        - 每个appId下最多创建30000个自定义控件
+        - 自2024年3月28日起不再对 componentName 校验唯一性，新增 customBizNum 字段，开发者自行控制唯一性
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - components
+              properties:
+                components:
+                  type: array
+                  description: 控件列表
+                  items:
+                    type: object
+                    required:
+                      - componentName
+                      - componentType
+                    properties:
+                      componentName:
+                        type: string
+                        description: 控件名称（最多100个字符）
+                      customBizNum:
+                        type: string
+                        description: 自定义业务编码（开发者自行控制唯一性，可用于查询）
+                      componentOrder:
+                        type: integer
+                        description: 控件展示顺序（0-9999从小到大排序，不设置则按创建时间正序）
+                      componentType:
+                        type: integer
+                        description: "控件类型：1-文本，2-数字，3-日期，8-多行文本，9-复选，10-单选，11-图片，14-下拉选择，15-勾选框，16-身份证，19-手机号"
+                        enum: [1, 2, 3, 8, 9, 10, 11, 14, 15, 16, 19]
+                      componentDefaultValue:
+                        type: string
+                        description: 控件默认值
+                      required:
+                        type: boolean
+                        default: true
+                        description: "是否必填（模板控件填写时）。true-必填（默认），false-非必填"
+                      componentSize:
+                        $ref: '#/components/schemas/ComponentSize'
+                      componentTextFormat:
+                        $ref: '#/components/schemas/ComponentTextFormat'
+                      componentSpecialAttribute:
+                        $ref: '#/components/schemas/ComponentSpecialAttribute'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customComponents:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                customComponentId:
+                                  type: string
+                                  description: 自定义控件ID
+                                customComponentName:
+                                  type: string
+                                  description: 自定义控件名称
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  customComponents:
+                    - customComponentId: "29100f*****77433adb"
+                      customComponentName: "0522005自定义控件名称"
+
+  /v3/custom-components/rename:
+    post:
+      tags:
+        - 控件管理
+      summary: 编辑自定义业务控件
+      operationId: renameCustomComponent
+      description: 通过此接口修改自定义业务控件的控件名称。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentId
+                - componentName
+              properties:
+                componentId:
+                  type: string
+                  description: 控件ID
+                componentName:
+                  type: string
+                  description: 控件名称
+                customBizNum:
+                  type: string
+                  description: 自定义业务编码（可用于查询，需开发者自行控制唯一性）
+            example:
+              componentId: "9e2d9b4******c0eef4ba5059"
+              componentName: "改的自定义控件名称"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/custom-components/delete:
+    post:
+      tags:
+        - 控件管理
+      summary: 删除自定义业务控件
+      operationId: deleteCustomComponents
+      description: 通过此接口删除已创建的自定义控件。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                componentId:
+                  type: array
+                  description: 控件ID列表
+                  items:
+                    type: string
+            example:
+              componentId:
+                - "f7ab10b2*****ca59a7a745"
+                - "29100f12*****ba0bb45677"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/custom-components/get-list:
+    post:
+      tags:
+        - 控件管理
+      summary: 查询自定义业务控件列表
+      operationId: listCustomComponents
+      description: |
+        查询当前appId下自定义的全部控件列表信息。
+        也可根据控件ID、控件名称或自定义业务编码查询单独某个控件的详情（三个字段传值则取交集查询）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pageNum
+                - pageSize
+              properties:
+                pageNum:
+                  type: integer
+                  minimum: 1
+                  description: 页码（大于0，最小值为1）
+                pageSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: 每页展示的数量（1~100）
+                componentId:
+                  type: string
+                  description: 控件ID（唯一，传此字段无需再传控件名称和自定义业务编码）
+                componentName:
+                  type: string
+                  description: 控件名称
+                customBizNum:
+                  type: string
+                  description: 自定义业务编码
+            example:
+              pageNum: 1
+              pageSize: 20
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          components:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/ComponentItem'
+
+  # ===== 控件组 =====
+
+  /v3/custom-component-group/create:
+    post:
+      tags:
+        - 控件组
+      summary: 创建控件组
+      operationId: createComponentGroup
+      description: |
+        为自定义控件创建分组，让控件可以分组显示。同类的自定义控件可放到一个分组里。
+        注意：
+        - 每个appId下最多创建1000个自定义控件组
+        - 自2024年3月28日起放开对 componentGroupName 唯一性的校验
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentGroupName
+                - components
+              properties:
+                componentGroupName:
+                  type: string
+                  description: 控件组名称（最多100个字符）
+                componentGroupOrder:
+                  type: integer
+                  description: 控件组展示顺序（0-999，从小到大排序；不传则按创建时间正序排序）
+                  minimum: 0
+                  maximum: 999
+                  default: 1
+                components:
+                  type: array
+                  description: 控件列表
+                  items:
+                    type: object
+                    required:
+                      - componentId
+                    properties:
+                      componentId:
+                        type: string
+                        description: 控件ID
+            example:
+              componentGroupName: "控件1组"
+              componentGroupOrder: 1
+              components:
+                - componentId: "07301790******3ebf0dd3"
+                - componentId: "4d1ee2c9*****2bb12da0547e"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          componentGroupId:
+                            type: string
+                            description: 控件组ID
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  componentGroupId: "08cec5*****4de815f7ff3c"
+
+  /v3/custom-component-group/update:
+    post:
+      tags:
+        - 控件组
+      summary: 编辑控件组
+      operationId: updateComponentGroup
+      description: |
+        编辑已存在的控件组ID对应的控件列表（按传入的控件ID列表覆盖原有控件）。
+        控件组名称非必传，传入则修改，不传则保持原有名称不变。
+        仅调整名称不改变控件列表建议使用【重命名控件组】接口。
+        如果传入components空数组，则清空控件组内所有控件。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentGroupId
+                - components
+              properties:
+                componentGroupId:
+                  type: string
+                  description: 控件组ID
+                componentGroupName:
+                  type: string
+                  description: 控件组名称（不传则保持原有名称）
+                componentGroupOrder:
+                  type: integer
+                  description: 控件组展示顺序（0-999）
+                components:
+                  type: array
+                  description: 控件ID列表（传空数组则清空控件组内所有控件）
+                  items:
+                    type: object
+                    properties:
+                      componentId:
+                        type: string
+                        description: 控件ID
+            example:
+              componentGroupId: "6c580301*****e19719"
+              componentGroupName: "修改的控件组名称"
+              components:
+                - componentId: "18978******3b557d2f"
+                - componentId: "d7ada*******7cf87e"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/custom-component-group/rename:
+    post:
+      tags:
+        - 控件组
+      summary: 重命名控件组
+      operationId: renameComponentGroup
+      description: 修改已存在的控件组ID对应的控件组名称（不改变控件列表）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentGroupId
+                - componentGroupName
+              properties:
+                componentGroupId:
+                  type: string
+                  description: 控件组ID
+                componentGroupName:
+                  type: string
+                  description: 控件组名称
+            example:
+              componentGroupId: "6c580301*****e19719"
+              componentGroupName: "修改的控件组名称"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/custom-component-group/delete:
+    post:
+      tags:
+        - 控件组
+      summary: 删除控件组
+      operationId: deleteComponentGroup
+      description: |
+        删除已存在的控件组。删除后仅删除分组，不删除其中的控件。
+        删除后已经在使用的模板将无法使用该控件组。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentGroupId
+              properties:
+                componentGroupId:
+                  type: array
+                  description: 控件组ID列表
+                  items:
+                    type: string
+            example:
+              componentGroupId:
+                - "708afe8*****0b36a79a27243"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+              example:
+                code: 0
+                message: "成功"
+                data: null
+
+  /v3/custom-component-group/get-list:
+    post:
+      tags:
+        - 控件组
+      summary: 查询控件组列表
+      operationId: listComponentGroups
+      description: |
+        查询当前appId下自定义的全部控件组列表信息。
+        可查询某个具体的控件组ID/控件组名称，也可根据控件ID查询其所在的控件组。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pageNum
+                - pageSize
+              properties:
+                pageNum:
+                  type: integer
+                  minimum: 1
+                  description: 页码（大于0，最小值为1）
+                pageSize:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: 每页展示的数量（1~100）
+                componentGroupId:
+                  type: string
+                  description: 控件组ID
+                componentName:
+                  type: string
+                  description: 控件组名称
+                componentId:
+                  type: string
+                  description: 控件ID（可根据控件ID查询其所在的控件组）
+            example:
+              pageNum: 1
+              pageSize: 20
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          componentGroups:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                componentGroupId:
+                                  type: string
+                                componentGroupName:
+                                  type: string
+                                componentGroupOrder:
+                                  type: integer
+
+  /v3/custom-component-group/get-components:
+    post:
+      tags:
+        - 控件组
+      summary: 查询控件组中的控件
+      operationId: getComponentGroupComponents
+      description: 查询某个控件组中的控件详情。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - componentGroupId
+              properties:
+                componentGroupId:
+                  type: string
+                  description: 控件组ID
+            example:
+              componentGroupId: "6c580301*****9c959ace19719"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          components:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                componentId:
+                                  type: string
+                                  description: 控件ID
+                                componentOrder:
+                                  type: integer
+                                  description: 控件展示顺序
+              example:
+                code: 0
+                message: "成功"
+                data:
+                  components:
+                    - componentId: "18978e*****5f3b557d2f"
+                      componentOrder: 1
+                    - componentId: "d7ada5a9*****0b17cf87e"
+                      componentOrder: 2
+
+webhooks:
+  EDIT_DOCTEMPLATE:
+    post:
+      tags:
+        - 文件模板
+      summary: 文件模板创建或编辑完成通知
+      operationId: webhookEditDocTemplate
+      description: |
+        触发条件：开发者使用"获取制作合同模板页面"或"获取编辑合同模板页面"接口获取页面提供给用户编辑模板，用户编辑完成后触发。
+        回调配置：在 e签宝开放平台控制台 > 应用管理 > 消息推送 中订阅"模板编辑"事件。
+        安全机制：通过请求头中的 HMAC-SHA256 签名验签（签名 = HmacSHA256(timestamp + queryString + body, appSecret)）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - docTemplateId
+                - docTemplateName
+              properties:
+                action:
+                  type: string
+                  description: 业务事件类型，固定为 EDIT_DOCTEMPLATE
+                  enum: [EDIT_DOCTEMPLATE]
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知发送时间（毫秒级时间戳，重试时返回第一次时间）
+                docTemplateId:
+                  type: string
+                  description: 文件模板ID
+                docTemplateName:
+                  type: string
+                  description: 文件模板名称
+            example:
+              action: "EDIT_DOCTEMPLATE"
+              docTemplateId: "c0e0574********5746b26398"
+              docTemplateName: "test.pdf"
+              timestamp: 1680745281887
+      responses:
+        '200':
+          description: 接收成功，返回HTTP 200-299均视为成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+
+  FILL_DOCTEMPLATE:
+    post:
+      tags:
+        - 文件模板
+      summary: 文件模板填写完成通知
+      operationId: webhookFillDocTemplate
+      description: |
+        触发条件：用户填写模板完成并提交成功后触发。
+        回调配置：在接口参数 notifyUrl 中设置，或在开放平台控制台订阅事件。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - docTemplateId
+                - docTemplateName
+                - fileId
+              properties:
+                action:
+                  type: string
+                  enum: [FILL_DOCTEMPLATE]
+                timestamp:
+                  type: integer
+                  format: int64
+                docTemplateId:
+                  type: string
+                  description: 待填充的模板ID
+                docTemplateName:
+                  type: string
+                  description: 文件模板名称
+                customBizNum:
+                  type: string
+                  description: 开发者自定义业务编号
+                fileId:
+                  type: string
+                  description: 填充后生成的文件ID
+                fillTaskId:
+                  type: string
+                  description: 填写任务ID（仅对新版模板生效）
+                decFillTaskId:
+                  type: string
+                  description: 填写任务ID（仅限专属云使用，仅对新版模板生效）
+                components:
+                  type: array
+                  description: 填充控件信息列表
+                  items:
+                    type: object
+                    properties:
+                      componentId:
+                        type: string
+                      componentKey:
+                        type: string
+                      componentValue:
+                        type: string
+                      componentType:
+                        type: string
+                        description: "控件类型：1-单行文本，2-数字，3-日期，6-签章区域，8-多行文本，9-复选，10-单选，11-图片，14-下拉框，15-勾选框，16-身份证，17-备注区域，18-动态表格，19-手机号（仅对新版模板生效）"
+                      componentContent:
+                        type: string
+                        description: 控件选项对应文本内容（仅在控件类型为9-复选/10-单选/14-下拉框时返回，仅对新版模板生效）
+                      originCustomComponentId:
+                        type: string
+                        description: 自定义控件ID
+      responses:
+        '200':
+          description: 接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  FILL_DOCTEMPLATE_FAIL:
+    post:
+      tags:
+        - 文件模板
+      summary: 文件模板填写失败通知
+      operationId: webhookFillDocTemplateFail
+      description: |
+        触发条件：用户填写模板完成并提交后，若最终生成待签署PDF文件失败时触发。
+        正常情况下不会触发，遇到服务异常/网络故障等极小概率情况会发生。
+        收到此回调需重新发起模板填写页面给用户重新填写。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - docTemplateId
+                - docTemplateName
+                - fileId
+              properties:
+                action:
+                  type: string
+                  enum: [FILL_DOCTEMPLATE_FAIL]
+                timestamp:
+                  type: integer
+                  format: int64
+                docTemplateId:
+                  type: string
+                docTemplateName:
+                  type: string
+                customBizNum:
+                  type: string
+                fileId:
+                  type: string
+                  description: 填充后生成的文件ID（该文件ID是不可用的）
+                fillTaskId:
+                  type: string
+                  description: 填写任务ID（仅对新版模板生效）
+                decFillTaskId:
+                  type: string
+                  description: 填写任务ID（仅限专属云使用，仅对新版模板生效）
+      responses:
+        '200':
+          description: 接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  CREATE_SIGN_TEMPLATE:
+    post:
+      tags:
+        - 流程模板
+      summary: 流程模板创建完成通知
+      operationId: webhookCreateSignTemplate
+      description: |
+        触发条件：开发者调用"获取《创建流程模板》页面链接"接口获取模板制作链接，用户设置好签署方后点击下一步时触发。
+        回调配置：在 e签宝开放平台控制台 > 应用管理 > 消息推送 中订阅对应事件（接口设置方式不包含此通知）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - signTemplateId
+                - signTemplateName
+                - orgId
+                - orgName
+              properties:
+                action:
+                  type: string
+                  enum: [CREATE_SIGN_TEMPLATE]
+                timestamp:
+                  type: integer
+                  format: int64
+                signTemplateId:
+                  type: string
+                  description: 流程模板ID
+                signTemplateName:
+                  type: string
+                  description: 流程模板名称
+                orgId:
+                  type: string
+                  description: 模板归属企业ID（机构账号ID）
+                orgName:
+                  type: string
+                  description: 模板归属企业名称
+                customBizNum:
+                  type: string
+                  description: 自定义业务编号（创建流程模板时传入的值，原样返回）
+            example:
+              action: "CREATE_SIGN_TEMPLATE"
+              timestamp: 1717740175087
+              signTemplateId: "d2ff354d4caa42e29263a59e6f5df8c8"
+              signTemplateName: "0607"
+              orgId: "842ec8ce3fcb41e78ee80675fc91662f"
+              orgName: "esigntest霁林测试有限公司"
+              customBizNum: "自定义业务编号001"
+      responses:
+        '200':
+          description: 接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  DRAFT_COMPLETE:
+    post:
+      tags:
+        - 合同拟定
+      summary: 合同拟定结果通知
+      operationId: webhookDraftComplete
+      description: |
+        触发条件：开发者发起合同拟定后，用户在页面进行合同拟定，合同拟定的最终完成/拒填/撤销/过期等状态变更时触发。
+        回调配置：在接口参数 notifyUrl 中设置，或在开放平台控制台订阅事件。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - draftStatus
+                - signFlowId
+                - signFlowTitle
+                - draftStartTime
+                - draftFinishTime
+              properties:
+                action:
+                  type: string
+                  enum: [DRAFT_COMPLETE]
+                timestamp:
+                  type: integer
+                  format: int64
+                draftStatus:
+                  type: integer
+                  description: "拟定流程状态：2-完成，3-撤销，4-拒填，5-过期"
+                  enum: [2, 3, 4, 5]
+                signFlowId:
+                  type: string
+                  description: 签署流程ID
+                signFlowTitle:
+                  type: string
+                  description: 签署流程标题
+                draftStartTime:
+                  type: integer
+                  format: int64
+                  description: 拟定流程开启时间（毫秒级时间戳）
+                draftFinishTime:
+                  type: integer
+                  format: int64
+                  description: 拟定流程结束时间（毫秒级时间戳）
+            example:
+              action: "DRAFT_COMPLETE"
+              timestamp: 1676977689821
+              signFlowId: "53d79b5*****e1495661b1c2"
+              signFlowTitle: "这是本次签署任务的主题"
+              draftStatus: 2
+              draftStartTime: 1676977634000
+              draftFinishTime: 1676977688000
+      responses:
+        '200':
+          description: 接收成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+x-error-codes:
+  文件和模板服务:
+    description: 文件和模板服务 API V3 错误码（来源：assets/opendoc/codemsg-v3/px5yvgqf9glbs7o6）
+    codes:
+      - code: 1430002
+        message: "参数错误: 文件名字长度不能大于100"
+        endpoint: "POST /v3/files/file-upload-url"
+      - code: 1430002
+        message: "参数错误: 文件大小不能为0"
+        endpoint: "POST /v3/files/file-upload-url"
+      - code: 1430012
+        message: "服务异常，请联系客服咨询反馈"
+        endpoint: "POST /v3/files/file-upload-url"
+      - code: 1430601
+        message: "创建合同失败: 文件名含有特殊字符"
+        endpoint: "POST /v3/files/file-upload-url"
+      - code: 1430002
+        message: "参数错误"
+        endpoint: "POST /v3/custom-components/create | POST /v3/custom-components/rename | POST /v3/custom-components/delete"
+        solution: "检查对应的参数是否符合格式"
+      - code: 1430722
+        message: "%s控件不存在"
+        endpoint: "POST /v3/custom-components/rename | POST /v3/custom-components/delete | POST /v3/custom-components/get-list"
+        solution: "检查输入的控件ID是否是当前appId下创建，是否真实存在"
+      - code: 1430012
+        message: "服务异常"
+        endpoint: "POST /v3/custom-components/* | POST /v3/custom-component-group/*"
+        solution: "检查接口整体的参数格式是否正确"
+      - code: 1430724
+        message: "控件组不存在"
+        endpoint: "POST /v3/custom-component-group/update | POST /v3/custom-component-group/rename | POST /v3/custom-component-group/delete | POST /v3/custom-component-group/get-components"
+        solution: "检查输入的控件组ID是否是当前appId下创建，是否真实存在"
+      - code: 1430011
+        message: "服务异常,请重试"
+        endpoint: "POST /v3/custom-components/get-list"
+  流程模板服务:
+    description: 流程模板服务 API V3 错误码（来源：assets/opendoc/codemsg-v3/uir8r6eorxqxhb5n）
+    codes:
+      - code: 1451000
+        message: "参数错误:%s"
+        endpoint: "POST /v3/sign-templates/sign-template-create-url | POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url | POST /v3/sign-flow/create-by-sign-template"
+        solution: "检查对应参数是否符合格式要求，%s 为具体参数名"
+      - code: 1451002
+        message: "服务异常"
+        endpoint: "POST /v3/sign-templates/sign-template-create-url | POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451004
+        message: "应用不存在"
+        endpoint: "POST /v3/sign-templates/sign-template-create-url | POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451006
+        message: "用户未授权:%s,%s"
+        endpoint: "全部流程模板相关接口"
+        solution: "检查用户授权状态，确认是否已完成企业授权"
+      - code: 1451021
+        message: "当前操作人无权限操作模板"
+        endpoint: "POST /v3/sign-templates/enable | POST /v3/sign-templates/disable | POST /v3/sign-templates/delete | POST /v3/sign-templates/copy | POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451022
+        message: "流程模板不存在，无法编辑"
+        endpoint: "POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451023
+        message: "流程模板非禁用状态，无法编辑"
+        endpoint: "POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+        solution: "调用【停用流程模板】接口后再编辑"
+      - code: 1451024
+        message: "共享流程模板不可编辑"
+        endpoint: "POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451026
+        message: "流程模板不存在"
+        endpoint: "POST /v3/sign-templates/enable | POST /v3/sign-templates/disable | POST /v3/sign-templates/delete | POST /v3/sign-templates/copy | GET /v3/sign-templates/detail | GET /v3/sign-templates/permission"
+        solution: "检查 signTemplateId 是否正确"
+      - code: 1451029
+        message: "成员不在该组织"
+        endpoint: "POST /v3/sign-templates/sign-template-create-url | POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451042
+        message: "共享模板不支持该操作"
+        endpoint: "POST /v3/sign-templates/enable | POST /v3/sign-templates/disable | POST /v3/sign-templates/delete | POST /v3/sign-templates/copy"
+      - code: 1451043
+        message: "模板不属于该企业，无法操作"
+        endpoint: "全部流程模板相关接口"
+      - code: 1451046
+        message: "API暂不支持动态流程模板"
+        endpoint: "POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451049
+        message: "API不支持的模板类型"
+        endpoint: "POST /v3/sign-templates/{signTemplateId}/sign-template-edit-url"
+      - code: 1451067
+        message: "复制流程模板失败: %s"
+        endpoint: "POST /v3/sign-templates/copy"
+      - code: 1451009
+        message: "流程模板数据异常：流程模板拥有者不匹配"
+        endpoint: "POST /v3/sign-flow/create-by-sign-template"
+        solution: "发起方企业必须和流程模板ID拥有企业一致"
+      - code: 1451009
+        message: "模板非启用状态,请先启用此模板"
+        endpoint: "POST /v3/sign-flow/create-by-sign-template"
+        solution: "调用【开启流程模板】接口后再发起"
+      - code: 1451010
+        message: "企业账户中电子合同份数不足，请购买套餐后再操作"
+        endpoint: "POST /v3/sign-flow/create-by-sign-template"
+      - code: 1451012
+        message: "控件不属于此模板文件"
+        endpoint: "POST /v3/sign-flow/create-by-sign-template"
+        solution: "检查 fileId 与 componentId 的对应关系"
+      - code: 1451056
+        message: "当前使用的模板中不支持预填填写控件"
+        endpoint: "POST /v3/sign-flow/create-by-sign-template"

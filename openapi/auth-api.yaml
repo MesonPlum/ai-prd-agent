@@ -1,0 +1,1783 @@
+# [2026-05-21] | 初始导入 | — | 从 assets/opendoc/auth3/ 忠实导入
+# [待升级] 多处不合规项（忠实导入，后续渐进维护）
+
+openapi: 3.1.0
+info:
+  title: e签宝 认证授权 API
+  description: |
+    e签宝 SaaS API V3 — 认证授权与免登体系。
+    包含个人实名认证、机构实名认证、授权管理、认证授权流程查询等能力。
+    关联 PRD：F-001
+    重要提示：自2024年9月12日起，authorizedScopes 部分功能需要购买 e签宝高级版或生态伙伴版本方可支持。
+  version: "3.0"
+  contact:
+    name: e签宝开发者支持
+
+servers:
+  - url: https://openapi.esign.cn
+    description: 正式环境
+  - url: https://smlopenapi.esign.cn
+    description: 沙箱环境
+
+tags:
+  - name: 个人认证授权
+    description: 个人用户实名认证和授权相关接口
+  - name: 机构认证授权
+    description: 企业机构实名认证和授权相关接口
+  - name: 查询
+    description: 认证授权信息查询接口（通用）
+
+components:
+  securitySchemes:
+    signatureAuth:
+      type: apiKey
+      in: header
+      name: X-Tsign-Open-App-Id
+      description: |
+        e签宝请求签名鉴权。需同时传入以下 Header：
+        - X-Tsign-Open-App-Id: AppId（开放平台应用ID）
+        - X-Tsign-Open-Ts: 时间戳（秒级 Unix 时间戳）
+        - X-Tsign-Open-SIGNATURE: HMAC-SHA256 签名值
+
+  schemas:
+    CommonResponse:
+      type: object
+      description: 公共响应结构
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: 业务码，0 表示成功，非 0 表示异常
+          example: 0
+        message:
+          type: string
+          description: 业务信息。请根据 code 判断错误情况，不应依赖 message 匹配，因为 message 可能会调整。
+          example: 成功
+        data:
+          type: object
+          description: 业务数据
+
+    AuthUrlResponseData:
+      type: object
+      description: 认证授权链接响应数据
+      properties:
+        authUrl:
+          type: string
+          description: 认证授权长链接（有效期30天）。支持自定义域名，微信小程序H5内嵌场景需要使用长链接。
+          example: "https://openapi.esign.cn/auth/h5/index?authFlowId=OF-xxx&clientType=ALL&appId=xxx"
+        authShortUrl:
+          type: string
+          description: 认证授权短链接（有效期30天）
+          example: "https://openapi.esign.cn/mFHRxxxhUV46"
+        authFlowId:
+          type: string
+          description: 本次认证授权流程ID，请注意保管，可用于查询认证授权流程详情
+          example: "OF-203xxxe080010"
+
+    AuthorizedInfoItem:
+      type: object
+      description: 单条授权信息
+      properties:
+        authorizedScope:
+          type: string
+          description: 用户授权范围
+          example: "get_psn_identity_info"
+        effectiveTime:
+          type: integer
+          format: int64
+          description: 授权生效时间（Unix时间戳格式，单位毫秒）
+          example: 1658144081996
+        expireTime:
+          type: integer
+          format: int64
+          description: 授权到期时间（Unix时间戳格式，单位毫秒）
+          example: 1660736081996
+
+    PsnInfo:
+      type: object
+      description: 个人身份信息
+      properties:
+        psnName:
+          type: string
+          description: 个人用户已认证的姓名
+        psnNationality:
+          type: string
+          description: 个人国籍（暂无值返回）
+        psnIDCardNum:
+          type: string
+          description: 个人证件号
+        psnIDCardType:
+          type: string
+          description: |
+            证件类型：
+            - CRED_PSN_CH_IDCARD — 中国大陆居民身份证（兼容港澳台居住证、外国人永久居住证）
+            - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证（回乡证）
+            - CRED_PSN_CH_MACAO — 澳门来往大陆通行证（回乡证）
+            - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证（台胞证）
+            - CRED_PSN_PASSPORT — 护照
+          enum:
+            - CRED_PSN_CH_IDCARD
+            - CRED_PSN_CH_HONGKONG
+            - CRED_PSN_CH_MACAO
+            - CRED_PSN_CH_TWCARD
+            - CRED_PSN_PASSPORT
+        bankCardNum:
+          type: string
+          description: 个人用户已认证的银行卡号
+        psnMobile:
+          type: string
+          description: 个人用户已认证的运营商实名登记手机号或银行卡预留手机号。若用户使用刷脸方式认证，则不会返回此字段。
+
+    PsnAccount:
+      type: object
+      description: 个人账号标识（仅 authorizeUserInfo 为 true 时返回）
+      properties:
+        accountMobile:
+          type: string
+          description: 用户登录e签宝SaaS官网的手机号
+        accountEmail:
+          type: string
+          description: 用户登录e签宝SaaS官网的邮箱地址
+
+    OrgInfo:
+      type: object
+      description: 机构认证信息
+      properties:
+        orgIDCardNum:
+          type: string
+          description: 组织机构证件号
+        orgIDCardType:
+          type: string
+          description: |
+            组织机构证件号类型：
+            - CRED_ORG_USCC — 统一社会信用代码
+            - CRED_ORG_REGCODE — 工商注册号
+          enum:
+            - CRED_ORG_USCC
+            - CRED_ORG_REGCODE
+        legalRepName:
+          type: string
+          description: 法定代表人姓名
+        legalRepIDCardNum:
+          type: string
+          description: 法定代表人证件号（需授权 get_org_identity_info 才返回）
+        legalRepIDCardType:
+          type: string
+          description: |
+            法定代表人证件类型：
+            - CRED_PSN_CH_IDCARD — 中国大陆居民身份证
+            - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证（回乡证）
+            - CRED_PSN_CH_MACAO — 澳门来往大陆通行证（回乡证）
+            - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证（台胞证）
+            - CRED_PSN_PASSPORT — 护照
+          enum:
+            - CRED_PSN_CH_IDCARD
+            - CRED_PSN_CH_HONGKONG
+            - CRED_PSN_CH_MACAO
+            - CRED_PSN_CH_TWCARD
+            - CRED_PSN_PASSPORT
+        corporateAccount:
+          type: string
+          description: 机构对公账户名称（仅对公打款认证方式可返回，且需授权 get_org_identity_info）
+        orgBankAccountNum:
+          type: string
+          description: 机构对公打款银行卡号信息（仅对公打款认证方式可返回，且需授权 get_org_identity_info）
+        cnapsCode:
+          type: string
+          description: 机构对公打款银行联行号（仅对公打款认证方式可返回，且需授权 get_org_identity_info）
+        authorizationDownloadUrl:
+          type: string
+          description: 机构对公打款单位实名认证授权委托书下载地址（有效期1小时，文件保存180天）
+        licenseDownloadUrl:
+          type: string
+          description: 机构营业执照照片下载地址（需联系e签宝交付顾问开启OCR功能，有效期1小时，照片保存180天）
+        adminName:
+          type: string
+          description: 机构管理员姓名（脱敏显示）
+        adminAccount:
+          type: string
+          description: 机构管理员联系方式（脱敏显示，优先返回手机号）
+
+    RedirectConfig:
+      type: object
+      description: 认证完成重定向配置项
+      properties:
+        redirectUrl:
+          type: string
+          description: |
+            认证完成后跳转页面（除 App 和小程序端集成外，地址需符合 https/http 协议地址）。
+            注：贵司的重定向域名需要在e签宝提前放行，否则会报错"您即将访问的页面可能有安全风险"。
+        redirectDelayTime:
+          type: string
+          description: |
+            重定向跳转延迟时间，单位为秒。
+            授权模式下（authorizedScopes 有具体参数值）：默认延迟 3 秒。传 0 不展示授权结果页，直接跳转；传其他数字则展示授权结果页倒计时后跳转。
+            实名模式下（authorizedScopes 不传或传空）：默认延迟 5 秒。传 0 不展示实名结果页；传其他数字固定展示 5 秒后跳转。
+            注：当 redirectUrl 不传时，该字段无需传入。
+
+    AuthorizeConfig:
+      type: object
+      description: |
+        授权配置项。
+        不传此参数默认页面仅实名认证，不需要用户授权；
+        实名认证模式下如用户已实名，接口报错"个人/企业用户已实名"；
+        授权认证模式下如用户已实名，正常获取授权链接，用户需完成意愿认证后直接授权成功。
+      properties:
+        authorizedScopes:
+          type: array
+          items:
+            type: string
+          description: |
+            设置页面中权限范围。
+            个人用户可选值：
+            - get_psn_identity_info — 授权获取个人账号基本信息（姓名、手机号/邮箱、证件号等）【高级版/生态伙伴版】
+            - psn_initiate_sign — 授权代表个人用户发起合同签署【生态伙伴版】
+            - manage_psn_resource — 授权获取个人用户印章等资源管理权限【高级版/生态伙伴版】
+            - psn_sign_file_storage — 授权个人合同文件存储到平台本地服务器（专属云场景）
+            - apply_psn_evidence — 授权代表个人用户申请出证【高级版/生态伙伴版，2025-09-22新增】
+            企业机构可选值：
+            - get_org_identity_info — 授权获取企业/组织基本信息【高级版/生态伙伴版】
+            - get_psn_identity_info — 授权获取经办人个人账号基本信息【高级版/生态伙伴版】
+            - org_initiate_sign — 授权代表企业/组织发起合同签署【生态伙伴版】
+            - psn_initiate_sign — 授权代表经办人个人发起合同签署【生态伙伴版】
+            - manage_org_member — 授权获取企业成员查询/新增/编辑/删除权限【高级版/生态伙伴版】
+            - manage_org_seal — 授权获取企业印章查询/新增/编辑/授权/删除权限【高级版/生态伙伴版】
+            - manage_org_template — 授权获取企业模板查询/新增/编辑/复制/删除权限【高级版/生态伙伴版】
+            - use_org_template — 授权获取企业模板使用权限【高级版/生态伙伴版】
+            - manage_org_resource — 授权获取企业印章、成员等资源管理权限（不含用印权限）【高级版/生态伙伴版】
+            - manage_psn_resource — 授权获取经办人印章等资源管理权限【高级版/生态伙伴版】
+            - psn_sign_file_storage — 授权经办人合同文件存储到平台本地服务器（专属云场景）
+            - org_sign_file_storage — 授权企业/组织合同文件存储到平台本地服务器（专属云场景）
+            - org_approval_info — 授权获取企业用印审批信息【高级版/生态伙伴版】
+            - use_org_order — 授权获取企业套餐订单使用权限【生态伙伴版】
+            - apply_org_evidence — 授权代表企业申请出证【高级版/生态伙伴版，2025-09-22新增】
+            - apply_psn_evidence — 授权代表经办人申请出证【高级版/生态伙伴版，2025-09-22新增】
+            - org_function_benefits — 授权查询企业在e签宝官网功能权益【高级版/生态伙伴版，2025-09-22新增】
+            - manage_org_contract — 授权获取企业合同管理权限【高级版/生态伙伴版，2026-01-22新增】
+
+security:
+  - signatureAuth: []
+
+paths:
+  /v3/psn-auth-url:
+    post:
+      tags:
+        - 个人认证授权
+      summary: 获取个人认证&授权页面链接
+      description: |
+        用于获取个人的认证授权页面链接，通过此链接个人用户可进行实名认证、资源授权等操作。
+        支持两种模式：
+        - 授权认证模式（传入 authorizedScopes）：包含用户授权 + 实名认证/意愿认证；
+        - 实名认证模式（不传或传空 authorizedScopes）：用户仅做实名认证，已实名用户再调用此模式接口会报错。
+        重要提示：自2024年9月12日起，authorizedScopes 部分功能需购买 e签宝高级版或生态伙伴版本。
+      operationId: getPsnAuthUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                psnAuthConfig:
+                  type: object
+                  required: true
+                  description: |
+                    个人实名认证配置项。
+                    传入个人账号信息（psnAccount 或 psnId）后获取对应个人用户的授权认证或实名认证页面链接；
+                    如果不传账号信息，则需要个人用户自主在页面填写手机号/邮箱进行验证码回填注册。
+                  properties:
+                    psnAccount:
+                      type: string
+                      description: 个人用户账号标识（手机号或邮箱）。psnAccount 与 psnId 二选一，未知 psnId 时直接传此字段。
+                    psnId:
+                      type: string
+                      description: 个人账号ID。psnAccount 与 psnId 二选一。
+                    psnInfo:
+                      type: object
+                      description: 个人身份附加信息
+                      properties:
+                        psnName:
+                          type: string
+                          description: 姓名
+                        psnIDCardNum:
+                          type: string
+                          description: 证件号码
+                        psnIDCardType:
+                          type: string
+                          description: |
+                            证件类型：
+                            - CRED_PSN_CH_IDCARD — 中国大陆居民身份证（兼容港澳台居住证81/82/83开头18位、外国人永久居住证9开头18位）
+                            - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证（回乡证）
+                            - CRED_PSN_CH_MACAO — 澳门来往大陆通行证（回乡证）
+                            - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证（台胞证）
+                            - CRED_PSN_PASSPORT — 护照
+                          enum:
+                            - CRED_PSN_CH_IDCARD
+                            - CRED_PSN_CH_HONGKONG
+                            - CRED_PSN_CH_MACAO
+                            - CRED_PSN_CH_TWCARD
+                            - CRED_PSN_PASSPORT
+                        psnMobile:
+                          type: string
+                          description: 个人手机号（运营商实名登记手机号或银行卡预留手机号，仅用于认证）
+                        bankCardNum:
+                          type: string
+                          description: 个人银行卡号
+                        psnIdentityVerify:
+                          type: boolean
+                          default: false
+                          description: |
+                            是否校验 psnAccount 或 psnId 绑定的e签宝个人信息与传入 psnInfo 中的信息一致。
+                            true — 校验，信息不一致报错"传入的%s和该用户在e签宝的个人信息不一致"；
+                            false — 不校验（默认值）。
+                    psnAuthPageConfig:
+                      type: object
+                      description: 个人实名认证页面配置项
+                      properties:
+                        psnDefaultAuthMode:
+                          type: string
+                          default: PSN_FACE
+                          description: |
+                            设置页面中默认选择的实名认证方式：
+                            - PSN_FACE — 人脸识别认证（默认值）
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                            注：使用 iframe 内嵌集成不支持对接刷脸方式。
+                          enum:
+                            - PSN_FACE
+                            - PSN_MOBILE3
+                            - PSN_BANKCARD4
+                        psnAvailableAuthModes:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - PSN_FACE
+                              - PSN_MOBILE3
+                              - PSN_BANKCARD4
+                          description: |
+                            设置页面中可选择的个人认证方式范围，不传则可选择全部认证方式。
+                            - PSN_FACE — 人脸识别认证
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                            注：使用 iframe 内嵌集成不支持对接刷脸方式。
+                        advancedVersion:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - PSN_MOBILE3
+                              - PSN_BANKCARD4
+                          description: |
+                            通过银行卡认证或运营商认证方式时，是否使用详情版（指定后核验失败可返回具体不匹配信息），传空默认为普通版。
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                            详情版需单独购买，普通版只返回比对核验失败，不返回具体不匹配信息。
+                        psnEditableFields:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - name
+                              - IDCardNum
+                              - mobile
+                              - bankCardNum
+                          description: |
+                            设置页面中可编辑的个人信息字段，不传则页面默认不允许编辑个人信息。
+                            - name — 姓名
+                            - IDCardNum — 证件号码（账号已实名时传此字段页面也不可编辑，因为证件号是唯一标识）
+                            - mobile — 个人手机号（仅针对实名认证手机号）
+                            - bankCardNum — 个人银行卡号
+                authorizeConfig:
+                  $ref: '#/components/schemas/AuthorizeConfig'
+                redirectConfig:
+                  $ref: '#/components/schemas/RedirectConfig'
+                notifyUrl:
+                  type: string
+                  description: 接收回调通知的 Web 地址，通知开发者用户认证和授权的完成以及变更情况。
+                  example: "http://xx.xx.xx.172:8081/CSTNotify/asyn/notify"
+                clientType:
+                  type: string
+                  default: ALL
+                  description: |
+                    指定客户端类型（参数值全部为英文大写）：
+                    - ALL — 自动适配移动端或PC端（默认值）
+                    - H5 — 移动端适配
+                    - PC — PC端适配
+                  enum:
+                    - ALL
+                    - H5
+                    - PC
+                appScheme:
+                  type: string
+                  description: |
+                    AppScheme，主要用于支付宝人脸认证重定向时跳回开发者自身 App。
+                  example: "esign://demo/realBack"
+            example:
+              psnAuthConfig:
+                psnAccount: "183****0101"
+                psnInfo:
+                  psnName: "赵四"
+                  psnIDCardNum: "130204********1001"
+                  psnIDCardType: "CRED_PSN_CH_IDCARD"
+                psnAuthPageConfig:
+                  psnDefaultAuthMode: "PSN_MOBILE3"
+                  psnAvailableAuthModes: ["PSN_BANKCARD4", "PSN_MOBILE3", "PSN_FACE"]
+              authorizeConfig:
+                authorizedScopes: ["get_psn_identity_info"]
+              notifyUrl: "http://xx.xx.xx.172:8081/CSTNotify/asyn/notify"
+              clientType: "ALL"
+              redirectConfig:
+                redirectUrl: "https://www.xxx.cn/"
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AuthUrlResponseData'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authFlowId: "OF-203xxxe080010"
+                  authUrl: "https://openapi.esign.cn/auth/h5/index?authFlowId=OF-xxx&clientType=ALL&appId=xxx"
+                  authShortUrl: "https://openapi.esign.cn/mFHRxxxhUV46"
+
+  /v3/org-auth-url:
+    post:
+      tags:
+        - 机构认证授权
+      summary: 获取机构认证&授权页面链接
+      description: |
+        用于获取组织机构的认证授权页面链接，通过此链接经办人可为组织机构进行实名认证、资源授权等操作。
+        支持两种模式：
+        - 授权认证模式（传入 authorizedScopes）：包含用户授权 + 实名认证/意愿认证；
+        - 实名认证模式（不传或传空 authorizedScopes）：仅实名认证，已实名用户再调用此模式接口会报错。
+        重要提示：自2024年9月12日起，authorizedScopes 部分功能需购买 e签宝高级版或生态合作版本。
+      operationId: getOrgAuthUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orgAuthConfig:
+                  type: object
+                  required: true
+                  description: |
+                    组织机构认证配置项。
+                    传入机构信息后获取该机构的授权认证或实名认证页面链接（若不传机构信息，则由用户自主在页面填写）。
+                    常规场景：orgName 与 orgId 二者选一传入即可。
+                  properties:
+                    orgName:
+                      type: string
+                      description: 组织机构名称（机构账号标识）。orgName 与 orgId 二者选一，未知 orgId 时传此字段。
+                    orgId:
+                      type: string
+                      description: 机构账号ID。orgName 与 orgId 二者选一。
+                    orgInfo:
+                      type: object
+                      description: 组织机构身份附加信息
+                      properties:
+                        orgIDCardNum:
+                          type: string
+                          description: 组织机构证件号
+                        orgIDCardType:
+                          type: string
+                          description: |
+                            组织机构证件类型：
+                            - CRED_ORG_USCC — 统一社会信用代码
+                            - CRED_ORG_REGCODE — 工商注册号
+                          enum:
+                            - CRED_ORG_USCC
+                            - CRED_ORG_REGCODE
+                        legalRepName:
+                          type: string
+                          description: 法定代表人姓名
+                        legalRepIDCardNum:
+                          type: string
+                          description: 法定代表人证件号
+                        legalRepIDCardType:
+                          type: string
+                          description: |
+                            法定代表人证件类型：
+                            - CRED_PSN_CH_IDCARD — 中国大陆居民身份证
+                            - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证（回乡证）
+                            - CRED_PSN_CH_MACAO — 澳门来往大陆通行证（回乡证）
+                            - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证（台胞证）
+                            - CRED_PSN_PASSPORT — 护照
+                          enum:
+                            - CRED_PSN_CH_IDCARD
+                            - CRED_PSN_CH_HONGKONG
+                            - CRED_PSN_CH_MACAO
+                            - CRED_PSN_CH_TWCARD
+                            - CRED_PSN_PASSPORT
+                        orgBankAccountNum:
+                          type: string
+                          description: 企业对公打款银行账户（仅限实名方式为对公账户打款认证时使用）
+                    orgAuthPageConfig:
+                      type: object
+                      description: 机构实名认证页面配置项
+                      properties:
+                        orgDefaultAuthMode:
+                          type: string
+                          description: |
+                            指定页面中默认选择的机构认证方式：
+                            - ORG_BANK_TRANSFER — 对公账户打款认证
+                            - ORG_ALIPAY_CREDIT — 法人快捷认证（必须操作人为法定代表人本人才会显示，需要法人支付宝刷脸授权）
+                            - ORG_LEGALREP_INVOLVED — 法定代表人认证/法人授权认证（操作人为法人本人则为法定代表人认证，否则为法人授权认证）
+                          enum:
+                            - ORG_BANK_TRANSFER
+                            - ORG_ALIPAY_CREDIT
+                            - ORG_LEGALREP_INVOLVED
+                        orgAvailableAuthModes:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - ORG_BANK_TRANSFER
+                              - ORG_ALIPAY_CREDIT
+                              - ORG_LEGALREP_INVOLVED
+                          description: |
+                            设置页面中可选择的机构认证方式，不传则可选择全部认证方式：
+                            - ORG_BANK_TRANSFER — 对公账户打款认证
+                            - ORG_ALIPAY_CREDIT — 法人快捷认证
+                            - ORG_LEGALREP_INVOLVED — 法定代表人认证/法人授权认证
+                        orgEditableFields:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - orgNum
+                              - legalRepName
+                              - orgBankAccountNum
+                          description: |
+                            设置页面中可编辑的信息，不传则页面默认不允许编辑机构信息：
+                            - orgNum — 机构证件号（账号已实名时传此字段页面也不可编辑）
+                            - legalRepName — 法定代表人姓名
+                            - orgBankAccountNum — 企业对公打款银行账户
+                    transactorInfo:
+                      type: object
+                      description: |
+                        经办人身份信息。
+                        如果不传经办人个人账号信息，则需要经办人自主在页面填写手机号/邮箱进行验证码回填注册。
+                      properties:
+                        psnId:
+                          type: string
+                          description: 经办人账号ID
+                        psnAccount:
+                          type: string
+                          description: 经办人账号标识（手机号或邮箱）
+                        psnInfo:
+                          type: object
+                          description: 经办人身份信息
+                          properties:
+                            psnName:
+                              type: string
+                              description: 经办人姓名
+                            psnIDCardNum:
+                              type: string
+                              description: 经办人证件号
+                            psnIDCardType:
+                              type: string
+                              description: |
+                                经办人证件类型：
+                                - CRED_PSN_CH_IDCARD — 中国大陆居民身份证（兼容港澳台居住证、外国人永久居住证）
+                                - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证（回乡证）
+                                - CRED_PSN_CH_MACAO — 澳门来往大陆通行证（回乡证）
+                                - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证（台胞证）
+                                - CRED_PSN_PASSPORT — 护照
+                              enum:
+                                - CRED_PSN_CH_IDCARD
+                                - CRED_PSN_CH_HONGKONG
+                                - CRED_PSN_CH_MACAO
+                                - CRED_PSN_CH_TWCARD
+                                - CRED_PSN_PASSPORT
+                            bankCardNum:
+                              type: string
+                              description: 经办人银行卡号
+                            psnMobile:
+                              type: string
+                              description: 经办人手机号（运营商实名登记手机号或银行卡预留手机号，仅用于认证）
+                            psnIdentityVerify:
+                              type: boolean
+                              default: false
+                              description: |
+                                是否校验经办人账号信息与传入 psnInfo 中的信息一致。
+                                true — 校验，不一致报错；false — 不校验（默认值）。
+                    transactorAuthPageConfig:
+                      type: object
+                      description: 经办人认证页面设置
+                      properties:
+                        psnDefaultAuthMode:
+                          type: string
+                          default: PSN_FACE
+                          description: |
+                            设置页面中默认选择的实名认证方式：
+                            - PSN_FACE — 人脸识别认证（默认值）
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                            注：使用 iframe 内嵌集成不支持对接刷脸方式。
+                          enum:
+                            - PSN_FACE
+                            - PSN_MOBILE3
+                            - PSN_BANKCARD4
+                        psnAvailableAuthModes:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - PSN_FACE
+                              - PSN_MOBILE3
+                              - PSN_BANKCARD4
+                          description: |
+                            设置页面中可选择的个人认证方式，不传则可选择全部认证方式：
+                            - PSN_FACE — 人脸识别认证
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                            注：使用 iframe 内嵌集成不支持对接刷脸方式。
+                        advancedVersion:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - PSN_MOBILE3
+                              - PSN_BANKCARD4
+                          description: |
+                            是否使用详情版（指定后核验失败可返回具体不匹配信息），传空默认为普通版：
+                            - PSN_MOBILE3 — 手机运营商三要素认证
+                            - PSN_BANKCARD4 — 银行卡四要素认证
+                        psnEditableFields:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - name
+                              - IDCardNum
+                              - mobile
+                              - bankCardNum
+                          description: |
+                            设置页面中可编辑的个人信息字段，不传则页面默认不允许编辑个人信息：
+                            - name — 个人姓名
+                            - IDCardNum — 个人证件号（账号已实名时传此字段页面也不可编辑）
+                            - mobile — 个人手机号（仅针对实名认证手机号）
+                            - bankCardNum — 个人银行卡号
+                authorizeConfig:
+                  $ref: '#/components/schemas/AuthorizeConfig'
+                redirectConfig:
+                  $ref: '#/components/schemas/RedirectConfig'
+                transactorUseSeal:
+                  type: boolean
+                  default: false
+                  description: |
+                    当前经办人非企业管理员的情况下，是否需要为其获取企业全部印章的用印权限。
+                    true — 需要；false — 不需要（默认值）。
+                    注：只在配置了 authorizeConfig 的授权模式下生效，纯实名模式不生效；第一次为企业做实名的经办人会成为企业管理员，不需要额外获取用印权限。
+                clientType:
+                  type: string
+                  default: ALL
+                  description: |
+                    指定客户端类型（参数值全部为英文大写）：
+                    - ALL — 自动适配移动端或PC端（默认值）
+                    - H5 — 移动端适配
+                    - PC — PC端适配
+                  enum:
+                    - ALL
+                    - H5
+                    - PC
+                notifyUrl:
+                  type: string
+                  description: 接收回调通知的 Web 地址（需符合 https/http 协议），通知开发者用户认证和授权的完成情况。
+                  example: "http://xxx/notify"
+                appScheme:
+                  type: string
+                  description: AppScheme，用于支付宝人脸认证重定向时唤起指定 App。
+                  example: "esign://demo/realBack"
+                orgIdentityVerify:
+                  type: boolean
+                  default: false
+                  description: |
+                    企业身份信息校验配置项（以开发者当前传入的企业证件号为唯一标识，当企业名称与e签宝已有企业名称不一致时如何处理）。
+                    true — 接口报错，不能发起（提示：传入的企业信息与e签宝已有信息不一致）；
+                    false — 不报错，正常发起（用户登录进入页面后需按传入信息重新企业实名认证，适用于企业更名场景）。
+                    注：该参数仅限当前企业用户已在e签宝实名注册过的场景才有校验。
+            example:
+              orgAuthConfig:
+                orgName: "******公司"
+                orgInfo:
+                  orgIDCardNum: "9133010****8110212"
+                  orgIDCardType: "CRED_ORG_USCC"
+                  legalRepName: "法定代表人姓名"
+                  legalRepIDCardNum: "110101********1001"
+                  legalRepIDCardType: "CRED_PSN_CH_IDCARD"
+                orgAuthPageConfig:
+                  orgDefaultAuthMode: "ORG_BANK_TRANSFER"
+                  orgAvailableAuthModes: ["ORG_BANK_TRANSFER", "ORG_LEGALREP_INVOLVED"]
+                  orgEditableFields: ["orgNum"]
+                transactorInfo:
+                  psnAccount: "153****0000"
+                  psnInfo:
+                    psnName: "经办人姓名"
+                    psnIDCardNum: "110102*****0000"
+                    psnIDCardType: "CRED_PSN_CH_IDCARD"
+                    psnMobile: "151****0050"
+              authorizeConfig:
+                authorizedScopes: ["get_org_identity_info", "get_psn_identity_info"]
+              redirectConfig:
+                redirectUrl: "https://www.xxx.cn/"
+              clientType: "ALL"
+              notifyUrl: "http://xxx/notify"
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AuthUrlResponseData'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authFlowId: "OF-1f7f8xxx8004f"
+                  authUrl: "https://openapi.esign.cn/auth/h5/index?authFlowId=OF-xxx&clientType=ALL&appId=xxx"
+                  authShortUrl: "https://openapi.esign.cn/nB2cAf4xxx4cTRJn"
+
+  /v3/persons/identity-info:
+    get:
+      tags:
+        - 个人认证授权
+      summary: 查询个人认证信息
+      description: |
+        查询个人用户实名认证的信息。
+        注意事项：psnId、psnAccount 和 psnIDCardNum 三个参数只选择一个传入即可，查询优先级为 psnId > psnAccount > psnIDCardNum。
+      operationId: getPsnIdentityInfo
+      parameters:
+        - name: psnId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 个人账号ID
+        - name: psnAccount
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 个人账号标识（手机号或邮箱）
+        - name: psnIDCardNum
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 个人用户的证件号
+        - name: psnIDCardType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - CRED_PSN_CH_IDCARD
+              - CRED_PSN_CH_HONGKONG
+              - CRED_PSN_CH_MACAO
+              - CRED_PSN_CH_TWCARD
+              - CRED_PSN_PASSPORT
+          description: |
+            个人证件号类型（传 psnIDCardNum 时，此参数为必传）：
+            - CRED_PSN_CH_IDCARD — 中国大陆居民身份证
+            - CRED_PSN_CH_HONGKONG — 香港来往大陆通行证
+            - CRED_PSN_CH_MACAO — 澳门来往大陆通行证
+            - CRED_PSN_CH_TWCARD — 台湾来往大陆通行证
+            - CRED_PSN_PASSPORT — 护照
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          realnameStatus:
+                            type: integer
+                            format: int32
+                            description: "用户在e签宝的实名认证状态：0 — 未实名，1 — 已实名"
+                            enum: [0, 1]
+                          authorizeUserInfo:
+                            type: boolean
+                            description: "是否授权相关信息给当前应用：true — 已授权，false — 未授权"
+                          psnId:
+                            type: string
+                            description: 个人账号ID
+                          psnAccount:
+                            allOf:
+                              - $ref: '#/components/schemas/PsnAccount'
+                            description: 个人账号标识（仅 authorizeUserInfo 为 true 时返回）
+                          psnInfo:
+                            allOf:
+                              - $ref: '#/components/schemas/PsnInfo'
+                            description: 个人用户身份信息（仅 authorizeUserInfo 为 true 时返回）
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authorizeUserInfo: true
+                  realnameStatus: 1
+                  psnId: "c7e00229xxx41e7"
+                  psnAccount:
+                    accountMobile: "183****0101"
+                    accountEmail: null
+                  psnInfo:
+                    psnName: "赵四"
+                    psnNationality: null
+                    psnIDCardNum: "130204********1001"
+                    psnIDCardType: "CRED_PSN_CH_IDCARD"
+                    bankCardNum: null
+                    psnMobile: "183****0101"
+
+  /v3/persons/{psnId}/authorized-info:
+    get:
+      tags:
+        - 个人认证授权
+      summary: 查询个人授权信息
+      description: |
+        查询个人用户的授权信息以及授权有效期限。
+        适用于两个场景：
+        - 个人授权场景：查询个人用户授权开发者应用（AppId）的范围及授权有效期限；
+        - 企业授权场景：查询企业经办人授权开发者应用（AppId）的范围及授权有效期限。
+      operationId: getPsnAuthorizedInfo
+      parameters:
+        - name: psnId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 个人账号ID（或企业经办人账号ID）
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          authorizedInfo:
+                            type: array
+                            description: 用户授权信息列表
+                            items:
+                              $ref: '#/components/schemas/AuthorizedInfoItem'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authorizedInfo:
+                    - authorizedScope: "manage_psn_resource"
+                      effectiveTime: 1658144081996
+                      expireTime: 1660736081996
+                    - authorizedScope: "psn_initiate_sign"
+                      effectiveTime: 1658144081996
+                      expireTime: 1660736081996
+                    - authorizedScope: "get_psn_identity_info"
+                      effectiveTime: 1658144081996
+                      expireTime: 1660736081996
+
+  /v3/organizations/identity-info:
+    get:
+      tags:
+        - 机构认证授权
+      summary: 查询机构认证信息
+      description: |
+        查询机构实名认证信息。
+        注意事项：orgId、orgName 和 orgIDCardNum 三个参数只选择一个传入即可，查询优先级为 orgId > orgName > orgIDCardNum。
+        如果机构已实名，会默认返回实名的机构名称、机构证件号、证件号类型、法定代表人姓名、机构管理员姓名（脱敏）、机构管理员联系方式（脱敏）。
+      operationId: getOrgIdentityInfo
+      parameters:
+        - name: orgId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 机构账号ID
+        - name: orgName
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 组织机构名称
+        - name: orgIDCardNum
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 组织机构证件号
+        - name: orgIDCardType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - CRED_ORG_USCC
+              - CRED_ORG_REGCODE
+          description: |
+            组织机构证件类型（传 orgIDCardNum 时此参数为必传）：
+            - CRED_ORG_USCC — 统一社会信用代码
+            - CRED_ORG_REGCODE — 工商注册号
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          realnameStatus:
+                            type: integer
+                            format: int32
+                            description: "实名认证状态：0 — 未实名，1 — 已实名"
+                            enum: [0, 1]
+                          authorizeUserInfo:
+                            type: boolean
+                            description: |
+                              是否授权身份信息给当前应用：true — 已授权，false — 未授权。
+                              发起授权认证时需要授权 get_org_identity_info 权限并操作授权完成后，才能返回已授权状态。
+                          orgId:
+                            type: string
+                            description: 机构账号ID
+                          orgName:
+                            type: string
+                            description: 机构名称
+                          orgAuthMode:
+                            type: string
+                            description: |
+                              机构实名认证完成时使用的认证方式（如多次认证则取最近一次）：
+                              - ORG_BANK_TRANSFER — 对公打款认证
+                              - ORG_LEGALREP_AUTHORIZATION — 法人授权认证
+                              - ORG_LEGALREP — 法定代表人本人实名认证
+                              - ORG_LEGALREP_WILLINGNESS — 法定代表人本人意愿认证
+                              - ORG_ALIPAY_QUICK — 法人快捷认证
+                              - ORG_ALIPAY_CREDIT — 企业支付宝认证
+                              - ORG_MANUAL — 人工审核
+                              - ORG_OTHER — 其他
+                            enum:
+                              - ORG_BANK_TRANSFER
+                              - ORG_LEGALREP_AUTHORIZATION
+                              - ORG_LEGALREP
+                              - ORG_LEGALREP_WILLINGNESS
+                              - ORG_ALIPAY_QUICK
+                              - ORG_ALIPAY_CREDIT
+                              - ORG_MANUAL
+                              - ORG_OTHER
+                          orgInfo:
+                            $ref: '#/components/schemas/OrgInfo'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authorizeUserInfo: false
+                  realnameStatus: 1
+                  orgId: "7292997588xxxxx521928db25"
+                  orgName: "测试企业****"
+                  orgAuthMode: "ORG_LEGALREP"
+                  orgInfo:
+                    orgIDCardNum: "9130xxxxx114007"
+                    orgIDCardType: "CRED_ORG_USCC"
+                    legalRepName: "张三"
+                    legalRepIDCardNum: null
+                    legalRepIDCardType: null
+                    orgBankAccountNum: null
+                    corporateAccount: null
+                    cnapsCode: null
+                    licenseDownloadUrl: null
+                    authorizationDownloadUrl: null
+                    adminName: "张*"
+                    adminAccount: "1xxxxxx7650"
+
+  /v3/organizations/{orgId}/authorized-info:
+    get:
+      tags:
+        - 机构认证授权
+      summary: 查询机构授权信息
+      description: 通过指定企业账号ID，查询组织机构用户的授权范围以及授权的有效期限。
+      operationId: getOrgAuthorizedInfo
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 机构账号ID
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          authorizedInfo:
+                            type: array
+                            description: 用户授权信息列表
+                            items:
+                              $ref: '#/components/schemas/AuthorizedInfoItem'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authorizedInfo:
+                    - authorizedScope: "use_org_order"
+                      effectiveTime: 1653967422402
+                      expireTime: 1656559422402
+                    - authorizedScope: "manage_org_resource"
+                      effectiveTime: 1653967422402
+                      expireTime: 1656559422402
+                    - authorizedScope: "org_initiate_sign"
+                      effectiveTime: 1653967422402
+                      expireTime: 1656559422402
+                    - authorizedScope: "get_org_identity_info"
+                      effectiveTime: 1653967422402
+                      expireTime: 1656559422402
+
+  /v3/auth-flow/{authFlowId}:
+    get:
+      tags:
+        - 查询
+      summary: 查询认证授权流程详情
+      description: |
+        查询本次认证授权流程的详细信息。
+        通过【获取个人认证&授权页面链接】或【获取机构认证&授权页面链接】接口中返回的 authFlowId 来查询本次授权和认证的详情信息。
+      operationId: getAuthFlowDetail
+      parameters:
+        - name: authFlowId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 认证授权流程ID（由获取个人/机构认证&授权页面链接接口返回）
+      responses:
+        "200":
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          authFlowId:
+                            type: string
+                            description: 认证授权流程ID
+                          authType:
+                            type: string
+                            description: "认证授权主体类型：ORG — 机构实名认证，PSN — 个人实名认证"
+                            enum:
+                              - ORG
+                              - PSN
+                          realNameOrWillingness:
+                            type: string
+                            description: |
+                              流程中使用的认证类型：
+                              - realName — 实名认证
+                              - willingness — 意愿认证
+                              - none — 都没使用
+                            enum:
+                              - realName
+                              - willingness
+                              - none
+                          realNameOrWillingnessFlowId:
+                            type: string
+                            description: 认证流程ID（e签宝其他业务串联使用，常规场景不需要）。若 realNameOrWillingness 为 none，则该字段返回 0。
+                          realNameStatus:
+                            type: integer
+                            format: int32
+                            description: "认证流程状态：0 — 未实名，1 — 已实名"
+                            enum: [0, 1]
+                          authorizedStatus:
+                            type: integer
+                            format: int32
+                            description: |
+                              授权流程状态：
+                              - 0 — 流程过期失效
+                              - 1 — 已授权
+                              - 2 — 授权中
+                              - 3 — 审批未通过
+                            enum: [0, 1, 2, 3]
+                          authUrl:
+                            type: string
+                            description: 认证授权长链接
+                          authInfo:
+                            type: object
+                            description: 认证详情
+                            properties:
+                              willingnessAuthModes:
+                                type: string
+                                description: |
+                                  流程中使用的意愿认证方式：
+                                  - CODE_SMS — 短信验证码
+                                  - CODE_EMAIL — 邮箱验证码
+                                  - PSN_FACE_ALIPAY — 支付宝刷脸
+                                  - PSN_FACE_TECENT — 腾讯云刷脸
+                                  - PSN_FACE_ESIGN — 快捷刷脸
+                                  - PSN_FACE_WECHAT — 微信小程序刷脸
+                                enum:
+                                  - CODE_SMS
+                                  - CODE_EMAIL
+                                  - PSN_FACE_ALIPAY
+                                  - PSN_FACE_TECENT
+                                  - PSN_FACE_ESIGN
+                                  - PSN_FACE_WECHAT
+                              psnAuthMode:
+                                type: string
+                                description: |
+                                  本次流程中使用的个人/经办人认证方式：
+                                  - PSN_BANKCARD4 — 个人银行卡四要素认证
+                                  - PSN_MOBILE3 — 手机运营商三要素认证
+                                  - PSN_BANKCARD4_DETAILS — 个人银行卡四要素认证（详情版）
+                                  - PSN_MOBILE3_DETAILS — 个人运营商三要素认证（详情版）
+                                  - PSN_FACE — 刷脸认证
+                                enum:
+                                  - PSN_BANKCARD4
+                                  - PSN_MOBILE3
+                                  - PSN_BANKCARD4_DETAILS
+                                  - PSN_MOBILE3_DETAILS
+                                  - PSN_FACE
+                              orgAuthMode:
+                                type: string
+                                description: |
+                                  本次流程中机构实名认证使用的认证方式：
+                                  - ORG_BANK_TRANSFER — 对公账户打款认证
+                                  - ORG_ALIPAY_CREDIT — 企业支付宝认证
+                                  - ORG_LEGALREP_AUTHORIZATION — 授权委托书认证
+                                  - ORG_LEGALREP — 法定代表人本人实名认证
+                                  - ORG_LEGALREP_WILLINGNESS — 法定代表人本人意愿认证
+                                enum:
+                                  - ORG_BANK_TRANSFER
+                                  - ORG_ALIPAY_CREDIT
+                                  - ORG_LEGALREP_AUTHORIZATION
+                                  - ORG_LEGALREP
+                                  - ORG_LEGALREP_WILLINGNESS
+                              authFlowCreateTime:
+                                type: integer
+                                format: int64
+                                description: 流程创建时间（Unix时间戳，单位：毫秒）
+                              authFlowUpdateTime:
+                                type: integer
+                                format: int64
+                                description: 流程最后更新时间（Unix时间戳，单位：毫秒）
+                              person:
+                                type: object
+                                description: |
+                                  个人以及机构经办人信息。
+                                  个人认证&授权场景返回个人信息；机构认证&授权场景返回经办人信息。
+                                properties:
+                                  psnId:
+                                    type: string
+                                    description: 个人账号ID
+                                  psnAccount:
+                                    type: object
+                                    description: 个人账号标识（手机号/邮箱）
+                                    properties:
+                                      accountMobile:
+                                        type: string
+                                        description: 手机号（个人账号标识）
+                                      accountEmail:
+                                        type: string
+                                        description: 邮箱（个人账号标识）
+                                  psnInfo:
+                                    type: object
+                                    description: 个人身份信息（需要发起认证授权时指定 get_psn_identity_info 权限才会返回）
+                                    properties:
+                                      psnName:
+                                        type: string
+                                        description: 个人姓名
+                                      psnNationality:
+                                        type: string
+                                        description: 个人用户已认证的国籍/地区（默认不返回值）
+                                      psnIDCardNum:
+                                        type: string
+                                        description: 个人用户已认证的证件号
+                                      psnIDCardType:
+                                        type: string
+                                        description: 个人证件类型
+                                        enum:
+                                          - CRED_PSN_CH_IDCARD
+                                          - CRED_PSN_CH_HONGKONG
+                                          - CRED_PSN_CH_MACAO
+                                          - CRED_PSN_CH_TWCARD
+                                          - CRED_PSN_PASSPORT
+                                      bankCardNum:
+                                        type: string
+                                        description: 个人用户已认证的银行卡号
+                                      psnMobile:
+                                        type: string
+                                        description: 个人用户已认证的运营商实名登记手机号或银行卡预留手机号
+                                  faceRecognitionInfo:
+                                    type: object
+                                    description: 人脸识别信息
+                                    properties:
+                                      facePhotoUrl:
+                                        type: string
+                                        description: 刷脸认证时刷脸照片（base64编码）。默认不返回，需联系e签宝开通。仅腾讯云人脸识别、快捷人脸识别或微信小程序刷脸时返回。地址有效期1小时，照片保存180天。
+                                      similarityScore:
+                                        type: string
+                                        description: 刷脸照片相似度得分。仅腾讯云人脸识别、快捷人脸识别或微信小程序刷脸时返回。
+                                      livingScore:
+                                        type: string
+                                        description: 刷脸活体检测得分。仅腾讯云人脸识别、快捷人脸识别或微信小程序刷脸时返回。
+                                      idCardFront:
+                                        type: string
+                                        description: 刷脸认证时上传的身份证正面照片（base64编码）。默认不返回，需联系e签宝开通。仅微信小程序使用e签宝微信小程序刷脸时返回。地址有效期1小时，照片保存180天。
+                                      idCardBack:
+                                        type: string
+                                        description: 刷脸认证时上传的身份证反面照片（base64编码）。默认不返回，需联系e签宝开通。仅微信小程序使用e签宝微信小程序刷脸时返回。地址有效期1小时，照片保存180天。
+                              organization:
+                                type: object
+                                description: 实名认证的机构信息
+                                properties:
+                                  orgId:
+                                    type: string
+                                    description: 机构账号ID
+                                  orgName:
+                                    type: string
+                                    description: 组织机构名称（账号标识）
+                                  orgInfo:
+                                    type: object
+                                    description: 组织机构信息
+                                    properties:
+                                      orgIDCardNum:
+                                        type: string
+                                        description: 组织机构证件号
+                                      orgIDCardType:
+                                        type: string
+                                        description: 组织机构证件类型
+                                        enum:
+                                          - CRED_ORG_USCC
+                                          - CRED_ORG_REGCODE
+                                      legalRepName:
+                                        type: string
+                                        description: 法定代表人姓名
+                                      legalRepIDCardNum:
+                                        type: string
+                                        description: 法定代表人证件号
+                                      legalRepIDCardType:
+                                        type: string
+                                        description: 法定代表人证件类型
+                                        enum:
+                                          - CRED_PSN_CH_IDCARD
+                                          - CRED_PSN_CH_HONGKONG
+                                          - CRED_PSN_CH_MACAO
+                                          - CRED_PSN_CH_TWCARD
+                                          - CRED_PSN_PASSPORT
+                          authorizedInfo:
+                            type: array
+                            description: 本次授权详情
+                            items:
+                              $ref: '#/components/schemas/AuthorizedInfoItem'
+              example:
+                code: 0
+                message: 成功
+                data:
+                  authFlowId: "OF-1f7f8****608004f"
+                  authType: "ORG"
+                  realNameOrWillingness: "realName"
+                  realNameStatus: 1
+                  authorizedStatus: 1
+                  authInfo:
+                    willingnessAuthModes: null
+                    psnAuthMode: null
+                    orgAuthMode: null
+                    authFlowCreateTime: 1650020055000
+                    authFlowUpdateTime: 1650020055000
+                    person:
+                      psnId: "c7e002947291xxeea310541e7"
+                      psnAccount:
+                        accountMobile: "183****0101"
+                        accountEmail: null
+                      psnInfo:
+                        psnName: "赵四"
+                        psnNationality: null
+                        psnIDCardNum: "130204********1001"
+                        psnIDCardType: "CRED_PSN_CH_IDCARD"
+                        bankCardNum: null
+                        psnMobile: "183****0101"
+                    organization:
+                      orgId: "0c5bd492486b47f58d4ba96d5648bfbf"
+                      orgName: "esign企业"
+                      orgInfo:
+                        orgIDCardNum: "913301xxxxxx110212"
+                        orgIDCardType: "CRED_ORG_USCC"
+                        legalRepName: "法定代表人姓名"
+                        legalRepIDCardNum: "130204********1001"
+                        legalRepIDCardType: "CRED_PSN_CH_IDCARD"
+                  authorizedInfo: null
+
+webhooks:
+  authPass:
+    post:
+      summary: 实名认证通过通知
+      description: |
+        触发条件：个人或企业实名认证通过时，e签宝通过 HTTP POST 推送此回调通知。
+        action 固定值：AUTH_PASS。
+        回调通知Url地址通过【获取个人认证&授权页面链接】或【获取机构认证&授权页面链接】接口的 notifyUrl 字段配置，
+        或在e签宝开放平台 Webhook 事件订阅中勾选 v3版认证授权 相关配置项（推荐）。
+        回调安全机制：支持 IP 白名单模式和签名验签模式（HMAC-SHA256）。
+        重试机制：通知失败后最多重试 16 次；开发者需在 5 秒内返回 HTTP 状态码 200-299。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - authFlowId
+                - timestamp
+                - authType
+                - bizType
+              properties:
+                action:
+                  type: string
+                  description: 标记该通知的业务类型，该通知固定为 AUTH_PASS
+                  enum:
+                    - AUTH_PASS
+                authFlowId:
+                  type: string
+                  description: 用户认证&授权流程ID
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知触发时间，Unix时间戳，单位：毫秒
+                authType:
+                  type: string
+                  description: "认证主体类型：PSN — 个人认证，ORG — 机构认证"
+                  enum:
+                    - PSN
+                    - ORG
+                bizType:
+                  type: string
+                  description: |
+                    业务类型：
+                    - REAL_NAME — 实名认证
+                    - UPDATE-INFO — 信息变更（仅企业更名且之前已实名时触发）
+                  enum:
+                    - REAL_NAME
+                    - UPDATE-INFO
+                psnInfo:
+                  type: object
+                  description: 个人认证信息（个人认证场景返回此参数）
+                  properties:
+                    psnId:
+                      type: string
+                      description: 个人账号ID
+                    psnAccount:
+                      type: object
+                      description: 个人账号信息
+                      properties:
+                        accountMobile:
+                          type: string
+                          description: 手机号（个人账号标识）
+                        accountEmail:
+                          type: string
+                          description: 邮箱号（个人账号标识）
+                organization:
+                  type: object
+                  description: 机构认证信息（机构认证场景返回此参数）
+                  properties:
+                    orgId:
+                      type: string
+                      description: 机构账号ID
+                    orgName:
+                      type: string
+                      description: 机构名称
+                    transactor:
+                      type: object
+                      description: 经办人认证信息
+                      properties:
+                        psnId:
+                          type: string
+                          description: 经办人账号ID
+                        psnAccount:
+                          type: object
+                          description: 经办人账号信息
+                          properties:
+                            accountMobile:
+                              type: string
+                              description: 手机号（经办人账号标识）
+                            accountEmail:
+                              type: string
+                              description: 邮箱号（经办人账号标识）
+            examples:
+              psnExample:
+                summary: 个人实名认证通知示例
+                value:
+                  authFlowId: "OF-308xxxxxx0057"
+                  timestamp: 1724984592073
+                  authType: "PSN"
+                  bizType: "REAL_NAME"
+                  psnInfo:
+                    psnId: "d77a938xxxxxxx5e67c04e9"
+                    psnAccount:
+                      accountMobile: "17xxxxxx02"
+                  action: "AUTH_PASS"
+              orgExample:
+                summary: 机构实名认证通知示例
+                value:
+                  authFlowId: "OF-30f3cxxx8000e"
+                  timestamp: 1724984941307
+                  authType: "ORG"
+                  bizType: "REAL_NAME"
+                  organization:
+                    orgId: "25ce887c568xxxxxx56d4aca9"
+                    orgName: "****科技有限公司"
+                    transactor:
+                      psnId: "cb603eb5dbxxxxxxxxb77e87b09"
+                      psnAccount:
+                        accountMobile: "13xxxxxx70"
+                  action: "AUTH_PASS"
+      responses:
+        "200":
+          description: 开发者业务系统成功接收回调通知，返回 HTTP 状态码 200-299 均视为成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+
+  authorizeFinish:
+    post:
+      summary: 授权完成通知
+      description: |
+        触发条件：用户完成授权操作时，e签宝通过 HTTP POST 推送此回调通知。
+        action 固定值：AUTHORIZE_FINISH。
+        回调通知Url地址通过【获取个人认证&授权页面链接】或【获取机构认证&授权页面链接】接口的 notifyUrl 字段配置，
+        或在e签宝开放平台 Webhook 事件订阅中勾选 v3版认证授权 相关配置项（推荐）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - psnId
+                - authFlowId
+                - authorizedInfo
+              properties:
+                action:
+                  type: string
+                  description: 通知的业务类型，固定值：AUTHORIZE_FINISH
+                  enum:
+                    - AUTHORIZE_FINISH
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知发送时间，Unix时间戳（毫秒）
+                psnId:
+                  type: string
+                  description: 个人账号ID（经办人账号ID）
+                orgId:
+                  type: string
+                  description: 机构账号ID
+                authFlowId:
+                  type: string
+                  description: 用户认证&授权流程ID
+                authorizedInfo:
+                  type: array
+                  description: 用户授权信息
+                  items:
+                    type: object
+                    properties:
+                      authorizedScope:
+                        type: string
+                        description: |
+                          授权范围：
+                          个人用户（企业授权场景为经办人）：
+                          - get_psn_identity_info — 授权允许获取个人账号基本信息
+                          - psn_initiate_sign — 授权允许代替用户发起合同签署
+                          - manage_psn_resource — 授权允许获取用户的模板、印章等资源的权限
+                          企业机构用户：
+                          - get_org_identity_info — 授权允许获取机构用户账号基本信息
+                          - org_initiate_sign — 授权允许代替机构用户发起合同签署
+                          - manage_org_resource — 授权允许获取机构用户的模板、印章、组织成员等资源的权限
+                          - use_org_order — 授权允许获取机构用户套餐订单的使用权限
+                      effectiveTime:
+                        type: integer
+                        format: int64
+                        description: 授权生效时间（unix时间戳，单位：毫秒）
+                      expireTime:
+                        type: integer
+                        format: int64
+                        description: 授权失效时间（unix时间戳，单位：毫秒）
+                legalRepCheck:
+                  type: boolean
+                  description: |
+                    本次操作的机构经办人是否为企业法人：true — 是，false — 否
+                adminCheck:
+                  type: boolean
+                  description: |
+                    本次操作的机构经办人是否为企业管理员：true — 是，false — 否
+                transactorUseSeal:
+                  type: boolean
+                  description: |
+                    本次操作的机构经办人是否获得了用印权限（经办人未成为企业管理员或法人的情况下存在）：true — 是，false — 否
+            example:
+              timestamp: 1697081866002
+              psnId: "c92520exxxxx2246bd9b50f"
+              orgId: "3c404xxxxx940279134e7"
+              authFlowId: "OF-2a74xxxx8005a"
+              authorizedInfo:
+                - authorizedScope: "use_org_order"
+                  effectiveTime: 1697081865883
+                  expireTime: 4819145865883
+                - authorizedScope: "manage_org_resource"
+                  effectiveTime: 1697081865883
+                  expireTime: 4819145865883
+                - authorizedScope: "get_org_identity_info"
+                  effectiveTime: 1697081865883
+                  expireTime: 4819145865883
+                - authorizedScope: "get_psn_identity_info"
+                  effectiveTime: 1697081865883
+                  expireTime: 4819145865883
+              legalRepCheck: false
+              adminCheck: false
+              transactorUseSeal: true
+              action: "AUTHORIZE_FINISH"
+      responses:
+        "200":
+          description: 开发者业务系统成功接收回调通知，返回 HTTP 状态码 200-299 均视为成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+
+  authorizeChange:
+    post:
+      summary: 授权范围变更通知
+      description: |
+        触发条件：用户登录e签宝官网主动取消授权时，e签宝通过 HTTP POST 推送此回调通知。
+        action 固定值：AUTHORIZE_CHANGE。
+        注意：此回调通知仅支持通过e签宝开放平台 Webhook 事件订阅配置（勾选"用户授权范围变更"事件），
+        不支持通过接口 notifyUrl 参数设置。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - timestamp
+                - cancelAuthorizedScope
+                - operatorPsnId
+                - operateTime
+              properties:
+                action:
+                  type: string
+                  description: 通知的业务类型，固定值：AUTHORIZE_CHANGE
+                  enum:
+                    - AUTHORIZE_CHANGE
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: 回调通知发送时间（如重试多次均返回第一次时间，毫秒级时间戳格式）
+                psnId:
+                  type: string
+                  description: |
+                    个人用户账号ID。
+                    个人用户授权取消场景返回。返回已实名未注销的个人账号，若该个人证件号绑定的多个e签宝账号均在同一 appId 下授权过，则分多次回调发送。
+                orgId:
+                  type: string
+                  description: 机构用户账号ID（机构用户授权取消场景返回）
+                cancelAuthorizedScope:
+                  type: string
+                  description: 失效的授权范围（多个范围以逗号分隔）
+                operatorPsnId:
+                  type: string
+                  description: 操作人账号ID（若有则返回）
+                operateTime:
+                  type: integer
+                  format: int64
+                  description: 操作时间（毫秒级时间戳格式）
+            examples:
+              orgCancelExample:
+                summary: 机构取消授权示例
+                value:
+                  timestamp: 1678178557204
+                  operateTime: 1678178557204
+                  cancelAuthorizedScope: "org_initiate_sign,get_org_identity_info,use_org_order,manage_org_resource"
+                  operatorPsnId: "39c4d6xxxx438c8"
+                  orgId: "d94ad19xxxxe9cecf9f"
+                  action: "AUTHORIZE_CHANGE"
+              psnCancelExample:
+                summary: 个人取消授权示例
+                value:
+                  timestamp: 1678178948087
+                  operateTime: 1678178948087
+                  cancelAuthorizedScope: "get_psn_identity_info,psn_initiate_sign,manage_psn_resource"
+                  operatorPsnId: "39c4d66bxxx3c39634438c8"
+                  psnId: "e7d1fe1f96fxxxx2dfcd7098"
+                  action: "AUTHORIZE_CHANGE"
+      responses:
+        "200":
+          description: 开发者业务系统成功接收回调通知，返回 HTTP 状态码 200-299 均视为成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "200"
+                  msg:
+                    type: string
+                    example: "success"
+
+x-error-codes:
+  description: 认证授权服务 API V3 错误码（来源：assets/opendoc/codemsg-v3/agi7xuv4yrw1i8f3）
+  note: "%s 代表具体的参数值，实际响应中会替换为实际传入的参数内容。"
+  endpoints:
+    POST /v3/psn-auth-url:
+      title: 获取个人认证&授权页面链接
+      codes:
+        - code: 1450001
+          message: "缺少参数：%s"
+        - code: 1450002
+          message: "参数错误：%s"
+        - code: 1450003
+          message: "参数格式错误：%s"
+        - code: 1450004
+          message: "用户id：%s 由于接口版本问题不可用，请使用用户信息发起授权"
+        - code: 1450005
+          message: "个人用户已实名"
+        - code: 1450901
+          message: "创建个人账号失败，请重试或联系e签宝服务人员"
+        - code: 1450903
+          message: "发起意愿认证失败:%s"
+        - code: 1450904
+          message: "发起实名认证失败:%s"
+        - code: 1450905
+          message: "发起实名或意愿认证失败，请重试或联系e签宝服务人员"
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+
+    GET /v3/persons/identity-info:
+      title: 查询个人用户认证信息
+      codes:
+        - code: 1450001
+          message: "缺少参数：%s"
+        - code: 1450002
+          message: "参数错误：%s"
+        - code: 1450003
+          message: "参数格式错误：%s"
+        - code: 1450008
+          message: "未找到用户信息，请检查查询数据的正确性 :%s"
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+
+    GET /v3/persons/{psnId}/authorized-info:
+      title: 查询个人授权信息
+      codes:
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+        - code: 1450910
+          message: "个人未实名 :%s"
+
+    POST /v3/org-auth-url:
+      title: 获取机构用户认证&授权页面链接
+      codes:
+        - code: 1450001
+          message: "缺少参数：%s"
+        - code: 1450002
+          message: "参数错误：%s"
+        - code: 1450003
+          message: "参数格式错误：%s"
+        - code: 1450004
+          message: "用户id：%s 由于接口版本问题不可用，请使用用户信息发起授权"
+        - code: 1450006
+          message: "企业用户已实名"
+        - code: 1450902
+          message: "创建个人账号失败，请重试或联系e签宝服务人员"
+        - code: 1450903
+          message: "发起意愿认证失败:%s"
+        - code: 1450904
+          message: "发起实名认证失败:%s"
+        - code: 1450905
+          message: "发起实名或意愿认证失败，请重试或联系e签宝服务人员"
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+
+    GET /v3/organizations/{orgId}/authorized-info:
+      title: 查询机构授权信息
+      codes:
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+        - code: 1450909
+          message: "企业未实名 :%s"
+
+    GET /v3/organizations/identity-info:
+      title: 查询机构用户认证信息
+      codes:
+        - code: 1450001
+          message: "缺少参数：%s"
+        - code: 1450002
+          message: "参数错误：%s"
+        - code: 1450003
+          message: "参数格式错误：%s"
+        - code: 1450008
+          message: "未找到用户信息，请检查查询数据的正确性 :%s"
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
+
+    GET /v3/auth-flow/{authFlowId}:
+      title: 查询认证授权流程详情
+      codes:
+        - code: 1450007
+          message: "授权流程id不存在"
+        - code: 1435203
+          message: "账号不存在或已注销 :%s"
