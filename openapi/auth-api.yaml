@@ -680,6 +680,13 @@ paths:
                     当前经办人非企业管理员的情况下，是否需要为其获取企业全部印章的用印权限。
                     true — 需要；false — 不需要（默认值）。
                     注：只在配置了 authorizeConfig 的授权模式下生效，纯实名模式不生效；第一次为企业做实名的经办人会成为企业管理员，不需要额外获取用印权限。
+                changeOrgAdmin:
+                  type: boolean
+                  default: false
+                  description: |
+                    当前经办人非企业管理员或法人时，是否将其设置为企业新的管理员。
+                    true — 是；false — 否（默认值）。
+                    注：只在经办人未成为管理员的场景下生效。
                 clientType:
                   type: string
                   default: ALL

@@ -342,12 +342,24 @@ components:
           description: 机构印章尺寸（毫米mm），格式 宽_高，按所选模板样式取值
         sealColor:
           $ref: '#/components/schemas/SealColor'
+        sealSuffix:
+          type: string
+          description: 印章后缀（不对外，内部字段）
         sealOpacity:
           type: integer
           format: int32
           minimum: 20
           maximum: 100
           default: 80
+        sealHorizontalText:
+          type: string
+          description: 印章横排文字（不对外，内部字段）
+        sealBottomText:
+          type: string
+          description: 印章底部文字（不对外，内部字段）
+        sealOutsideSurroundText:
+          type: string
+          description: 印章外圈环绕文字（不对外，内部字段）
         redirectUrl:
           type: string
           maxLength: 1024
@@ -357,7 +369,8 @@ components:
           items: {type: string}
           description: |
             页面中不可编辑的字段：sealCreateMode/sealName/sealTemplateType/
-            sealTemplateStyle/sealSize/sealColor/sealOpacity
+            sealTemplateStyle/sealSize/sealColor/sealOpacity/sealSuffix/
+            sealHorizontalText/sealBottomText/sealOutsideSurroundText
 
     OrgSealCreateUrlResponse:
       type: object
@@ -659,6 +672,9 @@ components:
         redirectUrl:
           type: string
           description: 授权完成后重定向跳转地址
+        customBizNum:
+          type: string
+          description: 自定义业务编号
         appScheme:
           type: string
           description: 开发者 app-Scheme 地址，支付宝刷脸后跳回开发者 app
@@ -741,6 +757,13 @@ components:
           type: string
         appScheme:
           type: string
+        customBizNum:
+          type: string
+          description: 自定义业务编号
+        autoSign:
+          type: boolean
+          default: false
+          description: 印章是否设置自动落章（仅限授权全部企业成员且指定具体模板编号时使用）
 
     ExternalSealAuthResponse:
       type: object
