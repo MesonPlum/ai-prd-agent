@@ -1,0 +1,14 @@
+{
+  "totalInputFiles": 377,
+  "nonApiSkipped": 240,
+  "apiDocCount": 137,
+  "expectedApiDocs": "~137",
+  "parsedRecords": 137,
+  "unparsedCount": 240,
+  "successRate": "100.0%",
+  "pathNonEmptyRate": "100%",
+  "methodNonEmptyRate": "100%",
+  "avgParamFieldsPerRow": "3.9",
+  "warningCount": 9,
+  "unparsedRate": "3.6%"
+}

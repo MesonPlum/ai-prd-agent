@@ -1,0 +1,16 @@
+{
+  "totalInputFiles": 1,
+  "totalRecords": 263,
+  "unparsedCount": 0,
+  "successRate": "100%",
+  "pathNonEmptyRate": "100%",
+  "methodNonEmptyRate": "100%",
+  "unparsedRate": "0%",
+  "tagSplitFiles": [
+    {
+      "tag": "根目录",
+      "file": "apifox-根目录.json",
+      "count": 263
+    }
+  ]
+}

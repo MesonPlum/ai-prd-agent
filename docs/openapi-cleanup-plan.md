@@ -13,9 +13,18 @@
 - 修改方式：直接原地修改 yaml，依赖 git 历史回溯
 - 差异焦点：文案类（example/default/description）本轮不纳入重心
 
-**⚠️ 待补真值源**：
-- **F003 签署相关 测试 postman 文件**（PM 后续补充） — 对应 `sign-api.yaml` 的 36 paths，是测试侧高置信源的关键补全
-- 影响：sign-api 模块**在 F003 测试文件到位前不启动 Phase 2 清洗**；其他模块（auth / member / seal / file-template）不受影响，可先行推进
+**✅ 真值源已全部就位**：
+
+| 真值源 | 路径 | 状态 |
+|---|---|---|
+| opendoc | `assets/opendoc/` | ✅ 已就位（377 md） |
+| 对接 postman | `assets/对接技术人员提供的完整postman文件/SaaS_API_V3版系列产品.postman_collection.json` | ✅ 已就位（139 requests） |
+| 测试 postman — 实名 | `assets/测试提供的postman和apifox文件/实名常用.postman_collection.json` | ✅ 已就位（86 requests / 18.9 MB） |
+| 测试 apifox — 流程模板+文件模板 | `assets/测试提供的postman和apifox文件/流程模板+文件模板.apifox.json` | ✅ 已就位（1.3 MB） |
+| **测试 postman — F003 签署** | `assets/测试提供的postman和apifox文件/签署相关.postman.json` | ✅ **已就位（435 requests / 2.4 MB / S 档）** |
+| 测试 postman — 印章服务 | `assets/测试提供的postman和apifox文件/印章服务.postman.json` | ✅ 已就位（23 requests / 0.1 MB） |
+
+**Phase 0 验收指标升级**：4 个 JSON 总记录数 ≈ 377 + 139 + 86 + 435 + 23 + N（apifox）；随机抽 3 条 opendoc 比对解析结果无字段遗漏。
 
 ---
 
@@ -29,7 +38,7 @@
 
 ## Phase 0：一次性预处理（产出可切片的中间数据）
 
-**输入**：三份原始数据原文件 + **待补 F003 签署测试 postman**
+**输入**：三份原始数据原文件（全部已就位）
 
 **动作**：交付 3 个独立解析脚本（下一轮交付草稿），PM 本地跑：
 
@@ -40,6 +49,7 @@
    - **F003 签署 postman 到位后增量并入 `postman-test.json`**，无需修改脚本，重跑一次即可
 3. **apifox 解析器** → `apifox.json`
    apifox 导出 JSON 已结构化，直接抽 `path/method/parameters/requestBody/responses`。
+   - 文件已就位：`assets/测试提供的postman和apifox文件/流程模板+文件模板.apifox.json`（1.3 MB），无需新增解析脚本适配
 
 **输出**：`outputs/openapi-cleanup/_index/` 下 4 个 JSON，每个 < 2MB，可 grep 按 path 检索；解析失败项归入 `_unparsed.jsonl`。
 
@@ -51,9 +61,10 @@
 | 对接 postman | `assets/对接技术人员提供的完整postman文件/SaaS_API_V3版系列产品.postman_collection.json` | ✅ 已就位（139 requests） |
 | 测试 postman — 实名 | `assets/测试提供的postman和apifox文件/实名常用.postman_collection.json` | ✅ 已就位（86 requests） |
 | 测试 apifox — 流程模板+文件模板 | `assets/测试提供的postman和apifox文件/流程模板+文件模板.apifox.json` | ✅ 已就位 |
-| **测试 postman — F003 签署** | 待 PM 补充至 `assets/测试提供的postman和apifox文件/` | ⏳ **缺失** |
+| 测试 postman — F003 签署 | `assets/测试提供的postman和apifox文件/签署相关.postman.json` | ✅ **已就位（435 requests / 2.4 MB — S 档）** |
+| 测试 postman — 印章服务 | `assets/测试提供的postman和apifox文件/印章服务.postman.json` | ✅ 已就位（23 requests / 0.1 MB） |
 
-**验收**：4 个 JSON 总记录数 ≈ 377 + 139 + 86 + F003 + N；随机抽 3 条 opendoc 比对解析结果无字段遗漏。
+**验收**：6 个 JSON 总记录数 ≈ 377 + 139 + 86 + 435 + 23 + N（apifox）；随机抽 3 条 opendoc 比对解析结果无字段遗漏。
 
 ---
 
@@ -284,9 +295,9 @@ Phase 0 完成的判定条件（在原"4 个 JSON 总记录数 ≈ ..."基础上
 | 2 | member-api | 8 | 无 | auth 完成后 |
 | 3 | seal-api | 26 | 无 | member 完成后 |
 | 4 | file-template-api | 26 | 无 | seal 完成后 |
-| 5 | **sign-api** | **36** | **强依赖 F003 测试 postman** | **F003 到位后，按 tag 拆 2-3 sub-batch** |
+| 5 | **sign-api** | **36** | **✅ F003 已就位（S 档，435 reqs / 2.4 MB）** | **F003 到位后，按 tag 拆 2-3 sub-batch** |
 
-如果 F003 到 sign-api 启动前仍未到位，可选两种降级路径：
+如果 F003 到 sign-api 启动前仍未到位，可选两种降级路径（⏳ **F003 已就位，此降级路径不再需要**）：
 - **A 推迟**：等 F003 补齐再做 sign-api（推荐，保证清洗质量一致）
 - **B 降级跑**：sign-api 全模块按"测试未覆盖"分支处理（`对接Postman > opendoc`），同时在 diff-report 顶部标"⚠️ F003 缺失，本批次未启用测试源仲裁，建议 F003 到位后做二次复核"
 
@@ -335,7 +346,9 @@ Phase 0 完成的判定条件（在原"4 个 JSON 总记录数 ≈ ..."基础上
 | **git 提交策略** | 整 yaml 一次提交 | 按 sub-batch 提交 4 次 | 按 sub-batch 提交 8 次 + F003 文件用 Git LFS |
 | **新增开发成本** | 0 | +1-2h（vs S 档） | +半天（流式解析 + 预切脚本） |
 
-### 快速估容动作（PM 拿到 F003 后 5 分钟判定）
+### 快速估容动作（F003 已就位 — 2026-05-25 判定：S 档）
+
+F003 实际大小 **2.4 MB / 435 requests**，远低于 S 档阈值（<30 MB / <100 reqs），按 S 档方案直接处理，无需流式解析或预切。
 
 PowerShell 一句话判档位：
 
@@ -377,8 +390,9 @@ else { 'L档：解析器改流式 + 预切文件' }
 - `assets/opendoc/` — 377 md，Phase 0 解析重点
 - `assets/对接技术人员提供的完整postman文件/SaaS_API_V3版系列产品.postman_collection.json` — 覆盖最广的中置信真值
 - `assets/测试提供的postman和apifox文件/实名常用.postman_collection.json` — 86 requests，最高优先级（测试维护）
+- `assets/测试提供的postman和apifox文件/签署相关.postman.json` — **435 requests / 2.4 MB（S 档）**，sign-api 模块关键仲裁源
+- `assets/测试提供的postman和apifox文件/印章服务.postman.json` — 23 requests / 0.1 MB，seal-api 模块补充仲裁源
 - `assets/测试提供的postman和apifox文件/流程模板+文件模板.apifox.json` — apifox 导出，1.3MB
-- **`assets/测试提供的postman和apifox文件/[F003-签署测试文件]`** — ⏳ 待 PM 补充，sign-api 模块强依赖
 - `outputs/openapi-cleanup/` — 本方案所有中间产物输出根目录（待建）
 
 ---
@@ -389,6 +403,7 @@ else { 'L档：解析器改流式 + 预切文件' }
 ```bash
 ls outputs/openapi-cleanup/_index/
 # 应有 opendoc.json / postman-docking.json / postman-test.json / apifox.json
+# postman-test.json 已合并 实名(86) + 签署(435) + 印章(23) = 544 requests
 wc -l outputs/openapi-cleanup/_index/_unparsed.jsonl  # 应 < 总数 5%
 ```
 
@@ -409,7 +424,7 @@ git log --oneline openapi/[module].yaml  # 有 chore(openapi): clean [module] �
 
 1. **本轮结束** → PM 退出 plan 模式确认方案
 2. **下一轮** → 我交付 Phase 0 三个解析脚本草稿（opendoc / postman / apifox），PM review
-   - 脚本设计支持 postman 解析器**幂等重跑**，F003 到位后只需 PM 把文件放进 `assets/测试提供的postman和apifox文件/` 重跑即可，无需等齐再启动
+   - 脚本设计支持 postman 解析器**幂等重跑**，F003 已就位，postman-test.json 将合并实名(86) + 签署(435) + 印章(23) = **544 requests**
 3. **PM 本地跑脚本**（不占对话） → 产出 `outputs/openapi-cleanup/_index/*.json`
-4. **再下一轮** → 进入 Phase 1，产出 `master-endpoint-index.md`（缺 F003 时 sign-api 行的 `test_postman_path` 列留空，到位后补回）
-5. **之后** → 按 auth → member → seal → file-template 顺序循环 Phase 2-4；sign-api 等 F003 就位后再启动（或走降级路径 B）
+4. **再下一轮** → 进入 Phase 1，产出 `master-endpoint-index.md`（所有模块均含测试源，无需留空列）
+5. **之后** → 按 auth → member → seal → file-template → sign 顺序循环 Phase 2-4；sign-api 使用 S 档方案一次性或 sub-batch 处理

@@ -1,0 +1,493 @@
+[
+  {
+    "folder_path": "实名认证和授权服务API/个人认证和授权",
+    "name": "获取个人认证&授权页面链接",
+    "method": "POST",
+    "url": "/v3/psn-auth-url",
+    "raw_url": "{{url}}/v3/psn-auth-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnAuthConfig",
+          "type": "object"
+        },
+        {
+          "path": "psnAuthConfig.psnAccount",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnInfo",
+          "type": "object"
+        },
+        {
+          "path": "psnAuthConfig.psnInfo.psnName",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnInfo.psnIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnInfo.psnIDCardType",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnInfo.psnMobile",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnAuthPageConfig",
+          "type": "object"
+        },
+        {
+          "path": "psnAuthConfig.psnAuthPageConfig.psnDefaultAuthMode",
+          "type": "string"
+        },
+        {
+          "path": "psnAuthConfig.psnAuthPageConfig.psnAvailableAuthModes",
+          "type": "array"
+        },
+        {
+          "path": "psnAuthConfig.psnAuthPageConfig.psnEditableFields",
+          "type": "array"
+        },
+        {
+          "path": "authorizeConfig",
+          "type": "object"
+        },
+        {
+          "path": "authorizeConfig.authorizedScopes",
+          "type": "array"
+        },
+        {
+          "path": "redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "redirectConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "clientType",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"psnAuthConfig\": {\n        \"psnAccount\": \"153******50\",\n        \"psnInfo\": {\n            \"psnName\": \"张三\",\n            \"psnIDCardNum\": \"2311********4329\",\n            \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\",\n            \"psnMobile\": \"153******50\"\n        },\n        \"psnAuthPageConfig\": {\n            \"psnDefaultAuthMode\": \"PSN_FACE\",\n            \"psnAvailableAuthModes\": [\n                \"PSN_BANKCARD4\",\n                \"PSN_MOBILE3\",\n                \"PSN_FACE\"\n            ],\n            \"psnEditableFields\": [\n                \"IDCardNum\"\n            ]\n        }\n    },\n    \"authorizeConfig\": {\n        \"authorizedScopes\": [\n            \"get_psn_identity_info\",\n            \"psn_initiate_sign\",\n            \"manage_psn_resource\"\n        ]\n    },\n    \"redirectConfig\": {\n        \"redirectUrl\": \"https://www.esign.cn/\"\n    },\n    \"notifyUrl\": \"http://******/notify\",\n    \"clientType\": \"ALL\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/个人认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API/个人认证和授权",
+    "name": "查询个人认证信息",
+    "method": "GET",
+    "url": "/v3/persons/identity-info",
+    "raw_url": "{{url}}/v3/persons/identity-info?psnAccount=153*****50",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "psnAccount",
+        "value": "153*****50",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/个人认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API/个人认证和授权",
+    "name": "查询个人授权信息",
+    "method": "GET",
+    "url": "/v3/persons/7ffca******0a8f6/authorized-info",
+    "raw_url": "{{url}}/v3/persons/7ffca******0a8f6/authorized-info",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/个人认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API/机构认证和授权",
+    "name": "获取机构认证&授权页面链接",
+    "method": "POST",
+    "url": "/v3/org-auth-url",
+    "raw_url": "{{url}}/v3/org-auth-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgAuthConfig",
+          "type": "object"
+        },
+        {
+          "path": "orgAuthConfig.orgName",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo",
+          "type": "object"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo.orgIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo.orgIDCardType",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo.legalRepName",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo.legalRepIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgInfo.legalRepIDCardType",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgAuthPageConfig",
+          "type": "object"
+        },
+        {
+          "path": "orgAuthConfig.orgAuthPageConfig.orgDefaultAuthMode",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.orgAuthPageConfig.orgAvailableAuthModes",
+          "type": "array"
+        },
+        {
+          "path": "orgAuthConfig.orgAuthPageConfig.orgEditableFields",
+          "type": "array"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo",
+          "type": "object"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnAccount",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnInfo",
+          "type": "object"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnInfo.psnName",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnInfo.psnIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnInfo.psnIDCardType",
+          "type": "string"
+        },
+        {
+          "path": "orgAuthConfig.transactorInfo.psnInfo.psnMobile",
+          "type": "string"
+        },
+        {
+          "path": "authorizeConfig",
+          "type": "object"
+        },
+        {
+          "path": "authorizeConfig.authorizedScopes",
+          "type": "array"
+        },
+        {
+          "path": "redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "redirectConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "clientType",
+          "type": "string"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgAuthConfig\": {\n        \"orgName\": \"******公司\",\n        \"orgInfo\": {\n            \"orgIDCardNum\": \"9133010****8110212\",\n            \"orgIDCardType\": \"CRED_ORG_USCC\",\n            \"legalRepName\": \"这里是法定代表人的姓名\",\n            \"legalRepIDCardNum\": \"110101********1001\",\n            \"legalRepIDCardType\": \"CRED_PSN_CH_IDCARD\"\n        },\n        \"orgAuthPageConfig\": {\n            \"orgDefaultAuthMode\": \"ORG_BANK_TRANSFER\",\n            \"orgAvailableAuthModes\": [\n                \"ORG_BANK_TRANSFER\",\n                \"ORG_LEGALREP_INVOLVED\"\n            ],\n            \"orgEditableFields\": [\n                \"orgNum\"\n            ]\n        },\n        \"transactorInfo\": {\n            \"psnAccount\": \"153****0000\",\n            \"psnInfo\": {\n                \"psnName\": \"这里是经办人的姓名\",\n                \"psnIDCardNum\": \"110102*****0000\",\n                \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\",\n                \"psnMobile\": \"151****0050\"\n            }\n        }\n    },\n    \"authorizeConfig\": {\n        \"authorizedScopes\": [\n            \"get_org_identity_info\",\n            \"get_psn_identity_info\",\n            \"org_initiate_sign\",\n            \"psn_initiate_sign\",\n            \"manage_org_resource\",\n            \"manage_psn_resource\",\n            \"use_org_order\"\n        ]\n    },\n    \"redirectConfig\": {\n        \"redirectUrl\": \"https://www.xxx.cn/\"\n    },\n    \"clientType\": \"ALL\",\n    \"notifyUrl\": \"http://******/notify\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/机构认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API/机构认证和授权",
+    "name": "查询机构认证信息",
+    "method": "GET",
+    "url": "/v3/organizations/identity-info",
+    "raw_url": "{{url}}/v3/organizations/identity-info?orgId=fef71********3da2af37",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "fef71********3da2af37",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/机构认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API/机构认证和授权",
+    "name": "查询机构授权信息",
+    "method": "GET",
+    "url": "/v3/organizations/06a23453******b1351f99a/authorized-info",
+    "raw_url": "{{url}}/v3/organizations/06a23453******b1351f99a/authorized-info",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API/机构认证和授权",
+    "tag": "实名认证和授权服务API"
+  },
+  {
+    "folder_path": "实名认证和授权服务API",
+    "name": "查询用户认证授权流程详情",
+    "method": "GET",
+    "url": "/v3/auth-flow/OF-2023*****80048",
+    "raw_url": "{{url}}/v3/auth-flow/OF-2023*****80048",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "实名认证和授权服务API",
+    "tag": "实名认证和授权服务API"
+  }
+]

@@ -1,0 +1,4200 @@
+[
+  {
+    "folder_path": "合同文件签署服务API/文件类API/签署前辅助定位",
+    "name": "检索文件关键字坐标",
+    "method": "POST",
+    "url": "/v3/files/{{fileId}}/keyword-positions",
+    "raw_url": "{{url}}/v3/files/{{fileId}}/keyword-positions",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "keywords",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n  \"keywords\": [\n    \"甲方盖章/签字\",\n    \"乙方盖章/签字\"\n  ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/文件类API/签署前辅助定位",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/文件类API/签署前辅助定位",
+    "name": "获取拖章定位页面",
+    "method": "POST",
+    "url": "/v3/files/get-seal-position-url",
+    "raw_url": "{{url}}/v3/files/get-seal-position-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "fileId",
+          "type": "string"
+        },
+        {
+          "path": "signerRoles",
+          "type": "array"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"customBizNum\": \"自定义编码001\",\n    \"fileId\": \"70a0b2e887101111156969f79535bb\",\n    \"signerRoles\": [\n        \"甲方签署区\",\n        \"乙方签署区\"\n    ],\n    \"redirectUrl\": \"https://esign.cn\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/文件类API/签署前辅助定位",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/文件类API",
+    "name": "获取文件上传地址",
+    "method": "POST",
+    "url": "/v3/files/file-upload-url",
+    "raw_url": "{{url}}/v3/files/file-upload-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "contentMd5",
+          "type": "string"
+        },
+        {
+          "path": "contentType",
+          "type": "string"
+        },
+        {
+          "path": "convertToPDF",
+          "type": "boolean"
+        },
+        {
+          "path": "fileName",
+          "type": "string"
+        },
+        {
+          "path": "fileSize",
+          "type": "string"
+        },
+        {
+          "path": "convertToHTML",
+          "type": "boolean"
+        }
+      ],
+      "raw": "{\n        \"contentMd5\": \"ukvpx83/aEjocsl2LLE88A==\",\n        \"contentType\": \"application/octet-stream\",\n        \"convertToPDF\": true,\n        \"fileName\": \"test.docx\",\n        \"fileSize\": \"24711\",\n        \"convertToHTML\":false\n}\n"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/文件类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/文件类API",
+    "name": "上传文件流",
+    "method": "PUT",
+    "url": "",
+    "raw_url": "{{fileUploadUrl}}",
+    "headers": [
+      {
+        "key": "Content-MD5",
+        "value": "ukvpx83/aEjocsl2LLE88A=="
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/octet-stream"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "file",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/文件类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/文件类API",
+    "name": "查询文件上传状态",
+    "method": "GET",
+    "url": "/v3/files/{{fileId}}",
+    "raw_url": "{{url}}/v3/files/{{fileId}}",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/文件类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "name": "获取制作合同模板页面",
+    "method": "POST",
+    "url": "/v3/doc-templates/doc-template-create-url",
+    "raw_url": "{{url}}/v3/doc-templates/doc-template-create-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docTemplateName",
+          "type": "string"
+        },
+        {
+          "path": "docTemplateType",
+          "type": "number"
+        },
+        {
+          "path": "fileId",
+          "type": "string"
+        },
+        {
+          "path": "fileName",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n        \"docTemplateName\": \"test.pdf\",\n        \"docTemplateType\": 0,\n        \"fileId\": \"60585142****56247ab84eeb\",\n        \"fileName\": \"test.pdf\",\n        \"redirectUrl\": \"https://esign.cn\"\n}\n"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "name": "获取编辑合同模板页面",
+    "method": "POST",
+    "url": "/v3/doc-templates/996c2****cbca40f9a/doc-template-edit-url",
+    "raw_url": "{{url}}/v3/doc-templates/996c2****cbca40f9a/doc-template-edit-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"redirectUrl\": \"https://esign.cn\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "name": "获取预览合同模板页面",
+    "method": "POST",
+    "url": "/v3/doc-templates/doc-template-preview-url",
+    "raw_url": "{{url}}/v3/doc-templates/doc-template-preview-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docTemplateId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"docTemplateId\": \"9036ca4d1******c6095e993\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/通过页面制作模板",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/通过页面填写模板",
+    "name": "获取填写合同模板页面",
+    "method": "POST",
+    "url": "/v3/doc-templates/doc-template-fill-url",
+    "raw_url": "{{url}}/v3/doc-templates/doc-template-fill-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docTemplateId",
+          "type": "string"
+        },
+        {
+          "path": "customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "componentFillingtValues",
+          "type": "array"
+        },
+        {
+          "path": "componentFillingtValues[].componentKey",
+          "type": "string"
+        },
+        {
+          "path": "componentFillingtValues[].componentValue",
+          "type": "string"
+        },
+        {
+          "path": "editFillingValue",
+          "type": "boolean"
+        },
+        {
+          "path": "clientType",
+          "type": "string"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"docTemplateId\": \"79d3a0ec*******876\",\n    \"customBizNum\": \"01测试\",\n    \"componentFillingtValues\": [\n        {\n            \"componentKey\": \"key1\",\n            \"componentValue\": \"公司A\"\n        },\n        {\n            \"componentKey\": \"key2\",\n            \"componentValue\": \"公司B\"\n        }\n    ],\n    \"editFillingValue\": false,\n    \"clientType\": \"ALL\",\n    \"notifyUrl\": \"http://****/notify\",\n    \"redirectUrl\": \"https://esign.cn\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/通过页面填写模板",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/通过页面填写模板",
+    "name": "查询填写合同模板任务结果",
+    "method": "POST",
+    "url": "/v3/doc-templates/fill-task-result",
+    "raw_url": "{{url}}/v3/doc-templates/fill-task-result",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docTemplateId",
+          "type": "string"
+        },
+        {
+          "path": "fillTaskId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"docTemplateId\": \"ff36b8c******45b2e9ff6\",\n    \"fillTaskId\": \"413ab12*******a7c52711e364\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/通过页面填写模板",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "name": "创建自定义业务控件",
+    "method": "POST",
+    "url": "/v3/custom-components/create",
+    "raw_url": "{{url}}/v3/custom-components/create",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "components",
+          "type": "array"
+        },
+        {
+          "path": "components[].componentName",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentType",
+          "type": "number"
+        },
+        {
+          "path": "components[].componentSize",
+          "type": "object"
+        },
+        {
+          "path": "components[].componentSize.componentWidth",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentSize.componentHeight",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentTextFormat",
+          "type": "object"
+        },
+        {
+          "path": "components[].componentTextFormat.font",
+          "type": "number"
+        },
+        {
+          "path": "components[].componentTextFormat.fontSize",
+          "type": "number"
+        },
+        {
+          "path": "components[].componentTextFormat.textColor",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentTextFormat.bold",
+          "type": "boolean"
+        },
+        {
+          "path": "components[].componentTextFormat.italic",
+          "type": "boolean"
+        },
+        {
+          "path": "components[].componentTextFormat.horizontalAlignment",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentTextFormat.verticalAlignment",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentTextFormat.textLineSpacing",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"components\": [\n        {\n            \"componentName\": \"0522005自定义控件名称\",\n            \"componentType\": 1,\n            \"componentSize\": {\n                \"componentWidth\": \"160\",\n                \"componentHeight\": \"15\"\n            },\n            \"componentTextFormat\": {\n                \"font\": 4,\n                \"fontSize\": 9,\n                \"textColor\": \"#000000\",\n                \"bold\": true,\n                \"italic\": true,\n                \"horizontalAlignment\": \"CENTER\",\n                \"verticalAlignment\": \"MIDDLE\",\n                \"textLineSpacing\": 2.0\n            }\n        },\n        {\n            \"componentName\": \"0522006自定义控件名称\",\n            \"componentType\": 1,\n            \"componentSize\": {\n                \"componentWidth\": 200,\n                \"componentHeight\": 15\n            },\n            \"componentTextFormat\": {\n                \"font\": 2\n                \n            }\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "name": "删除自定义业务控件",
+    "method": "POST",
+    "url": "/v3/custom-components/delete",
+    "raw_url": "{{url}}/v3/custom-components/delete",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentId",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"componentId\": [\n        \"5c2b82b31111114dd81f6c241d5\",\n        \"94a6902f1111119fef59fec32968dc\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "name": "编辑自定义业务控件",
+    "method": "POST",
+    "url": "/v3/custom-components/rename",
+    "raw_url": "{{url}}/v3/custom-components/rename",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentId",
+          "type": "string"
+        },
+        {
+          "path": "componentName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"componentId\": \"9e2d9b4111111c0eef4ba5059\",\n    \"componentName\":\"改名字\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "name": "查询自定义业务控件列表",
+    "method": "POST",
+    "url": "/v3/custom-components/get-list",
+    "raw_url": "{{url}}/v3/custom-components/get-list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "pageNum",
+          "type": "string"
+        },
+        {
+          "path": "pageSize",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"pageNum\": \"1\",\n    \"pageSize\": \"20\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "创建控件组",
+    "method": "POST",
+    "url": "/v3/custom-component-group/create",
+    "raw_url": "{{url}}/v3/custom-component-group/create",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentGroupName",
+          "type": "string"
+        },
+        {
+          "path": "components",
+          "type": "array"
+        },
+        {
+          "path": "components[].componentId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"componentGroupName\": \"自定义控件组名称\",\n    \"components\": [\n        {\n            \"componentId\": \"96c1be21991111115158c7b2790\"\n        },\n        {\n            \"componentId\": \"68fe1ac811111111de00a95048f\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "删除控件组",
+    "method": "POST",
+    "url": "/v3/custom-component-group/delete",
+    "raw_url": "{{url}}/v3/custom-component-group/delete",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentGroupId",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"componentGroupId\": [\n        \"6c580301191111111959ace19719\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "编辑控件组",
+    "method": "POST",
+    "url": "/v3/custom-component-group/update",
+    "raw_url": "{{url}}/v3/custom-component-group/update",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentGroupId",
+          "type": "string"
+        },
+        {
+          "path": "componentGroupName",
+          "type": "string"
+        },
+        {
+          "path": "components",
+          "type": "array"
+        },
+        {
+          "path": "components[].componentId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"componentGroupId\":\"6c580301111111959ace19719\",\n    \"componentGroupName\": \"修改的控件组名称\",\n    \"components\": [\n        {\n            \"componentId\": \"18978e0b11111155f3b557d2f\"\n        },\n        {\n            \"componentId\": \"d7ada5a111116e0b17cf87e\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "查询控件组列表",
+    "method": "POST",
+    "url": "/v3/custom-component-group/get-list",
+    "raw_url": "{{url}}/v3/custom-component-group/get-list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "pageNum",
+          "type": "string"
+        },
+        {
+          "path": "pageSize",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"pageNum\": \"1\",\n    \"pageSize\": \"20\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "查询控件组中的控件",
+    "method": "POST",
+    "url": "/v3/custom-component-group/get-components",
+    "raw_url": "{{url}}/v3/custom-component-group/get-components",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentGroupId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"componentGroupId\":\"6c5803011111119ace19719\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "name": "重命名控件组",
+    "method": "POST",
+    "url": "/v3/custom-component-group/rename",
+    "raw_url": "{{url}}/v3/custom-component-group/rename",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "componentGroupId",
+          "type": "string"
+        },
+        {
+          "path": "componentGroupName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"componentGroupId\":\"6c580301*****e19719\",\n    \"componentGroupName\": \"修改的控件组名称\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/自定义模板业务控件API/自定义控件组",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "name": "复制合同模板",
+    "method": "POST",
+    "url": "/v3/doc-templates/996c21*****822cbca40f9a/copy",
+    "raw_url": "{{url}}/v3/doc-templates/996c21*****822cbca40f9a/copy",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "name": "导出合同模板",
+    "method": "POST",
+    "url": "/v3/doc-templates/export",
+    "raw_url": "https://smlopenapi.esign.cn/v3/doc-templates/export",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docTemplateList",
+          "type": "array"
+        },
+        {
+          "path": "docTemplateList[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "docTemplateList[].docTemplateId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"docTemplateList\": [\n        {\n            \"customBizNum\": \"张三的模板001\",\n            \"docTemplateId\": \"a8749d0364ac482e86aa9a4bc1aadbc3\"\n        },\n        {\n            \"customBizNum\": \"李四的模板002\",\n            \"docTemplateId\": \"f4b881a60f694ff1bd5a695521f24147\"\n        },\n        {\n            \"customBizNum\": \"王五的模板003\",\n            \"docTemplateId\": \"ceb841921af14cda930ebf15a00a7684\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "name": "导入合同模板",
+    "method": "POST",
+    "url": "/v3/doc-templates/import",
+    "raw_url": "{{url}}/v3/doc-templates/import",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "copyResult",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"copyResult\": \"sVNrx48hogLpF0kF4AFcHGLuaZVS1ZAHS6CgMZabKN2pXtf8wuxEQLInk0oaosuKr+gQFBBKxkUOZ9hjE/OsY3+yceCxuqMjoG8cdTGiucUyjtIWS3te4gt+jxgywnwWoXsQomIHQ+qmFS6XCLphlMJoYhkBX3AFbk0Zb1jOiUeIBHcXP6078cfvHIwgQ7QeQ2brteUY8zNnQRx12YcnVbsdZuKHny1hoPTaQfL1dHnk6aEGepKm+NkZbGHMYBowzl33DLiOyG+yvo4KwOSU9B9P1k7NtfrapKR1xIBDeXdBwiGIITv74QhvLHaV+gOhrWxnGsW93YNXpZYzJAdzhC/cnUAdesHergz0SYMUz45W86npzGOKIWAlox+BwvWoaB/lbqPfLagOCnbHmC7isuNe323eqSX7KcGkGM1zCDaUtI4NPjMCK1gWjJIqc9GD4ZVCE+wj+Lpakvt32GaThw==\\n\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API/扩展功能API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "查询合同模板中控件详情",
+    "method": "GET",
+    "url": "/v3/doc-templates/996c21*****9822cbca40f9a",
+    "raw_url": "{{url}}/v3/doc-templates/996c21*****9822cbca40f9a",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "填写模板生成文件",
+    "method": "POST",
+    "url": "/v3/files/create-by-doc-template",
+    "raw_url": "{{url}}/v3/files/create-by-doc-template",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "components",
+          "type": "array"
+        },
+        {
+          "path": "components[].componentKey",
+          "type": "string"
+        },
+        {
+          "path": "components[].componentValue",
+          "type": "string"
+        },
+        {
+          "path": "fileName",
+          "type": "string"
+        },
+        {
+          "path": "docTemplateId",
+          "type": "string"
+        },
+        {
+          "path": "requiredCheck",
+          "type": "boolean"
+        }
+      ],
+      "raw": "{\n    \"components\": [\n        {\n            \"componentKey\": \"key1\",\n            \"componentValue\": \"填充1\"\n        },\n        {\n            \"componentKey\": \"key2\",\n            \"componentValue\": \"填充2\"\n        }\n    ],\n    \"fileName\": \"合同文件.pdf\",\n    \"docTemplateId\": \"996c214b*****822cbca40f9a\",\n    \"requiredCheck\": true\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "查询PDF模板填写后文件",
+    "method": "GET",
+    "url": "/v3/files/{{fileId}}",
+    "raw_url": "{{url}}/v3/files/{{fileId}}",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "查询HTML模板填写后文件",
+    "method": "GET",
+    "url": "/v3/files/2719ce91bf4****ada027daa/detail",
+    "raw_url": "{{url}}/v3/files/2719ce91bf4****ada027daa/detail",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "查询合同模板列表",
+    "method": "GET",
+    "url": "/v3/doc-templates",
+    "raw_url": "{{url}}/v3/doc-templates?pageNum=1&pageSize=20",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "20",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同模板类API",
+    "name": "删除合同模板",
+    "method": "DELETE",
+    "url": "/v3/doc-templates/cffa0e*****16b6c3f1e0",
+    "raw_url": "{{url}}/v3/doc-templates/cffa0e*****16b6c3f1e0",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同模板类API",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "基于文件发起签署（平台自身单方自动盖章）",
+    "method": "POST",
+    "url": "/v3/sign-flow/create-by-file",
+    "raw_url": "{{url}}/v3/sign-flow/create-by-file",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docs",
+          "type": "array"
+        },
+        {
+          "path": "docs[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "docs[].fileName",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.autoStart",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.autoFinish",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signerType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signFields[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.autoSign",
+          "type": "boolean"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionPage",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionX",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionY",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldStyle",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"docs\": [\n        {\n            \"fileId\": \"{{fileId}}\",\n            \"fileName\": \"请设置待签署文件的文件名称.pdf\"\n        }\n    ],\n    \"signFlowConfig\": {\n        \"signFlowTitle\": \"请设置当前签署任务的主题：此场景演示平台自身单方自动盖章\",\n        \"autoStart\": true,\n        \"autoFinish\": true,\n        \"noticeConfig\": {\n\t\t\t\"noticeTypes\": \"1,2\"\n\t\t},\n        \"notifyUrl\": \"请设置异步回调地址，以http开始(不需要通知可不设置)\"\n    },\n    \n    \"signers\": [\n        {\n            \"signerType\": 1,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码001\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"autoSign\": true,\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 458,\n                            \"positionY\": 466\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "基于文件发起签署（双方签署）",
+    "method": "POST",
+    "url": "/v3/sign-flow/create-by-file",
+    "raw_url": "{{url}}/v3/sign-flow/create-by-file",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docs",
+          "type": "array"
+        },
+        {
+          "path": "docs[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "docs[].fileName",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.autoStart",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.autoFinish",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signConfig.availableSignClientTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signConfig.signOrder",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signerType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signFields[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.autoSign",
+          "type": "boolean"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionPage",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionX",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionY",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldStyle",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"docs\": [\n        {\n            \"fileId\": \"{{fileId}}\",\n            \"fileName\": \"请设置待签署文件的文件名称.pdf\"\n        }\n    ],\n    \"signFlowConfig\": {\n        \"signFlowTitle\": \"请设置当前签署任务的主题：此场景演示平台自身、个人用户双方签署\",\n        \"autoStart\": true,\n        \"autoFinish\": true,\n        \"noticeConfig\": {\n            \"noticeTypes\": \"1,2\"\n        },\n        \"signConfig\": {\n            \"availableSignClientTypes\": \"1\"\n        },\n        \"notifyUrl\": \"请设置异步回调地址，以http开始\",\n        \"redirectConfig\": {\n            \"redirectUrl\": \"https://www.esign.cn/\"\n        }\n    },\n    \"signers\": [\n        {\n            \"signConfig\": {\n                \"signOrder\": 1\n            },\n            \"signerType\": 1,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码001\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"autoSign\": true,\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 200,\n                            \"positionY\": 200\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        },\n        {\n            \"psnSignerInfo\": {\n                \"psnAccount\": \"请设置个人用户的手机号/邮箱\",\n                \"psnInfo\": {\n                    \"psnName\": \"请设置个人用户的姓名\",\n                    \"psnIDCardNum\": \"请设置个人用户的证件号\",\n                    \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\"\n                }\n            },\n            \"signConfig\": {\n                \"forcedReadingTime\": 10,\n                \"signOrder\": 2\n            },\n            \"signerType\": 0,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码002\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 470,\n                            \"positionY\": 200\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "基于文件发起签署（多方签署）",
+    "method": "POST",
+    "url": "/v3/sign-flow/create-by-file",
+    "raw_url": "{{url}}/v3/sign-flow/create-by-file",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docs",
+          "type": "array"
+        },
+        {
+          "path": "docs[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "docs[].fileName",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.autoStart",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.autoFinish",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signConfig.availableSignClientTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signConfig.signOrder",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signerType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signFields[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.autoSign",
+          "type": "boolean"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionPage",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionX",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionY",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldStyle",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"docs\": [\n        {\n            \"fileId\": \"{{fileId}}\",\n            \"fileName\": \"请设置待签署文件的文件名称.pdf\"\n        }\n    ],\n    \"signFlowConfig\": {\n        \"signFlowTitle\": \"请设置当前签署任务的主题：此场景演示平台自身、个人用户、机构用户三方签署\",\n        \"autoStart\": true,\n        \"autoFinish\": true,\n        \"noticeConfig\": {\n            \"noticeTypes\": \"1,2\"\n        },\n        \"signConfig\": {\n            \"availableSignClientTypes\": \"1\"\n        },\n        \"notifyUrl\": \"请设置异步回调地址，以http开始\",\n        \"redirectConfig\": {\n            \"redirectUrl\": \"https://www.esign.cn/\"\n        }\n    },\n    \"signers\": [\n        {\n            \"signConfig\": {\n                \"signOrder\": 1\n            },\n            \"signerType\": 1,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码001\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"autoSign\": true,\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 100,\n                            \"positionY\": 200\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        },\n        {\n            \"orgSignerInfo\": {\n                \"orgName\": \"请设置企业用户企业名称\",\n                \"orgInfo\": {\n                    \"orgIDCardNum\": \"请设置企业用户的统一社会信用代码\",\n                    \"orgIDCardType\": \"CRED_ORG_USCC\"\n                },\n                \"transactorInfo\": {\n                    \"psnAccount\": \"请设置企业用户经办人的手机号\",\n                    \"psnInfo\": {\n                        \"psnName\": \"请设置经办人的姓名\",\n                        \"psnIDCardNum\": \"请设置经办人的证件号\",\n                        \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\"\n                    }\n                }\n            },\n            \"signConfig\": {\n                \"forcedReadingTime\": 10,\n                \"signOrder\": 2\n            },\n            \"signerType\": 1,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码002\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 280,\n                            \"positionY\": 200\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        },\n        {\n            \"psnSignerInfo\": {\n                \"psnAccount\": \"请设置个人用户的手机号/邮箱\",\n                \"psnInfo\": {\n                    \"psnName\": \"请设置个人用户的姓名\",\n                    \"psnIDCardNum\": \"请设置个人用户的证件号\",\n                    \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\"\n                }\n            },\n            \"signConfig\": {\n                \"forcedReadingTime\": 10,\n                \"signOrder\": 2\n            },\n            \"signerType\": 0,\n            \"signFields\": [\n                {\n                    \"customBizNum\": \"自定义编码003\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"normalSignFieldConfig\": {\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 470,\n                            \"positionY\": 200\n                        },\n                        \"signFieldStyle\": 1\n                    }\n                }\n            ]\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "基于文件发起签署（备注签署）",
+    "method": "POST",
+    "url": "/v3/sign-flow/create-by-file",
+    "raw_url": "{{url}}/v3/sign-flow/create-by-file",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "docs",
+          "type": "array"
+        },
+        {
+          "path": "docs[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "docs[].fileName",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.autoStart",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.autoFinish",
+          "type": "boolean"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signConfig.availableSignClientTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.redirectConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].psnSignerInfo",
+          "type": "object"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnAccount",
+          "type": "string"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnInfo",
+          "type": "object"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnInfo.psnName",
+          "type": "string"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnInfo.psnIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnInfo.psnIDCardType",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signConfig.forcedReadingTime",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signConfig.signOrder",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signerType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signFields[].signFieldType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.freeMode",
+          "type": "boolean"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.inputType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.aiCheck",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.remarkContent",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.movableSignField",
+          "type": "boolean"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.remarkFontSize",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldHeight",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldWidth",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldPosition",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldPosition.positionPage",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldPosition.positionX",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].remarkSignFieldConfig.signFieldPosition.positionY",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"docs\": [\n        {\n            \"fileId\": \"{{fileId}}\",\n            \"fileName\": \"请设置待签署文件的文件名称.pdf\"\n        }\n    ],\n    \"signFlowConfig\": {\n        \"signFlowTitle\": \"此场景演示备注签署\",\n        \"autoStart\": true,\n        \"autoFinish\": true,\n        \"noticeConfig\": {\n            \"noticeTypes\": \"1,2\"\n        },\n        \"signConfig\": {\n            \"availableSignClientTypes\": \"1\"\n        },\n        \"notifyUrl\": \"请设置异步回调地址，以http/https开头\",\n        \"redirectConfig\": {\n            \"redirectUrl\": \"https://esign.cn\"\n        }\n    },\n    \"signers\": [\n        {\n            \"psnSignerInfo\": {\n                \"psnAccount\": \"请设置个人用户的手机号/邮箱\",\n                \"psnInfo\": {\n                    \"psnName\": \"请设置个人用户的姓名\",\n                    \"psnIDCardNum\": \"请设置个人用户的证件号\",\n                    \"psnIDCardType\": \"CRED_PSN_CH_IDCARD\"\n                }\n            },\n            \"signConfig\": {\n                \"forcedReadingTime\": 10,\n                \"signOrder\": 3\n            },\n            \"signerType\": 0,\n            \"signFields\": [\n                {\n                    \"signFieldType\": 1,\n                    \"customBizNum\": \"自定义编码001\",\n                    \"fileId\": \"{{fileId}}\",\n                    \"remarkSignFieldConfig\": {\n                        \"freeMode\": false,\n                        \"inputType\": 1,\n                        \"aiCheck\": 1,\n                        \"remarkContent\": \"我同意签署以上文件\",\n                        \"movableSignField\": true,\n                        \"remarkFontSize\": 12,\n                        \"signFieldHeight\": \"30\",\n                        \"signFieldWidth\": \"100\",\n                        \"signFieldPosition\": {\n                            \"positionPage\": \"1\",\n                            \"positionX\": 200,\n                            \"positionY\": 200\n                        }\n                    }\n                }\n            ]\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "获取签署页面链接",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/sign-url",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/sign-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "operator",
+          "type": "object"
+        },
+        {
+          "path": "operator.psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"operator\": {\n    \"psnAccount\": \"发起签署时传入的个人手机号/邮箱\"\n  }\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "通过页面发起签署",
+    "method": "POST",
+    "url": "/v3/sign-flow/sign-flow-initiate-url/by-file",
+    "raw_url": "{{url}}/v3/sign-flow/sign-flow-initiate-url/by-file",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "initiatePageConfig",
+          "type": "object"
+        },
+        {
+          "path": "initiatePageConfig.customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "initiatePageConfig.initiateButtons",
+          "type": "string"
+        },
+        {
+          "path": "initiatePageConfig.redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "docs",
+          "type": "array"
+        },
+        {
+          "path": "docs[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "docs[].fileName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"initiatePageConfig\":{\n        \"customBizNum\":\"必须设置的开发者自定义业务编号\",\n        \"initiateButtons\":\"1,2\",\n        \"redirectUrl\":\"https://www.esign.cn/\"\n    },\n    \"signFlowConfig\": {\n        \"signFlowTitle\": \"请设置当前签署任务的主题\"\n    },\n    \"docs\": [\n        {\n            \"fileId\": \"{{fileId}}\",\n            \"fileName\": \"test.pdf\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-发起类",
+    "name": "获取批量签页面链接（多流程）",
+    "method": "POST",
+    "url": "/v3/sign-flow/batch-sign-url",
+    "raw_url": "{{url}}/v3/sign-flow/batch-sign-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "operatorId",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "signFlowIds",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"operatorId\": \"7ffcaed8c*****8f0ef0a8f6\",\n    \"redirectUrl\": \"https://www.esign.cn\",\n    \"signFlowIds\": [\n        \"ba6f63a0****2416094c0a6\",\n        \"31d550d*****99e952d627cb7\",\n        \"fdde5aa*****833d7a1cae7ef5fa\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-发起类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-下载类",
+    "name": "下载已签署文件及附属材料",
+    "method": "GET",
+    "url": "/v3/sign-flow/36da2a14******320c6e/file-download-url",
+    "raw_url": "{{url}}/v3/sign-flow/36da2a14******320c6e/file-download-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-下载类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-下载类",
+    "name": "下载签署中文件",
+    "method": "GET",
+    "url": "/v3/sign-flow/{{signFlowId}}/preview-file-download-url",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/preview-file-download-url?docFileId={{fileId}}",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "docFileId",
+        "value": "{{fileId}}",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-下载类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-变更类",
+    "name": "开启签署流程",
+    "method": "POST",
+    "url": "/v3/sign-flow/a3feb3****c83f4b0395c0/start",
+    "raw_url": "{{url}}/v3/sign-flow/a3feb3****c83f4b0395c0/start",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-变更类",
+    "name": "完结签署流程",
+    "method": "POST",
+    "url": "/v3/sign-flow/a3feb337*****44c83f4b0395c0/finish",
+    "raw_url": "{{url}}/v3/sign-flow/a3feb337*****44c83f4b0395c0/finish",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-变更类",
+    "name": "撤销签署流程",
+    "method": "POST",
+    "url": "/v3/sign-flow/5d5bf*****84c2b140f8c1/revoke",
+    "raw_url": "{{url}}/v3/sign-flow/5d5bf*****84c2b140f8c1/revoke",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-变更类",
+    "name": "延期签署截止时间",
+    "method": "POST",
+    "url": "/v3/sign-flow/0cbec0f******7c2c3bf021/delay",
+    "raw_url": "{{url}}/v3/sign-flow/0cbec0f******7c2c3bf021/delay",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "signFlowExpireTime",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"signFlowExpireTime\": \"1665028535000\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-变更类",
+    "name": "催签流程中签署人",
+    "method": "POST",
+    "url": "/v3/sign-flow/6a31******307ad852ba/urge",
+    "raw_url": "{{url}}/v3/sign-flow/6a31******307ad852ba/urge",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "urgedOperator",
+          "type": "object"
+        },
+        {
+          "path": "urgedOperator.psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n\t\"noticeTypes\": \"1,2\",\n\t\"urgedOperator\": {\n\t\t\"psnAccount\": \"被催签人手机号/邮箱\"\n\t}\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-查询类",
+    "name": "查询签署流程详情",
+    "method": "GET",
+    "url": "/v3/sign-flow/54a355d*****9447e79e048f6/detail",
+    "raw_url": "{{url}}/v3/sign-flow/54a355d*****9447e79e048f6/detail",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-查询类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-查询类",
+    "name": "查询签署流程列表",
+    "method": "POST",
+    "url": "/v3/sign-flow/sign-flow-list",
+    "raw_url": "{{url}}/v3/sign-flow/sign-flow-list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "operator",
+          "type": "object"
+        },
+        {
+          "path": "operator.psnAccount",
+          "type": "string"
+        },
+        {
+          "path": "operator.psnId",
+          "type": "string"
+        },
+        {
+          "path": "pageNum",
+          "type": "number"
+        },
+        {
+          "path": "pageSize",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStartTimeFrom",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStartTimeTo",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStatus",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n\t\"operator\": {\n\t\t\"psnAccount\": \"183****0101\",\n\t\t\"psnId\": \"\"\n\t},\n\t\"pageNum\": 1,\n\t\"pageSize\": 20,\n\t\"signFlowStartTimeFrom\": 1648801671000,\n\t\"signFlowStartTimeTo\": 1651393671000,\n\t\"signFlowStatus\": [1,2]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-查询类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-查询类",
+    "name": "查询集成方企业流程列表",
+    "method": "POST",
+    "url": "/v3/organizations/sign-flow-list",
+    "raw_url": "{{url}}/v3/organizations/sign-flow-list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "pageNum",
+          "type": "number"
+        },
+        {
+          "path": "pageSize",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStartTimeFrom",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStartTimeTo",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStatus",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n\t\"pageNum\": 1,\n\t\"pageSize\": 20,\n\t\"signFlowStartTimeFrom\": 1648801671000,\n\t\"signFlowStartTimeTo\": 1651393671000,\n\t\"signFlowStatus\": [1,2]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-查询类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-审批类",
+    "name": "获取用印审批页面链接",
+    "method": "POST",
+    "url": "/v3/approval/approval-url",
+    "raw_url": "{{url}}/v3/approval/approval-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "approvalFlowId",
+          "type": "string"
+        },
+        {
+          "path": "approverPsnId",
+          "type": "string"
+        },
+        {
+          "path": "clientType",
+          "type": "string"
+        },
+        {
+          "path": "needLogin",
+          "type": "boolean"
+        },
+        {
+          "path": "redirectConfig",
+          "type": "object"
+        },
+        {
+          "path": "redirectConfig.redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"approvalFlowId\": \"AF-2cb6a1118080ebb\",\n    \"approverPsnId\": \"7ffcaed8c11116c3aaca1d8f0ef0a8f6\",\n    \"clientType\": \"ALL\",\n    \"needLogin\": false,\n    \"redirectConfig\": {\n        \"redirectUrl\": \"https://open.esign.cn\"\n    }\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-审批类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-审批类",
+    "name": "查询审批流程详情",
+    "method": "GET",
+    "url": "/v3/approval/96c21*****9822cbca40f9a/detail",
+    "raw_url": "{{url}}/v3/approval/96c21*****9822cbca40f9a/detail",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-审批类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署流程-审批类",
+    "name": "查询审批流程列表",
+    "method": "POST",
+    "url": "/v3/approval/approval-task-list",
+    "raw_url": "{{url}}/v3/approval/approval-task-list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "pageNum",
+          "type": "number"
+        },
+        {
+          "path": "pageSize",
+          "type": "number"
+        },
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "operatorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "queryType",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n  \"pageNum\": 1,\n  \"pageSize\": 20,\n  \"orgId\": \"a14527******922b12709\",\n  \"operatorPsnId\": \"fef71b********2af37\",\n  \"queryType\": 2\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署流程-审批类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署区-变更类",
+    "name": "追加签署区",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/signers/sign-fields",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/signers/sign-fields",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signConfig.forcedReadingTime",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signConfig.signOrder",
+          "type": "number"
+        },
+        {
+          "path": "signers[].noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signerType",
+          "type": "number"
+        },
+        {
+          "path": "signers[].psnSignerInfo",
+          "type": "object"
+        },
+        {
+          "path": "signers[].psnSignerInfo.psnAccount",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields",
+          "type": "array"
+        },
+        {
+          "path": "signers[].signFields[].customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition",
+          "type": "object"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionPage",
+          "type": "string"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionX",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldPosition.positionY",
+          "type": "number"
+        },
+        {
+          "path": "signers[].signFields[].normalSignFieldConfig.signFieldStyle",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"signers\": [\n        {\n            \"signConfig\": {\n                \"forcedReadingTime\": 10,\n                \"signOrder\": 2\n            },\n            \"noticeConfig\": {\n                \"noticeTypes\": \"1,2\"\n            },\n            \"signerType\": 0,\n            \"psnSignerInfo\": {\n                \"psnAccount\": \"153*****00\"\n            },\n            \"signFields\": [\n                {\n\t\t\t\t\t\"customBizNum\": \"自定义编码002\",\n\t\t\t\t\t\"fileId\": \"{{fileId}}\",\n\t\t\t\t\t\"normalSignFieldConfig\": {\n\t\t\t\t\t\t\"signFieldPosition\": {\n\t\t\t\t\t\t\t\"positionPage\": \"1\",\n\t\t\t\t\t\t\t\"positionX\": 470,\n\t\t\t\t\t\t\t\"positionY\": 200\n\t\t\t\t\t\t},\n\t\t\t\t\t\t\"signFieldStyle\": 1\n\t\t\t\t\t}\n\t\t\t\t}\n            ]\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署区-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/签署区-变更类",
+    "name": "删除签署区",
+    "method": "DELETE",
+    "url": "/v3/sign-flow/{{signFlowId}}/signers/sign-fields",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/signers/sign-fields?signFieldIds=defc8744*****22b6c7c210",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "signFieldIds",
+        "value": "defc8744*****22b6c7c210",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/签署区-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "name": "追加待签文件",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/unsigned-files",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/unsigned-files",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "unsignedFiles",
+          "type": "array"
+        },
+        {
+          "path": "unsignedFiles[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "unsignedFiles[].fileName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"unsignedFiles\": [\n        {\n            \"fileId\": \"ea3151a8d***a53d3f4c\",\n            \"fileName\": \"入职证明.pdf\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "name": "删除待签文件",
+    "method": "DELETE",
+    "url": "/v3/sign-flow/{{signFlowId}}/unsigned-files",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/unsigned-files?fileIds=1f939a640a****a2d32b376",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "fileIds",
+        "value": "1f939a640a****a2d32b376",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "name": "追加附属材料",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/attachments",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/attachments",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "attachmentList",
+          "type": "array"
+        },
+        {
+          "path": "attachmentList[].fileId",
+          "type": "string"
+        },
+        {
+          "path": "attachmentList[].fileName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"attachmentList\": [\n        {\n            \"fileId\": \"ea3151***a53d3f4c\",\n            \"fileName\": \"入职手册.pdf\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "name": "删除附属材料",
+    "method": "DELETE",
+    "url": "/v3/sign-flow/{{signFlowId}}/attachments",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/attachments?fileIds=2d3201c2*****98be8f1822",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "fileIds",
+        "value": "2d3201c2*****98be8f1822",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/待签文件及附属材料-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/抄送方-变更类",
+    "name": "添加抄送方",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/copiers",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/copiers",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "copiers",
+          "type": "array"
+        },
+        {
+          "path": "copiers[].copierPsnInfo",
+          "type": "object"
+        },
+        {
+          "path": "copiers[].copierPsnInfo.psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"copiers\": [\n        {\n            \"copierPsnInfo\": {\n                \"psnAccount\": \"153****7650\"\n            }\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/抄送方-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/抄送方-变更类",
+    "name": "删除抄送方",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/copiers/delete",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/copiers/delete",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "copiers",
+          "type": "array"
+        },
+        {
+          "path": "copiers[].copierPsnInfo",
+          "type": "object"
+        },
+        {
+          "path": "copiers[].copierPsnInfo.psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"copiers\": [\n        {\n            \"copierPsnInfo\": {\n                \"psnAccount\": \"151****0101\"\n            }\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/抄送方-变更类",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/检验已签文件",
+    "name": "核验合同文件签名有效性",
+    "method": "POST",
+    "url": "/v3/files/{{fileId}}/verify",
+    "raw_url": "{{url}}/v3/files/{{fileId}}/verify",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "signFlowId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n   \"signFlowId\":\"{{signFlowId}}\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/检验已签文件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/检验已签文件",
+    "name": "获取区块链存证信息",
+    "method": "POST",
+    "url": "/v3/antchain-file-info",
+    "raw_url": "{{url}}/v3/antchain-file-info",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "signFlowId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n   \"signFlowId\":\"{{signFlowId}}\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/检验已签文件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/检验已签文件",
+    "name": "核验区块链存证文件",
+    "method": "POST",
+    "url": "/v3/antchain-file-info/verify",
+    "raw_url": "{{url}}/v3/antchain-file-info/verify",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "fileHash",
+          "type": "string"
+        },
+        {
+          "path": "antTxHash",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"fileHash\": \"7c937e863f38****963afbffe1864d6b16b4ac6f\",\n    \"antTxHash\": \"26c7d2****e2a7ddf47b6d9cfa7ce9ec3bcbce4e\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/检验已签文件",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同解约服务",
+    "name": "发起合同解约",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/initiate-rescission",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/initiate-rescission",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "rescindReason",
+          "type": "string"
+        },
+        {
+          "path": "rescindFileList",
+          "type": "array"
+        },
+        {
+          "path": "rescissionInitiator",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.orgId",
+          "type": "string"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.transactor",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.transactor.psnId",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.chargeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.chargeConfig.chargeMode",
+          "type": "number"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "orgSignerTransactor",
+          "type": "array"
+        },
+        {
+          "path": "orgSignerTransactor[].orgName",
+          "type": "string"
+        },
+        {
+          "path": "orgSignerTransactor[].transactorInfo",
+          "type": "object"
+        },
+        {
+          "path": "orgSignerTransactor[].transactorInfo.psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"rescindReason\": \"1\",\n    \"rescindFileList\": [\n        \"f78dd1****33f0d122b74\"\n    ],\n    \"rescissionInitiator\": {\n        \"orgInitiator\": {\n            \"orgId\": \"842ec8ce3*****5fc91662f\",\n            \"transactor\": {\n                \"psnId\": \"7ffcae******0ef0a8f6\"\n            }\n        }\n    },\n    \"signFlowConfig\": {\n        \"chargeConfig\": {\n            \"chargeMode\": 0\n        },\n        \"noticeConfig\": {\n            \"noticeTypes\": \"1,2\"\n        },\n        \"notifyUrl\": \"http://*******/notify\"\n    },\n    \"orgSignerTransactor\": [\n        {\n            \"orgName\": \"********有限公司\",\n            \"transactorInfo\": {\n                \"psnAccount\": \"153****0000\"\n            }\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同解约服务",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同解约服务",
+    "name": "通过页面发起合同解约",
+    "method": "POST",
+    "url": "/v3/sign-flow/{{signFlowId}}/rescission-url",
+    "raw_url": "{{url}}/v3/sign-flow/{{signFlowId}}/rescission-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "rescissionInitiator",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.orgId",
+          "type": "string"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.transactor",
+          "type": "object"
+        },
+        {
+          "path": "rescissionInitiator.orgInitiator.transactor.psnId",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.chargeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.chargeConfig.chargeMode",
+          "type": "number"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig",
+          "type": "object"
+        },
+        {
+          "path": "signFlowConfig.noticeConfig.noticeTypes",
+          "type": "string"
+        },
+        {
+          "path": "signFlowConfig.notifyUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"rescissionInitiator\":{\n     \"orgInitiator\":{\n            \"orgId\":\"0c5bd49248***5648bfbf\",\n            \"transactor\":{\n                \"psnId\":\"c7e002947***310541e7\"\n            }\n        }\n    },\n    \"signFlowConfig\":{\n        \"chargeConfig\":{\n            \"chargeMode\":0\n        },\n        \"noticeConfig\":{\n            \"noticeTypes\":\"1,2\"\n        },\n        \"notifyUrl\":\"https://xx.xx.xx/callback\"\n    }\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同解约服务",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同出证服务",
+    "name": "申请出证",
+    "method": "POST",
+    "url": "/v3/evidence-report/apply",
+    "raw_url": "{{url}}/v3/evidence-report/apply",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "signFlowId",
+          "type": "string"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "reportType",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"signFlowId\": \"{{signFlowId}}\",\n    \"notifyUrl\": \"请设置异步回调地址，以http开始\",\n    \"reportType\": \"TSIGN_REPORT\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同出证服务",
+    "tag": "合同文件签署服务API"
+  },
+  {
+    "folder_path": "合同文件签署服务API/合同出证服务",
+    "name": "查询出证流程详情",
+    "method": "GET",
+    "url": "/v3/evidence-report/query",
+    "raw_url": "{{url}}/v3/evidence-report/query?recordNum=2023120111111155983",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "recordNum",
+        "value": "2023120111111155983",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同文件签署服务API/合同出证服务",
+    "tag": "合同文件签署服务API"
+  }
+]

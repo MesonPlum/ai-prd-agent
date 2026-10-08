@@ -1,0 +1,116 @@
+[
+  {
+    "folder_path": "回调通知服务",
+    "name": "本地模拟发送回调通知（签署方-签署结果通知测试）",
+    "method": "POST",
+    "url": "",
+    "raw_url": "{{开发者设置的回调通知地址}}",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "action",
+          "type": "string"
+        },
+        {
+          "path": "timestamp",
+          "type": "number"
+        },
+        {
+          "path": "signFlowId",
+          "type": "string"
+        },
+        {
+          "path": "signOrder",
+          "type": "number"
+        },
+        {
+          "path": "operateTime",
+          "type": "number"
+        },
+        {
+          "path": "signResult",
+          "type": "number"
+        },
+        {
+          "path": "resultDescription",
+          "type": "string"
+        },
+        {
+          "path": "organization",
+          "type": "object"
+        },
+        {
+          "path": "organization.orgId",
+          "type": "string"
+        },
+        {
+          "path": "organization.orgName",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"action\": \"SIGN_MISSON_COMPLETE\",\n    \"timestamp\": 1670989682728,\n    \"signFlowId\": \"a44ef42c1112222233255ffbaf6\",\n    \"signOrder\": 1,\n    \"operateTime\": 1670989682000,\n    \"signResult\": 2,\n    \"resultDescription\": \"签署完成\",\n    \"organization\": {\n        \"orgId\": \"8bfd87111222332f9c432440\",\n        \"orgName\": \"国家科技有限公司\"\n    }\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "回调通知服务",
+    "tag": "回调通知服务"
+  },
+  {
+    "folder_path": "回调通知服务",
+    "name": "本地模拟发送回调通知（流程结束通知测试）",
+    "method": "POST",
+    "url": "",
+    "raw_url": "{{开发者设置的回调通知地址}}",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "action",
+          "type": "string"
+        },
+        {
+          "path": "timestamp",
+          "type": "number"
+        },
+        {
+          "path": "signFlowId",
+          "type": "string"
+        },
+        {
+          "path": "signFlowTitle",
+          "type": "string"
+        },
+        {
+          "path": "signFlowStatus",
+          "type": "string"
+        },
+        {
+          "path": "statusDescription",
+          "type": "string"
+        },
+        {
+          "path": "signFlowCreateTime",
+          "type": "number"
+        },
+        {
+          "path": "signFlowStartTime",
+          "type": "number"
+        },
+        {
+          "path": "signFlowFinishTime",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"action\": \"SIGN_FLOW_COMPLETE\",\n    \"timestamp\": 1730173193399,\n    \"signFlowId\": \"5420c791f81111bb6c3e0356289cf52\",\n    \"signFlowTitle\": \"印章授权签署\",\n    \"signFlowStatus\": \"2\",\n    \"statusDescription\": \"完成\",\n    \"signFlowCreateTime\": 1730173161000,\n    \"signFlowStartTime\": 1730173162000,\n    \"signFlowFinishTime\": 1730173193000\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "回调通知服务",
+    "tag": "回调通知服务"
+  }
+]

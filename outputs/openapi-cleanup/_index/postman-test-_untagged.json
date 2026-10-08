@@ -1,0 +1,117 @@
+[
+  {
+    "folder_path": "",
+    "name": "http://in-testopenapi.tsign.cn/v2/identity/auth/api/individual/face",
+    "method": "POST",
+    "url": "/v2/identity/auth/api/individual/face",
+    "raw_url": "http://in-testopenapi.tsign.cn/v2/identity/auth/api/individual/face",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "7876724047"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "simple"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "name",
+          "type": "string"
+        },
+        {
+          "path": "idNo",
+          "type": "string"
+        },
+        {
+          "path": "faceauthMode",
+          "type": "string"
+        },
+        {
+          "path": "callbackUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\r\n    \"name\": \"许华建\",\r\n    \"idNo\": \"342622198905262396\",\r\n    \"faceauthMode\": \"ESIGN\",\r\n    \"callbackUrl\": \"esign://demo/realBack\"\r\n}"
+    },
+    "example_response": "absent",
+    "source_file": "实名常用.postman_collection.json",
+    "sub_folder_path": "",
+    "tag": ""
+  },
+  {
+    "folder_path": "",
+    "name": "http://127.0.0.1:8080/getExpiredAuthRelationship/input",
+    "method": "GET",
+    "url": "/getExpiredAuthRelationship/input",
+    "raw_url": "http://127.0.0.1:8080/getExpiredAuthRelationship/input",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "appId",
+          "type": "string"
+        },
+        {
+          "path": "oldExpirationTime",
+          "type": "number"
+        },
+        {
+          "path": "oidList",
+          "type": "array"
+        },
+        {
+          "path": "gidList",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"appId\": \"7876630000\",\n    \"oldExpirationTime\": 1745300779824,\n    \"oidList\": [\n        \"929d44dff6ab4ce5b550bc9665c58779\",\n        \"a14f1839270d49268103367bfcd9d118\",\n        \"fbd14bbfa6ec4a04827ff41ac68ae408\",\n        \"4a30d1973af248f6bc0a810b388e3da5\",\n        \"4a30d1973af248f6bc0a810b388e3da5\"\n    ],\n \"gidList\": [\n        \"0205e543773f4f87b5a3c1482da2fbc7\",\n        \"0217325a1fc7442cb65accf324c08557\",\n        \"0226113e7d5c41f0aa13b51ef8ba28a9\",\n        \"0233ba6c95114931b336f8acfb234513\",\n        \"0233ba6c95114931b336f8acfb234513\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "实名常用.postman_collection.json",
+    "sub_folder_path": "",
+    "tag": ""
+  },
+  {
+    "folder_path": "",
+    "name": "重置实名",
+    "method": "POST",
+    "url": "/v1/accounts/a65aec37e7ed4698b1f14fa8971190af/identity/resetIdentity",
+    "raw_url": "{{openapi}}/v1/accounts/a65aec37e7ed4698b1f14fa8971190af/identity/resetIdentity",
+    "headers": [
+      {
+        "key": "X-Tsign-Service-Group",
+        "value": "{{group}}"
+      },
+      {
+        "key": "X-Tsign-Service-Id",
+        "value": "FOOTSTONE-USER-API"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "simple"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "实名常用.postman_collection.json",
+    "sub_folder_path": "",
+    "tag": ""
+  }
+]

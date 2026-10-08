@@ -1,0 +1,382 @@
+[
+  {
+    "folder_path": "企业机构成员服务API/成员管理",
+    "name": "添加企业机构成员",
+    "method": "POST",
+    "url": "/v3/organizations/1225f8******3984649e468/members",
+    "raw_url": "{{url}}/v3/organizations/1225f8******3984649e468/members",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "members",
+          "type": "array"
+        },
+        {
+          "path": "members[].psnId",
+          "type": "string"
+        },
+        {
+          "path": "members[].memberName",
+          "type": "string"
+        },
+        {
+          "path": "members[].employeeNum",
+          "type": "string"
+        },
+        {
+          "path": "members[].role",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"members\":[\n        {\n            \"psnId\":\"ddc491da*****b3a3bfe11\",\n            \"memberName\":\"赵四\",\n            \"employeeNum\":\"100\",\n            \"role\":\"3\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员管理",
+    "name": "移除企业机构成员",
+    "method": "DELETE",
+    "url": "/v3/organizations/3c4047cc32b*******134e7/members",
+    "raw_url": "{{url}}/v3/organizations/3c4047cc32b*******134e7/members?memberPsnIds=50d5eda3944*****1bd29c,00371e82d*****73c21ed09",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "memberPsnIds",
+        "value": "50d5eda3944*****1bd29c,00371e82d*****73c21ed09",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员管理",
+    "name": "查询企业成员列表",
+    "method": "GET",
+    "url": "/v3/organizations/3c4******40279134e7/member-list",
+    "raw_url": "{{url}}/v3/organizations/3c4******40279134e7/member-list?pageNum=1&pageSize=100",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "100",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员管理",
+    "name": "查询企业管理员",
+    "method": "GET",
+    "url": "/v3/organizations/3c404******0279134e7/administrators",
+    "raw_url": "{{url}}/v3/organizations/3c404******0279134e7/administrators",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员管理",
+    "name": "查询个人用户是否为企业成员",
+    "method": "GET",
+    "url": "/v3/organizations/member",
+    "raw_url": "{{url}}/v3/organizations/member?orgId=3c404******9134e7&psnId=2e76de9686f1******66043a54",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "3c404******9134e7",
+        "location": "query"
+      },
+      {
+        "name": "psnId",
+        "value": "2e76de9686f1******66043a54",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员角色管理",
+    "name": "添加成员角色",
+    "method": "POST",
+    "url": "/v3/organizations/3c4047c*******940279134e7/member/add-role",
+    "raw_url": "{{url}}/v3/organizations/3c4047c*******940279134e7/member/add-role",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "memberPsnId",
+          "type": "string"
+        },
+        {
+          "path": "addRole",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"memberPsnId\": \"2e76de********766043a54\",\n    \"addRole\": \"3\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员角色管理",
+    "tag": "企业机构成员服务API"
+  },
+  {
+    "folder_path": "企业机构成员服务API/成员角色管理",
+    "name": "删除成员角色",
+    "method": "POST",
+    "url": "/v3/organizations/3c40******940279134e7/member/delete-role",
+    "raw_url": "{{url}}/v3/organizations/3c40******940279134e7/member/delete-role",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "memberPsnId",
+          "type": "string"
+        },
+        {
+          "path": "deleteRole",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"memberPsnId\": \"626629f4******f1d8c1d\",\n    \"deleteRole\": \"3\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "企业机构成员服务API/成员角色管理",
+    "tag": "企业机构成员服务API"
+  }
+]

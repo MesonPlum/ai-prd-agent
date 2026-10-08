@@ -1,0 +1,1730 @@
+[
+  {
+    "folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "name": "获取印章图片上传地址fileUploadUrl",
+    "method": "POST",
+    "url": "/v3/files/file-key",
+    "raw_url": "{{url}}/v3/files/file-key",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "contentMd5",
+          "type": "string"
+        },
+        {
+          "path": "contentType",
+          "type": "string"
+        },
+        {
+          "path": "fileName",
+          "type": "string"
+        },
+        {
+          "path": "fileSize",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"contentMd5\":\"/NewZW07KFRIdye6CEEjdA==\",\n    \"contentType\":\"application/octet-stream\",\n    \"fileName\":\"这是个自定义图片印章.png\",\n    \"fileSize\":1525\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "name": "将印章图片文件流上传到fileUploadUrl",
+    "method": "PUT",
+    "url": "",
+    "raw_url": "{{fileUploadUrl}}",
+    "headers": [
+      {
+        "key": "Content-MD5",
+        "value": "/NewZW07KFRIdye6CEEjdA=="
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/octet-stream"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "file",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "name": "创建个人图片印章",
+    "method": "POST",
+    "url": "/v3/seals/psn-seals/create-by-image",
+    "raw_url": "{{url}}/v3/seals/psn-seals/create-by-image",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnId",
+          "type": "string"
+        },
+        {
+          "path": "sealImageFileKey",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealWidth",
+          "type": "string"
+        },
+        {
+          "path": "sealHeight",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"psnId\": \"7ffcae******1d8f0ef0a8f6\",\n    \"sealImageFileKey\": \"$fe0abe16-******-c368b7$2775463829\",\n    \"sealName\": \"测试个人印章\",\n    \"sealWidth\": \"95\",\n    \"sealHeight\":\"95\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/创建/创建个人图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/创建",
+    "name": "创建个人模板印章",
+    "method": "POST",
+    "url": "/v3/seals/psn-seals/create-by-template",
+    "raw_url": "{{url}}/v3/seals/psn-seals/create-by-template",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnId",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealSuffix",
+          "type": "string"
+        },
+        {
+          "path": "sealColor",
+          "type": "string"
+        },
+        {
+          "path": "sealOpacity",
+          "type": "string"
+        },
+        {
+          "path": "sealOldStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealTemplateStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealSize",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"psnId\": \"7ffcae*****f0ef0a8f6\",\n    \"sealName\": \"测试印章\",\n    \"sealSuffix\": \"1\",\n    \"sealColor\": \"BLACK\",\n    \"sealOpacity\": \"90\",\n    \"sealOldStyle\": \"NONE\",\n    \"sealTemplateStyle\": \"SQUARE_LEFT_BORDER\",\n    \"sealSize\":\"20_20\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/创建",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/查询",
+    "name": "查询个人印章列表",
+    "method": "GET",
+    "url": "/v3/seals/psn-seal-list",
+    "raw_url": "{{url}}/v3/seals/psn-seal-list?psnId=7ffcaed8c1*****a8f6&pageNum=1&pageSize=10",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "psnId",
+        "value": "7ffcaed8c1*****a8f6",
+        "location": "query"
+      },
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/查询",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/查询",
+    "name": "查询指定印章详情（个人）",
+    "method": "GET",
+    "url": "/v3/seals/psn-seal-info",
+    "raw_url": "{{url}}/v3/seals/psn-seal-info?psnId=7ffcaed*******a8f6&sealId=9c4d9089******-d5f62de02018",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "psnId",
+        "value": "7ffcaed*******a8f6",
+        "location": "query"
+      },
+      {
+        "name": "sealId",
+        "value": "9c4d9089******-d5f62de02018",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/查询",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/变更",
+    "name": "设置个人默认印章",
+    "method": "POST",
+    "url": "/v3/seals/psn-seals/set-default-seal",
+    "raw_url": "{{url}}/v3/seals/psn-seals/set-default-seal",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnId",
+          "type": "string"
+        },
+        {
+          "path": "sealId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"psnId\": \"7ffcaed******0ef0a8f6\",\n    \"sealId\": \"acabb4d1******4fba4a009799\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/变更",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章/变更",
+    "name": "删除个人印章",
+    "method": "DELETE",
+    "url": "/v3/seals/psn-seal",
+    "raw_url": "{{url}}/v3/seals/psn-seal?psnId=7ffcaed8****0a8f6&sealId=9c4d9089-9******02018",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "psnId",
+        "value": "7ffcaed8****0a8f6",
+        "location": "query"
+      },
+      {
+        "name": "sealId",
+        "value": "9c4d9089-9******02018",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章/变更",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章（页面版）",
+    "name": "获取创建个人印章页面链接",
+    "method": "POST",
+    "url": "/v3/seals/psn-seal-create-url",
+    "raw_url": "{{url}}/v3/seals/psn-seal-create-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnId",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "customBizNum",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "uneditableFields",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n  \"psnId\": \"7ffcaed8c*****f0ef0a8f6\",\n  \"sealName\": \"这是一个预定义印章名称\",\n  \"customBizNum\": \"这是一串开发者内部系统自定义的编号\",\n  \"redirectUrl\":\"https://www.xxx.cn/\",\n  \"uneditableFields\":[]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章（页面版）",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/个人印章（页面版）",
+    "name": "获取管理个人印章页面链接",
+    "method": "POST",
+    "url": "/v3/seals/psn-seals-manage-url",
+    "raw_url": "{{url}}/v3/seals/psn-seals-manage-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "psnId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"psnId\":\"7ffcaed*****0ef0a8f6\"\n}\n"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/个人印章（页面版）",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "name": "获取印章图片上传地址fileUploadUrl",
+    "method": "POST",
+    "url": "/v3/files/file-key",
+    "raw_url": "{{url}}/v3/files/file-key",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "contentMd5",
+          "type": "string"
+        },
+        {
+          "path": "contentType",
+          "type": "string"
+        },
+        {
+          "path": "fileName",
+          "type": "string"
+        },
+        {
+          "path": "fileSize",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"contentMd5\":\"/NewZW07KFRIdye6CEEjdA==\",\n    \"contentType\":\"application/octet-stream\",\n    \"fileName\":\"这是个自定义图片印章.png\",\n    \"fileSize\":1525\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "name": "将印章图片文件流上传到fileUploadUrl",
+    "method": "PUT",
+    "url": "",
+    "raw_url": "{{fileUploadUrl}}",
+    "headers": [
+      {
+        "key": "Content-MD5",
+        "value": "/NewZW07KFRIdye6CEEjdA=="
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/octet-stream"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "file",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "name": "创建机构图片印章",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/create-by-image",
+    "raw_url": "{{url}}/v3/seals/org-seals/create-by-image",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealImageFileKey",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealWidth",
+          "type": "string"
+        },
+        {
+          "path": "sealHeight",
+          "type": "string"
+        },
+        {
+          "path": "sealBizType",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"3c4047c*****40279134e7\",\n    \"sealImageFileKey\": \"$32aa559b-*****-667b7e$2420118273\",\n    \"sealName\": \"测试机构印章\",\n    \"sealWidth\": \"159\",\n    \"sealHeight\":\"159\",\n    \"sealBizType\": \"COMMON\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/创建/创建机构图片印章",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/创建",
+    "name": "创建机构模板印章",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/create-by-template",
+    "raw_url": "{{url}}/v3/seals/org-seals/create-by-template",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealColor",
+          "type": "string"
+        },
+        {
+          "path": "sealOpacity",
+          "type": "string"
+        },
+        {
+          "path": "sealOldStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealTemplateStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealSize",
+          "type": "string"
+        },
+        {
+          "path": "sealHorizontalText",
+          "type": "string"
+        },
+        {
+          "path": "sealBottomText",
+          "type": "string"
+        },
+        {
+          "path": "sealOutsideSurroundText",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"b3a40*****93b52c76\",\n    \"sealName\": \"测试印章\",\n    \"sealColor\": \"RED\",\n    \"sealOpacity\": \"90\",\n    \"sealOldStyle\": \"OLD\",\n    \"sealTemplateStyle\": \"PUBLIC_ROUND_STAR\",\n    \"sealSize\": \"40_40\",\n    \"sealHorizontalText\":\"XX专用章\",\n    \"sealBottomText\":\"\",\n    \"sealOutsideSurroundText\":\"\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/创建",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "内部成员授权",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/internal-auth",
+    "raw_url": "{{url}}/v3/seals/org-seals/internal-auth",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealId",
+          "type": "string"
+        },
+        {
+          "path": "authorizedPsnIds",
+          "type": "array"
+        },
+        {
+          "path": "sealRole",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "sealAuthScope",
+          "type": "object"
+        },
+        {
+          "path": "sealAuthScope.templateIds",
+          "type": "array"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "string"
+        },
+        {
+          "path": "expireTime",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"3c4047c*****279134e7\",\n    \"sealId\": \"f3a5504f-*****-0318f8594010\",\n    \"authorizedPsnIds\": [\n        \"50d5eda*****32c4100b1bd29c\"\n    ],\n    \"sealRole\": \"SEAL_USER\",\n    \"transactorPsnId\": \"626629*****f1d8c1d\",\n    \"sealAuthScope\": {\n        \"templateIds\": [\n            \"ALL\"\n        ]\n    },\n    \"effectiveTime\": \"1670237490000\",\n    \"expireTime\": \"1701773490000\",\n    \"redirectUrl\": \"https://esign.cn\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "跨企业授权",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/external-auth",
+    "raw_url": "{{url}}/v3/seals/org-seals/external-auth",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "authorizedOrgInfo",
+          "type": "object"
+        },
+        {
+          "path": "authorizedOrgInfo.orgName",
+          "type": "string"
+        },
+        {
+          "path": "authorizedOrgInfo.orgIDCardNum",
+          "type": "string"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "string"
+        },
+        {
+          "path": "expireTime",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"3c4047cc3****40279134e7\",\n    \"sealId\": \"f3a5504f-3*****-0318f8594010\",\n    \"transactorPsnId\": \"7ffcaed8c*****8f0ef0a8f6\",\n    \"authorizedOrgInfo\": {\n        \"orgName\": \"*****企业\",\n        \"orgIDCardNum\": \"9110*****493\"\n    },\n    \"effectiveTime\": \"1669084637000\",\n    \"expireTime\": \"1697942237000\",\n    \"redirectUrl\": \"https://esign.cn\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "解除印章授权",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/auth-delete",
+    "raw_url": "{{url}}/v3/seals/org-seals/auth-delete",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "deleteType",
+          "type": "string"
+        },
+        {
+          "path": "sealAuthBizIds",
+          "type": "array"
+        },
+        {
+          "path": "sealIds",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"680b70*****d6bc6e3bb25\",\n    \"deleteType\": \"sealIds\",\n    \"sealAuthBizIds\": [\n        \"cc314cc******32ca61ea95be\"\n    ],\n    \"sealIds\": [\n        \"fc87215e-*****267052181448\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "查询授权书签署链接",
+    "method": "GET",
+    "url": "/v3/seals/org-seals/authorization-sign-url",
+    "raw_url": "{{url}}/v3/seals/org-seals/authorization-sign-url?orgId=680b7*****bc6e3bb25&sealAuthBizId=02acad5*****197a4a2592",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "680b7*****bc6e3bb25",
+        "location": "query"
+      },
+      {
+        "name": "sealAuthBizId",
+        "value": "02acad5*****197a4a2592",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "查询对内部成员授权详情",
+    "method": "GET",
+    "url": "/v3/seals/org-seals/internal-auth",
+    "raw_url": "{{url}}/v3/seals/org-seals/internal-auth?pageNum=1&pageSize=10&orgId=3c4047******0279134e7",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      },
+      {
+        "name": "orgId",
+        "value": "3c4047******0279134e7",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "查询对外部企业授权详情",
+    "method": "GET",
+    "url": "/v3/seals/org-seals/external-auth",
+    "raw_url": "{{url}}/v3/seals/org-seals/external-auth?pageNum=1&pageSize=10&orgId=680b70d5******e3bb25&authorizedOrgId=842e******0675fc91662f",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      },
+      {
+        "name": "orgId",
+        "value": "680b70d5******e3bb25",
+        "location": "query"
+      },
+      {
+        "name": "authorizedOrgId",
+        "value": "842e******0675fc91662f",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/授权",
+    "name": "修改印章授权期限",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/reauthorization",
+    "raw_url": "{{url}}/v3/seals/org-seals/reauthorization",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "sealAuthBizId",
+          "type": "string"
+        },
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "string"
+        },
+        {
+          "path": "expireTime",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"sealAuthBizId\": \"faed5c76-******-bc02d4d7ef9a\",\n    \"orgId\": \"3c4047c*****940279134e7\",\n    \"transactorPsnId\": \"7ffcaed8c*****0ef0a8f6\",\n    \"effectiveTime\": \"1636525541000\",\n    \"expireTime\": \"1701773490000\",\n    \"redirectUrl\": \"http://www.xxx.cn/\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/授权",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/查询",
+    "name": "查询企业内部印章",
+    "method": "GET",
+    "url": "/v3/seals/org-own-seal-list",
+    "raw_url": "{{url}}/v3/seals/org-own-seal-list?pageNum=1&pageSize=10&orgId=3c4047cc*****279134e7",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      },
+      {
+        "name": "orgId",
+        "value": "3c4047cc*****279134e7",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/查询",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/查询",
+    "name": "查询被外部企业授权印章",
+    "method": "GET",
+    "url": "/v3/seals/org-authorized-seal-list",
+    "raw_url": "{{url}}/v3/seals/org-authorized-seal-list?pageNum=1&pageSize=10&orgId=485*****a694d37c3de60",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      },
+      {
+        "name": "orgId",
+        "value": "485*****a694d37c3de60",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/查询",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/查询",
+    "name": "查询指定印章详情（机构）",
+    "method": "GET",
+    "url": "/v3/seals/org-seal-info",
+    "raw_url": "{{url}}/v3/seals/org-seal-info?orgId=4851f82b5*****37c3de60&sealId=2a230e6a-******-36b2b0c6f078",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "4851f82b5*****37c3de60",
+        "location": "query"
+      },
+      {
+        "name": "sealId",
+        "value": "2a230e6a-******-36b2b0c6f078",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/查询",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/变更",
+    "name": "设置机构默认印章",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/set-default-seal",
+    "raw_url": "{{url}}/v3/seals/org-seals/set-default-seal",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"4851f854****d37c3de60\",\n    \"sealId\": \"2a230e6a-*******36b2b0c6f078\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/变更",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章/变更",
+    "name": "删除机构印章",
+    "method": "DELETE",
+    "url": "/v3/seals/org-seal",
+    "raw_url": "{{url}}/v3/seals/org-seal?orgId=4851f8******37c3de60&sealId=f6eb0309-2*******-3a4898c4c426",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "4851f8******37c3de60",
+        "location": "query"
+      },
+      {
+        "name": "sealId",
+        "value": "f6eb0309-2*******-3a4898c4c426",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章/变更",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章（页面版）",
+    "name": "获取创建机构印章页面链接",
+    "method": "POST",
+    "url": "/v3/seals/org-seal-create-url",
+    "raw_url": "{{url}}/v3/seals/org-seal-create-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealColor",
+          "type": "string"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "uneditableFields",
+          "type": "array"
+        }
+      ],
+      "raw": "{\n    \"orgId\":\"3c4047cc3*****0279134e7\",\n    \"transactorPsnId\": \"7ffcaed8*****8f0ef0a8f6\",\n    \"sealName\": \"这是个预定义的企业印章名称\",\n    \"sealColor\": \"RED\",\n    \"redirectUrl\":\"http://www.xxx.cn/\",\n    \"uneditableFields\":[]\n}\n"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章（页面版）",
+    "tag": "印章服务API"
+  },
+  {
+    "folder_path": "印章服务API/机构印章（页面版）",
+    "name": "获取管理机构印章页面链接",
+    "method": "POST",
+    "url": "/v3/seals/org-seals-manage-url",
+    "raw_url": "{{url}}/v3/seals/org-seals-manage-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\":\"3c4047cc*****134e7\",\n    \"transactorPsnId\": \"7ffcaed8c******0ef0a8f6\"\n}\n"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "印章服务API/机构印章（页面版）",
+    "tag": "印章服务API"
+  }
+]

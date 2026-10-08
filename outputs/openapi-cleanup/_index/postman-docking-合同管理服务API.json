@@ -1,0 +1,312 @@
+[
+  {
+    "folder_path": "合同管理服务API/获取智能台账数据",
+    "name": "接收智能台账数据（测试数据）",
+    "method": "POST",
+    "url": "",
+    "raw_url": "{{开发者设置的回调通知地址}}",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "id",
+          "type": "string"
+        },
+        {
+          "path": "type",
+          "type": "string"
+        },
+        {
+          "path": "created",
+          "type": "number"
+        },
+        {
+          "path": "data",
+          "type": "object"
+        },
+        {
+          "path": "data.meta",
+          "type": "array"
+        },
+        {
+          "path": "data.meta[].fieldId",
+          "type": "string"
+        },
+        {
+          "path": "data.meta[].fieldName",
+          "type": "string"
+        },
+        {
+          "path": "data.meta[].fieldType",
+          "type": "number"
+        },
+        {
+          "path": "data.row",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].contractNo",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].templateId",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].socialCreditCode",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].ledgerId",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].processFinishTime",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].tenantName",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].processId",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].templateName",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].processTitle",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].6b09c8f02d2e4118afc04c8ff2b27cce",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].75bb874e633e4f768358e9c25f8716dd",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].flowId",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].signer",
+          "type": "array"
+        },
+        {
+          "path": "data.row[].signer[].signSerialNumber",
+          "type": "number"
+        },
+        {
+          "path": "data.row[].signer[].signerType",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].personName",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].contactType",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].contactInfo",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].personGid",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].personOid",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].companyName",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].companyGid",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].companyOid",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].thirdPartyId",
+          "type": "string"
+        },
+        {
+          "path": "data.row[].signer[].thirdPartyName",
+          "type": "string"
+        },
+        {
+          "path": "data.operation",
+          "type": "number"
+        },
+        {
+          "path": "action",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"id\": \"3129302311146553110\",\n    \"type\": \"LEDGER_EXTRACT\",\n    \"created\": 1701256957435,\n    \"data\": {\n        \"meta\": [\n            {\n                \"fieldId\": \"contractNo\",\n                \"fieldName\": \"合同编号\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"templateId\",\n                \"fieldName\": \"模板id\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"socialCreditCode\",\n                \"fieldName\": \"统一社会信用代码\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"ledgerId\",\n                \"fieldName\": \"台账id\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"processFinishTime\",\n                \"fieldName\": \"合同签署完成时间\",\n                \"fieldType\": 3\n            },\n            {\n                \"fieldId\": \"processId\",\n                \"fieldName\": \"合同任务id\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"templateName\",\n                \"fieldName\": \"模板名称\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"processTitle\",\n                \"fieldName\": \"合同流程标题\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"75bb874e633e4f768358e9c25f8716dd\",\n                \"fieldName\": \"end_time\",\n                \"fieldType\": 3\n            },\n            {\n                \"fieldId\": \"6b09c8f02d2e4118afc04c8ff2b27cce\",\n                \"fieldName\": \"start_time\",\n                \"fieldType\": 3\n            },\n            {\n                \"fieldId\": \"flowId\",\n                \"fieldName\": \"子流程id\",\n                \"fieldType\": 1\n            },\n            {\n                \"fieldId\": \"signer\",\n                \"fieldName\": \"签署方\",\n                \"fieldType\": 9\n            }\n        ],\n        \"row\": [\n            {\n                \"contractNo\": [\n                    \"ESIGN202211164090635\"\n                ],\n                \"templateId\": [\n                    \"768911523\"\n                ],\n                \"socialCreditCode\": [\n                    \"91330111168365639M\"\n                ],\n                \"ledgerId\": [\n                    \"d8fda27611111189201beb0aa8d4f2\"\n                ],\n                \"processFinishTime\": [\n                    1670490458000\n                ],\n                \"tenantName\": [\n                    \"esigntest测试企业有限公司\"\n                ],\n                \"processId\": [\n                    \"8e4b910c1111111111b6cef161ec\"\n                ],\n                \"templateName\": [\n                    \"ce'sces\"\n                ],\n                \"processTitle\": [\n                    \"测试\"\n                ],\n                \"6b09c8f02d2e4118afc04c8ff2b27cce\": [],\n                \"75bb874e633e4f768358e9c25f8716dd\": [],\n                \"flowId\": [\n                    \"0b4302fd7111111111dbb4605c9c3\"\n                ],\n                \"signer\": [\n                    {\n                        \"signSerialNumber\": 1,\n                        \"signerType\": \"person\",\n                        \"personName\": \"张三\",\n                        \"contactType\": \"mobile\",\n                        \"contactInfo\": \"13000000000\",\n                        \"personGid\": \"df54a13c81111118ca2aadf86f\",\n                        \"personOid\": \"c71cc2cdec1111322abd5e92b38cf\",\n                        \"companyName\": \"\",\n                        \"companyGid\": \"\",\n                        \"companyOid\": \"\",\n                        \"thirdPartyId\": \"o-123456\",\n                        \"thirdPartyName\": \"WECHAT_MINI_OPEN\"\n                    }\n                ]\n            }\n        ],\n        \"operation\": 0\n    },\n    \"action\": \"LEDGER_EXTRACT\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同管理服务API/获取智能台账数据",
+    "tag": "合同管理服务API"
+  },
+  {
+    "folder_path": "合同管理服务API/获取智能台账数据",
+    "name": "获取台账提取的图片下载地址",
+    "method": "GET",
+    "url": "/v3/ledger/image-download-urls",
+    "raw_url": "{{url}}/v3/ledger/image-download-urls?ledgerId=3129301111146553110&downloadId=0b4302fd7111111111dbb4605c9c3&downloadIdType=2",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [
+      {
+        "name": "ledgerId",
+        "value": "3129301111146553110",
+        "location": "query"
+      },
+      {
+        "name": "downloadId",
+        "value": "0b4302fd7111111111dbb4605c9c3",
+        "location": "query"
+      },
+      {
+        "name": "downloadIdType",
+        "value": "2",
+        "location": "query"
+      }
+    ],
+    "body": null,
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同管理服务API/获取智能台账数据",
+    "tag": "合同管理服务API"
+  },
+  {
+    "folder_path": "合同管理服务API/纸质合同管理",
+    "name": "纸质合同-归档分类",
+    "method": "POST",
+    "url": "/v3/contracts/paper-file-upload",
+    "raw_url": "{{url}}/v3/contracts/paper-file-upload",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "fileId",
+          "type": "string"
+        },
+        {
+          "path": "contractGroupId",
+          "type": "string"
+        },
+        {
+          "path": "contractName",
+          "type": "string"
+        },
+        {
+          "path": "contractNum",
+          "type": "string"
+        },
+        {
+          "path": "contractBizTypeId",
+          "type": "string"
+        },
+        {
+          "path": "contractExpiryDate",
+          "type": "string"
+        },
+        {
+          "path": "signers",
+          "type": "array"
+        },
+        {
+          "path": "signers[].orgName",
+          "type": "string"
+        },
+        {
+          "path": "signers[].psnName",
+          "type": "string"
+        },
+        {
+          "path": "signers[].psnAccount",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"fileId\": \"{{fileId}}\",\n    \"contractGroupId\": \"请传入e签宝企业合同-归档文件夹ID\",\n    \"contractName\": \"合同名称1030\",\n    \"contractNum\": \"jilin00001\",\n    \"contractBizTypeId\": \"签传入e签宝智能台账-合同类型ID\",\n    \"contractExpiryDate\": \"2025-01-01\",\n    \"signers\": [\n        {\n            \"orgName\":\"霁林测试企业有限公司\",\n            \"psnName\":\"张三\",\n            \"psnAccount\":\"13000000000\"\n        },\n        {\n            \"psnName\":\"李四\",\n            \"psnAccount\":\"13111111111\"\n        }\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "合同管理服务API/纸质合同管理",
+    "tag": "合同管理服务API"
+  }
+]

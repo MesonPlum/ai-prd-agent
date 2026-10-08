@@ -1,0 +1,56 @@
+{
+  "totalInputFiles": 1,
+  "totalRecords": 139,
+  "unparsedCount": 0,
+  "successRate": "100%",
+  "pathNonEmptyRate": "100%",
+  "methodNonEmptyRate": "100%",
+  "unparsedRate": "0%",
+  "tagSplitFiles": [
+    {
+      "tag": "实名认证和授权服务API",
+      "file": "postman-docking-实名认证和授权服务API.json",
+      "count": 7
+    },
+    {
+      "tag": "合同文件签署服务API",
+      "file": "postman-docking-合同文件签署服务API.json",
+      "count": 64
+    },
+    {
+      "tag": "流程模板签署服务API",
+      "file": "postman-docking-流程模板签署服务API.json",
+      "count": 26
+    },
+    {
+      "tag": "印章服务API",
+      "file": "postman-docking-印章服务API.json",
+      "count": 28
+    },
+    {
+      "tag": "企业机构成员服务API",
+      "file": "postman-docking-企业机构成员服务API.json",
+      "count": 7
+    },
+    {
+      "tag": "企业控制台服务API",
+      "file": "postman-docking-企业控制台服务API.json",
+      "count": 1
+    },
+    {
+      "tag": "合同管理服务API",
+      "file": "postman-docking-合同管理服务API.json",
+      "count": 3
+    },
+    {
+      "tag": "账号管理API",
+      "file": "postman-docking-账号管理API.json",
+      "count": 1
+    },
+    {
+      "tag": "回调通知服务",
+      "file": "postman-docking-回调通知服务.json",
+      "count": 2
+    }
+  ]
+}

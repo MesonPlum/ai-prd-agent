@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ePaaS 迁移灰度放量方案 · 一图流</title>
+<style>
+  :root {
+    --ink: #0f1b2d;
+    --sub: #5b6b7f;
+    --line: #dbe3ee;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --blue: #2563eb;
+    --blue-deep: #1a3a6b;
+    --blue-soft: #eaf1ff;
+    --green: #16a34a;
+    --green-soft: #e9f9ef;
+    --gray: #6b7280;
+    --gray-soft: #f1f3f6;
+    --orange: #ea580c;
+    --orange-soft: #fef1e7;
+    --purple: #7c3aed;
+    --purple-soft: #f3ecff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, #eef3fa 0%, #e6edf7 100%);
+    color: var(--ink);
+    padding: 32px 16px 56px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .poster {
+    max-width: 1180px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 24px 60px -20px rgba(15,27,45,.25);
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  .head {
+    padding: 34px 44px 28px;
+    background: linear-gradient(135deg, #16325c 0%, #1a3a6b 55%, #23508f 100%);
+    color: #fff;
+  }
+  .head .kicker {
+    font-size: 12px; letter-spacing: 3px; opacity: .72; font-weight: 600;
+  }
+  .head h1 { font-size: 30px; font-weight: 700; margin: 10px 0 6px; letter-spacing: 1px; }
+  .head .sub { font-size: 14px; opacity: .82; }
+  .baseline {
+    display: flex; gap: 22px; margin-top: 22px; flex-wrap: wrap;
+  }
+  .baseline .b {
+    flex: 1; min-width: 150px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 12px; padding: 12px 16px;
+  }
+  .baseline .b .n { font-size: 24px; font-weight: 700; line-height: 1.1; }
+  .baseline .b .n small { font-size: 13px; font-weight: 600; opacity: .75; }
+  .baseline .b .t { font-size: 12px; opacity: .7; margin-top: 3px; }
+
+  /* ── Sections ── */
+  .body { padding: 30px 44px 42px; }
+  .sec-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; margin: 34px 0 16px; letter-spacing: .5px;
+  }
+  .sec-title:first-child { margin-top: 0; }
+  .sec-title .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  /* ── Flow: two-layer gate ── */
+  .flow { position: relative; }
+  .inlet {
+    background: var(--gray-soft); border: 1px dashed #b9c3d4;
+    border-radius: 12px; padding: 12px 16px; text-align: center;
+    font-size: 13px; color: var(--sub);
+  }
+  .inlet b { color: var(--ink); font-size: 15px; }
+  .arrow-v {
+    height: 26px; width: 2px; background: #c2ccda; margin: 0 auto; position: relative;
+  }
+  .arrow-v::after {
+    content: ""; position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: #c2ccda;
+  }
+  .gate {
+    border: 2px solid var(--purple); border-radius: 14px; overflow: hidden;
+  }
+  .gate .ghead {
+    background: var(--purple); color: #fff; padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .gate .ghead .t { font-weight: 700; font-size: 15px; }
+  .gate .ghead .hint { font-size: 12px; opacity: .85; }
+  .gate .gbody { display: flex; background: var(--purple-soft); }
+  .gate .gbody .col { flex: 1; padding: 14px 16px; }
+  .gate .gbody .col + .col { border-left: 1px dashed rgba(124,58,237,.35); }
+  .gate .gbody .col .tt { font-size: 12px; color: var(--purple); font-weight: 700; margin-bottom: 6px; }
+  .gate .gbody .col .dd { font-size: 12.5px; color: var(--ink); line-height: 1.55; }
+  .chip {
+    display: inline-block; background: #fff; border: 1px solid var(--purple);
+    color: var(--purple); border-radius: 6px; padding: 1px 8px;
+    font-size: 11.5px; font-weight: 700; margin-right: 4px;
+  }
+
+  /* second layer */
+  .branch { display: flex; gap: 16px; }
+  .branch .side { flex: 1; }
+  .branch .mid { width: 40px; flex: none; position: relative; }
+  .branch .mid .vert { position: absolute; top: -26px; bottom: -26px; left: 50%; width: 2px; background: #c2ccda; }
+  .panel { border-radius: 12px; padding: 14px 16px; }
+  .panel .pt { font-size: 12px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .panel.hit { background: var(--green-soft); border: 2px solid var(--green); }
+  .panel.hit .pt { color: var(--green); }
+  .panel.miss { background: var(--gray-soft); border: 2px solid #b6c0cf; }
+  .panel.miss .pt { color: var(--gray); }
+  .panel .pd { font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+  .panel .pd b { font-size: 13px; }
+
+  /* ── Steps ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .step { border-radius: 14px; border: 2px solid var(--line); background: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  .step .sh { padding: 12px 16px; color: #fff; }
+  .step .sh .sno { font-size: 11px; opacity: .8; font-weight: 600; letter-spacing: 1px; }
+  .step .sh .sname { font-size: 17px; font-weight: 700; margin-top: 2px; }
+  .step.s1 .sh { background: linear-gradient(135deg,#2563eb,#3b82f6); }
+  .step.s2 .sh { background: linear-gradient(135deg,#0891b2,#06b6d4); }
+  .step.s3 .sh { background: linear-gradient(135deg,#16a34a,#22c55e); }
+  .step .sb { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .metric { display: flex; align-items: baseline; gap: 6px; }
+  .metric .val { font-size: 22px; font-weight: 800; }
+  .metric .val small { font-size: 12px; font-weight: 600; color: var(--sub); }
+  .metric .lbl { font-size: 12px; color: var(--sub); }
+  .kpi { display: flex; gap: 8px; flex-wrap: wrap; }
+  .kpi .k { background: var(--bg); border-radius: 7px; padding: 4px 8px; font-size: 11px; color: var(--sub); }
+  .kpi .k b { color: var(--ink); }
+  .list { font-size: 12.5px; line-height: 1.55; color: var(--ink); }
+  .list .li { position: relative; padding-left: 14px; margin-bottom: 5px; }
+  .list .li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: #94a3b8; }
+  .list .li b { font-weight: 700; }
+  .gate-tag {
+    margin-top: auto; font-size: 11px; padding: 8px 10px; border-radius: 8px; font-weight: 600;
+  }
+  .gate-tag.advance { background: var(--orange-soft); color: var(--orange); }
+  .gate-tag.target { background: var(--green-soft); color: var(--green); }
+
+  .param-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 4px; }
+  .param-table th, .param-table td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  .param-table th { background: var(--bg); color: var(--sub); font-weight: 600; }
+  .param-table code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 10.5px; color: #1d4ed8; }
+  .val-1 { color: var(--green); font-weight: 600; }
+  .val-2 { color: #0891b2; font-weight: 600; }
+  .val-3 { color: var(--gray); }
+
+  /* ── Legend ── */
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .legend .l { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--sub); }
+  .legend .sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+
+  .footnote { margin-top: 14px; font-size: 11.5px; color: #8b98a9; line-height: 1.6; }
+  @media (max-width: 860px) {
+    .steps { grid-template-columns: 1fr; }
+    .branch { flex-direction: column; }
+    .branch .mid { display: none; }
+    .body { padding: 22px 20px 30px; }
+    .head { padding: 26px 22px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ═══ Header ═══ -->
+  <div class="head">
+    <div class="kicker">F-004 · 国内站 OpenAPI × ePaaS 迁移</div>
+    <h1>灰度放量方案</h1>
+    <div class="sub">两层闸门灰度能力 · 三步放量节奏 · 最终覆盖基于文件发起流量 85%</div>
+    <div class="baseline">
+      <div class="b">
+        <div class="n">70<small>万/天</small></div>
+        <div class="t">create-by-file 日均流量（基线）</div>
+      </div>
+      <div class="b">
+        <div class="n">gid<small> 维度</small></div>
+        <div class="t">第一层闸门，套 appid，同进同出</div>
+      </div>
+      <div class="b">
+        <div class="n">3<small> 维度</small></div>
+        <div class="t">接口 + 参数 + 参数值（自动降级）</div>
+      </div>
+      <div class="b">
+        <div class="n">3<small> 步放量</small></div>
+        <div class="t">小客户试点 → 自动签扩容 → 按比例放开</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- ═══ 灰度能力：两层闸门 ═══ -->
+    <div class="sec-title"><span class="dot" style="background:var(--purple)"></span>灰度能力模型 —— 两层闸门</div>
+
+    <div class="flow">
+      <div class="inlet">
+        流量入口：<b>create-by-file</b> 请求（V3 基于文件发起，日均 70 万条）
+      </div>
+      <div class="arrow-v"></div>
+
+      <!-- 第一层：gid -->
+      <div class="gate">
+        <div class="ghead">
+          <span class="t">第一层闸门 · gid 维度（大范围）</span>
+          <span class="hint">按 gid 录入 → 一个 gid 下所有 appid 同进同出</span>
+        </div>
+        <div class="gbody">
+          <div class="col">
+            <div class="tt">✕ 黑名单（不进入灰度）</div>
+            <div class="dd"><span class="chip">gid</span>特殊客户 / 大客户，前期默认不进</div>
+            <div class="dd" style="margin-top:4px"><span class="chip">gid</span>客户反馈接口能力不匹配，人工加入</div>
+            <div class="dd" style="margin-top:6px;color:#6b21a8;font-weight:600">→ 整体回旧系统</div>
+          </div>
+          <div class="col">
+            <div class="tt">✓ 白名单（进入下一层）</div>
+            <div class="dd"><span class="chip">gid</span>三步逐步扩容，人工维护 + 内部审批</div>
+            <div class="dd" style="margin-top:4px">映射来源：<b>用户中心</b>（gid → appid 已具备）</div>
+            <div class="dd" style="margin-top:6px;color:#6b21a8;font-weight:600">→ 进入第二层闸门 ↓</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-v"></div>
+
+      <!-- 第二层：接口+参数+参数值 -->
+      <div class="branch">
+        <div class="side panel hit">
+          <div class="pt">● 命中当前步骤「已放量范围」</div>
+          <div class="pd"><b>→ ePaaS 承接</b>（进入灰度，客户零改动）</div>
+        </div>
+        <div class="side panel miss">
+          <div class="pt">○ 未命中（范围外）</div>
+          <div class="pd"><b>→ 自动降级</b>（该请求回公有云旧系统，客户无感，gid 白名单不变）</div>
+        </div>
+      </div>
+
+      <div class="sec-title" style="margin-top:26px"><span class="dot" style="background:var(--blue)"></span>第二层闸门 · 接口 + 参数 + 参数值（自动降级）</div>
+      <p style="font-size:12.5px;color:var(--sub);margin:-6px 0 12px;line-height:1.6">
+        灰度系统按「接口 + 参数 + <b style="color:var(--ink)">参数值</b>」三维度指定灰度范围（能力已具备）。三步<b style="color:var(--ink)">逐步扩大</b>已放量范围；不符合条件的入参自动降级、不进入灰度。
+      </p>
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th style="width:32%">参数</th>
+            <th>第一步放量（L1 值）</th>
+            <th>第二/三步放量（L2 值）</th>
+            <th>全程降级（L3/L4 值）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>signConfig.signMode</code></td>
+            <td class="val-1">NORMAL</td>
+            <td class="val-2">—</td>
+            <td class="val-3">GLOBAL（海外签）</td>
+          </tr>
+          <tr>
+            <td><code>authConfig.willingnessAuthModes</code></td>
+            <td class="val-1">CODE_SMS · SIGN_PWD</td>
+            <td class="val-2">PSN_FACE_* · PSN_MOBILE_FACE_AUTH</td>
+            <td class="val-3">PSN_AUDIO_VIDEO_*</td>
+          </tr>
+          <tr>
+            <td><code>signers[].signerType</code></td>
+            <td class="val-1">0 · 1 · 3</td>
+            <td class="val-2">2（法定代表人）</td>
+            <td class="val-3">—</td>
+          </tr>
+          <tr>
+            <td><code>signFields[].signFieldType</code></td>
+            <td class="val-1">0（签章区）· 2（日期）</td>
+            <td class="val-2">1（备注签字区）</td>
+            <td class="val-3">—</td>
+          </tr>
+          <tr>
+            <td><code>normalSignFieldConfig.autoSign</code></td>
+            <td class="val-1">false（默认）</td>
+            <td class="val-2">true（第二步 · 66.65% 流量）</td>
+            <td class="val-3">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:11.5px;color:#8b98a9;margin-top:8px">
+        注：后置接口（revoke / urge / delay / 列表 / 签署区 / 文件 / 附件 / 抄送方）按 signFlowId 归属路由，<b>不参与自动降级</b>；不适配时按 gid 人工黑名单处理。
+      </p>
+    </div>
+
+    <!-- ═══ 三步放量 ═══ -->
+    <div class="sec-title" style="margin-top:38px"><span class="dot" style="background:var(--orange)"></span>三步放量 —— gid 范围与参数 / 参数值范围逐步扩大</div>
+
+    <div class="steps">
+      <!-- 第一步 -->
+      <div class="step s1">
+        <div class="sh">
+          <div class="sno">STEP 1</div>
+          <div class="sname">小客户参数试点</div>
+        </div>
+        <div class="sb">
+          <div class="metric">
+            <span class="val">100<small>+ appid</small></span>
+            <span class="lbl">日均签署流程 ≥ 1000</span>
+          </div>
+          <div class="kpi">
+            <span class="k">放量 <b>L1 接口</b></span>
+            <span class="k">放量 <b>L1 参数 + 值域</b></span>
+            <span class="k">首批 <b>gid</b></span>
+          </div>
+          <div class="list">
+            <div class="li"><b>appid</b>：主动筛选一部分小客户 appid（同 gid 下全部 appid 同进同出）</div>
+            <div class="li"><b>参数</b>：请求满足 L1 + L2 范围，autoSign ≠ true</div>
+            <div class="li"><b>范围外</b>：L3/L4 或未开放参数值自动降级；后置接口不适配则人工拉黑 gid</div>
+          </div>
+          <div class="gate-tag advance">进入第二步门槛：appid ≥ 100 · 签署流程日均 ≥ 1000</div>
+        </div>
+      </div>
+
+      <!-- 第二步 -->
+      <div class="step s2">
+        <div class="sh">
+          <div class="sno">STEP 2</div>
+          <div class="sname">小客户 + 自动签</div>
+        </div>
+        <div class="sb">
+          <div class="metric">
+            <span class="val">500<small>+ appid</small></span>
+            <span class="lbl">日均签署流程 ≥ 5000</span>
+          </div>
+          <div class="kpi">
+            <span class="k">新增 <b>autoSign=true</b></span>
+            <span class="k">扩容含自动签 <b>gid</b></span>
+          </div>
+          <div class="list">
+            <div class="li"><b>appid</b>：在第一步基础上，扩大一部分小客户 appid</div>
+            <div class="li"><b>参数</b>：在 L1 + L2 范围内，新增开放 autoSign=true</div>
+            <div class="li"><b>专项</b>：验证自动落章、印章授权、静默签授权联动</div>
+          </div>
+          <div class="gate-tag advance">进入第三步门槛：appid ≥ 500 · 签署流程日均 ≥ 5000</div>
+        </div>
+      </div>
+
+      <!-- 第三步 -->
+      <div class="step s3">
+        <div class="sh">
+          <div class="sno">STEP 3</div>
+          <div class="sname">按比例逐步放开</div>
+        </div>
+        <div class="sb">
+          <div class="metric">
+            <span class="val">按比例<small> 放开</small></span>
+            <span class="lbl">目标覆盖 ≥ 85%</span>
+          </div>
+          <div class="kpi">
+            <span class="k">放量 <b>全部 L2</b></span>
+            <span class="k">剩余 <b>gid</b></span>
+          </div>
+          <div class="list">
+            <div class="li"><b>appid</b>：按比例陆续放开 gid；同 gid 下全部 appid 同步进入</div>
+            <div class="li"><b>参数</b>：最终开放全部 L1 + L2 参数及参数值</div>
+            <div class="li"><b>保留机制</b>：部分特殊/大客户继续保留在 gid 黑名单，暂不进入灰度</div>
+          </div>
+          <div class="gate-tag target">最终目标：覆盖 create-by-file 流量 ≥ 85%（59.5 万条/天）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 图例 ═══ -->
+    <div class="legend">
+      <div class="l"><span class="sw" style="background:var(--purple)"></span>gid 闸门（第一层）</div>
+      <div class="l"><span class="sw" style="background:var(--blue)"></span>参数值维度（第二层）</div>
+      <div class="l"><span class="sw" style="background:var(--green)"></span>ePaaS 承接 / 最终目标</div>
+      <div class="l"><span class="sw" style="background:#b6c0cf"></span>自动降级 / 回公有云</div>
+      <div class="l"><span class="sw" style="background:var(--orange)"></span>进阶门槛</div>
+    </div>
+    <div class="footnote">
+      依据《F-004 灰度放量方案》绘制 · 两道闸门：gid 维度（套 appid，同进同出）→ 接口 + 参数 + 参数值（范围外自动降级）。三步逐步扩大 gid 放量范围和参数/参数值范围：第一步小客户 L1+L2 且 autoSign≠true，第二步扩大小客户并开放 autoSign=true，第三步按比例逐步放开并保留大客户黑名单，最终覆盖基于文件发起流量 85%。
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

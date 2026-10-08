@@ -1,0 +1,1749 @@
+{
+    "info": {
+        "name": "Esign",
+        "description": "",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "印章",
+            "description": "",
+            "item": [
+                {
+                    "name": "印章V1",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "V1-创建企业模板章",
+                            "description": "",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [],
+                                        "type": "text/javascript",
+                                        "packages": {}
+                                    }
+                                }
+                            ],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"qtext\": \"\",\n    \"central\": \"STAR\",\n    \"color\": \"RED\",\n    \"alias\": \"印章-财务专用章-2\",\n    \"htext\": \"财务专用章\",\n    \"type\":\"TEMPLATE_ROUND\"\n        //\"topSurroundText\":\"HONGKONGSEAL\",\n      \n    //\"type\":\"TEMPLATE_HK\"//\"TEMPLATE_ROUND\",\n\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/organizations/{{psnId}}/seals/officialtemplate",
+                                    "path": [
+                                        "v1",
+                                        "organizations",
+                                        "{{psnId}}",
+                                        "seals",
+                                        "officialtemplate"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "圆形印章",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v1/organizations/{{psnId}}/seals/officialtemplate",
+                                            "path": [
+                                                "v1",
+                                                "organizations",
+                                                "{{psnId}}",
+                                                "seals",
+                                                "officialtemplate"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"qtext\": \"\",\n    \"central\": \"STAR\",\n    \"color\": \"RED\",\n    \"alias\": \"印章C-授权模板手动签\",\n    \"htext\": \"人力资源部专用章\",\n    \"type\":\"TEMPLATE_ROUND\"\n        //\"topSurroundText\":\"HONGKONGSEAL\",\n      \n    //\"type\":\"TEMPLATE_HK\"//\"TEMPLATE_ROUND\",\n\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "V1-创建个人印章",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "\n{\n    \"alias\": \"paas印章\",\n    \"color\": \"BLUE\",\n    \"type\":\"RECTANGLE\",\n    \"type-\": \"SQUARE\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/accounts/{{person_id_mao}}/seals/personaltemplate",
+                                    "path": [
+                                        "v1",
+                                        "accounts",
+                                        "{{person_id_mao}}",
+                                        "seals",
+                                        "personaltemplate"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "V1-删除个人印章 ",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "DELETE",
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/accounts/{{psnId}}/seals/{{sealId}}",
+                                    "path": [
+                                        "v1",
+                                        "accounts",
+                                        "{{psnId}}",
+                                        "seals",
+                                        "{{sealId}}"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "V1-删除企业印章",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "DELETE",
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/organizations/{{orgId}}/seals/{{orgSealId}}",
+                                    "path": [
+                                        "v1",
+                                        "organizations",
+                                        "{{orgId}}",
+                                        "seals",
+                                        "{{orgSealId}}"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "印章授权-saas",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "企业内授权",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"appId\": \"7876649549\",\n    \"effectiveTime\": 1725465600000,\n    \"expireTime\": 1820073599000,\n    \"grantType\": 1,\n    \"fallType\": \"1\",\n    \"grantedAccountIds\": [\n        \"ALL\"\n    ],\n    \"grantedRoleIds\": [],\n    \"grantedUserName\": \"\",\n    \"grantedUserRole\": \"role_v3\",\n    \"h5\": false,\n    \"notifySetting\": true,\n    \"notifyUrl\": \"\",\n    \"orgOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"resourceId\": \"7ed378f0-ef53-4539-8c08-a0da2d562157\",\n    \"roleKey\": \"SEAL_USER\",\n    \"scopeList\": [\n        \"af262cbd58c045aea24dde769b06d4ac\"\n    ],\n    \"scopeApprovalTemplateIds-\": [],\n    \"authConfirmMethod\": 1\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [
+                                    {
+                                        "key": "X-Tsign-Service-Id",
+                                        "value": "footstone-seal",
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{host}}/addSealGrant/input",
+                                    "path": [
+                                        "addSealGrant",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{host}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板自动签",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "X-Tsign-Service-Id",
+                                                "value": "footstone-seal",
+                                                "description": "",
+                                                "disabled": false
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{host}}/addSealGrant/input",
+                                            "path": [
+                                                "addSealGrant",
+                                                "input"
+                                            ],
+                                            "host": [
+                                                "{{host}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"accountOid\": \"{{psnId}}\",\n    \"appId\": \"{{bz_appId}}\",\n    \"effectiveTime\": 1725465600000,\n   \"expireTime\": 16725196800000, // 永久\n    \"grantType\": 1,\n    \"fallType\": \"1\",\n    \"grantedAccountIds\": [\n        \"ALL\"\n    ],\n    \"grantedRoleIds\": [],\n    \"grantedUserName\": \"\",\n    \"grantedUserRole\": \"role_v3\",\n    \"h5\": false,\n    \"notifySetting\": true,\n    \"notifyUrl\": \"\",\n    \"orgOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    //  \"70a5e954-cc47-4591-ac71-233f4973ecb0\", // 公章A\n    //     \"ea128958-64df-4623-8933-be9e00de9f93\", // 财务章\n    //     \"30f361f9-2a61-4153-9d4c-ce03cadb605b\" // 法人章\n\n    \"resourceId\": \"30f361f9-2a61-4153-9d4c-ce03cadb605b\",\n    \"roleKey\": \"SEAL_USER\",\n    \"scopeList\": [\n         \"6e3520f672d84ed8a22754b5bba6d9f5\",//公章A+财务章B+法人章F1授权自动\n       \n    ],\n\n    //模板M1(模板):af262cbd58c045aea24dde769b06d4ac\n//模板M2_集测勿动(模板):92918c0c593541f98a23fc4d8f9e44a0\n\n\n    \"scopeApprovalTemplateIds-\": [],\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "批量新增一级授权",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"appId\": \"3438757422\",\n    \"authConfirmMethod\": 2,\n    \"effectiveTime\": 1727280000000,\n    \"expireTime\": 16725196800000, // 永久\n    \"fallType\": 1,\n    \"firstModule\": \"saas_seal_management\",\n    \"grantType\": 1,\n    \"grantedAccountIds\": [\n        // \"97f6ab832a3a465ebcf7c9380d5dd687\"\n        \"ALL\"\n    ],\n    \"h5\": false,\n    \"operatorOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"operatorTenantOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"roleKey\": \"SEAL_USER\",\n    \"scopeList\": [\n        //\"6e3520f672d84ed8a22754b5bba6d9f5\",//公章A+财务章B+法人章F1授权自动\n        // \"644db021e52249969a674a664cb3d21c\"\n        //\"79f46efe499e45719269834d33af5a85\" // 混合场合\n        \"9ea4bc81e5f6436ca3eeb74afbe1dfa6\",// M1\n       \"5aedb523dec94542af245805cc2a53cb\", // M2\n        \"0a05a47d1cfc45e2863a56a6c4c3c392\" //M3\n\n    ],\n    \"sealIds\": [\n        // \"70a5e954-cc47-4591-ac71-233f4973ecb0\", // 公章A\n        //  \"14a5928b-f953-4590-acb4-c35830a0b180\", // 印章BB\n        // \"ea128958-64df-4623-8933-be9e00de9f93\", // 财务章\n        // \"30f361f9-2a61-4153-9d4c-ce03cadb605b\" // 法人章\n        //印章C：\n       \"1234fbcd-27c2-47d5-aecc-0743c90e036e\",\n       // 印章D:\n       \"5979c6ce-46ba-4157-959c-4206331dc0fa\",\n\n\n    ],\n    \"sealOwnerAdmin\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"sealOwnerOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"secondaryModule\": \"\\u5370\\u7ae0\\u7ba1\\u7406\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/batchSealGrant/input",
+                                    "path": [
+                                        "batchSealGrant",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "pm.request.headers.add(",
+                                    "    { key: \"X-Tsign-Service-Id\", value:\"footstone-seal\"}",
+                                    ");"
+                                ],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "footstone-seal-rpc",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "分析模板的印章授权情况",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"orgId\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"templateId\": \"6e3520f672d84ed8a22754b5bba6d9f5\"\n   \n   \n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/analyseTemplateIdGrantedSeal/input",
+                                    "path": [
+                                        "analyseTemplateIdGrantedSeal",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "查询用户可见范围的印章",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"orgId\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"operatorOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"operatorGid\": \"53819f95b036427b9926af6ef2701e28\",\n    \"bizTypeList\": [\n       // \"ALL\"\n        //\"PUBLIC\"\n        //\"COMMON\",\n        \"FINANCE\"\n        //\"LEGAL_PERSON\",\n        \"PERSONNEL\",\n       //\"CONTRACT\"\n    ]\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/querySealCanVisibleBySealBizTypeList/request",
+                                    "path": [
+                                        "querySealCanVisibleBySealBizTypeList",
+                                        "request"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "新增授权",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n  \"appId\": \"3438757422\",\n  \"effectiveTime\": 1725465600000,\n  \"expireTime\": 1820073599000,\n  \"grantType\": 1,\n  \"fallType\": \"1\",\n  \"grantedAccountIds\": [\n    \"ALL\"\n  ],\n  \"grantedRoleIds\": [],\n  \"grantedUserName\": \"\",\n  \"grantedUserRole\": \"role_v3\",\n  \"h5\": false,\n  \"notifySetting\": true,\n  \"notifyUrl\": \"\",\n  \"orgOid\": \"99b793a53d4441618c584f233e825719\",\n  \"resourceId\": \"86ffefcb-3511-40ac-9ea3-195e800d3e6d\",\n  \"roleKey\": \"SEAL_USER\",\n  \"scopeList\": [],\n  \"scopeApprovalTemplateIds\": [],\n  \"scopeAppIds\": [\n    \"7876657587\"\n  ],\n  \"authConfirmMethod\": 1\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/addSealGrant/input",
+                                    "path": [
+                                        "addSealGrant",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "查询授权",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "GET",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n  \"appId\": \"3438757422\",\n  \"effectiveTime\": 1725465600000,\n  \"expireTime\": 1820073599000,\n  \"grantType\": 1,\n  \"fallType\": \"1\",\n  \"grantedAccountIds\": [\n    \"ALL\"\n  ],\n  \"grantedRoleIds\": [],\n  \"grantedUserName\": \"\",\n  \"grantedUserRole\": \"role_v3\",\n  \"h5\": false,\n  \"notifySetting\": true,\n  \"notifyUrl\": \"\",\n  \"orgOid\": \"99b793a53d4441618c584f233e825719\",\n  \"resourceId\": \"86ffefcb-3511-40ac-9ea3-195e800d3e6d\",\n  \"roleKey\": \"SEAL_USER\",\n  \"scopeList\": [],\n  \"scopeApprovalTemplateIds\": [],\n  \"scopeAppIds\": [\n    \"7876657587\"\n  ],\n  \"authConfirmMethod\": 1\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [
+                                    {
+                                        "key": "X-Tsign-Open-Tenant-Id",
+                                        "value": "ebd4ec8090e549df8dfc0b6c796df97c",
+                                        "description": "",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "key": "X-Tsign-Open-Operator-Id",
+                                        "value": "{{psnId}}",
+                                        "description": "",
+                                        "type": "string"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/inner/seal/grant/second/list",
+                                    "path": [
+                                        "v3",
+                                        "inner",
+                                        "seal",
+                                        "grant",
+                                        "second",
+                                        "list"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "sealGrantBizId",
+                                            "value": "49e91dd3-622e-4db2-aa8a-7780f2bd9f5",
+                                            "description": "",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "key": "orgId",
+                                            "value": "ebd4ec8090e549df8dfc0b6c796df97c",
+                                            "description": "",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "key": "pageNum",
+                                            "value": "1",
+                                            "description": "",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10",
+                                            "description": "",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "key": "X-Tsign-Open-Tenant-Id",
+                                            "value": "ebd4ec8090e549df8dfc0b6c796df97c",
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "新增授权 Copy",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"sealGrantBizId\": \"49e91dd3-622e-4db2-aa8a-7780f2bd9f5\",\n  \"grantOrgId\":\"{{orgIdA}}\",\n   \"grantRoleKey\":\"SEAL_USER\", //授权角色，SEAL_EXAMINER-印章审批员, SEAL_USER-印章使用员\n  \"granterOid\":\"{{psnId}}\",\n  \"grantedOids\":[\"{{psnId}}\"],\n  \"grantedRoleIds\":[],\n  \"grantedDepartmentIds\":[],\n  \"templateIds\":[\"ALL\"],\n  \"scopeApprovalTemplateIds\":[],\n  \"scopeAppIds\":[],\n  \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n  \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(13)}}\",\n  \"fallType\":false,\n  \"notifySetting\":false,\n  \"onlyApprovalNotUse\":false,\n  \"appId\":\"{{appId}}\",\n  \"authConfirmMethod\": 1\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/createSecondSealGrant/input",
+                                    "path": [
+                                        "createSecondSealGrant",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "pm.request.headers.add(",
+                                    "    { key: \"X-Tsign-Service-Id\", value:\"footstone-seal\"}",
+                                    ");"
+                                ],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "印章授权-开放接口",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "新增企业内授权",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    // \"orgId\": \"{{platform_orgId}}\",\n    \"orgId\": \"{{orgIdA}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    \"sealId\": \"fc082002-dbb4-4dd2-a33f-381ee5c016d8\", // 香港章\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n         \"applicationsIds\":[\"7876649209\"] ,\n        \"templateIds\": [\n           // \"ALL\"\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n            //\"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n        ]\n    },\n    \"autoSign\": true,\n    \"effectiveTime-\": {{$date.millisecondsTimestamp}},\n    \"expireTime-\": {{$date.millisecondsTimestamp|addMonths(3)}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1,\n    \"customBizNum\":\"sssss\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/internal-auth",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "internal-auth"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/internal-auth",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "internal-auth"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"{{orgIdA}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    // \"sealId\": \"18665e0b-570f-4719-bdca-1ba3d13da31f\", // 香港章\n//     pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");\n //\"sealId\": \"{{org_seal_A}}\", // 香港章\n//   \"sealId\": \"{{org_seal_B}}\", // 香港章\n// pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n\n  //\"sealId\": \"efd4914c-c601-4fc0-b09f-45a16ef3b6dc\", // 桃浪测试印章\n   \"sealId\": \"fc082002-dbb4-4dd2-a33f-381ee5c016d8\", // 印章A\n\n\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n         \"applicationsIds\":[\"7876649209\"] ,\n        \"templateIds\": [\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n           // \"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n           //\"86bf8376d3cb4d3e843008b00b85ccdd\" // 开放接口模板\n           //\"288c2b610437408ebc886c7e2f29a28a\" // 钉钉\n\n        ],\n    },\n    \"autoSign\": false,\n    // \"effectiveTime-\": {{nowTime}},\n    // \"expireTime-\": {{nowTime_5}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                },
+                                {
+                                    "name": "回收的印章",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/internal-auth",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "internal-auth"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    // \"orgId\": \"{{platform_orgId}}\",\n    \"orgId\": \"babc748d88e14deb869a89ed8c87e195\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    \"sealId\": \"5abf9a21-c6e4-471c-afc7-7c7809f87dff\", // 香港章\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n         \"8a48c66df52e40b4a5b29320eaa87117\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        //\"ALL\"\n    ],\n    \"sealAuthScope\": {\n         //\"applicationsIds\":[\"7876649209\"] ,\n        \"templateIds\": [\n            \"ALL\"\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n            //\"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n        ]\n    },\n    \"autoSign\": false,\n    \"effectiveTime\": {{$date.millisecondsTimestamp}},\n    \"expireTime\": {{$date.millisecondsTimestamp|addMonths(3)}},\n    \"longTermEffective\": false,\n    \"authConfirmMethod\": 1,\n    \"customBizNum\":\"sssss\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "修改授权记录期限",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n\n   \"orgId\":\"{{orgIdA}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n  \n    \"sealAuthBizId\": \"6dc788ed-65e3-4564-9b9c-c1fd2ca30109\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(13)}}\",\n    //\"longTermEffective\":true,\n    \"redirectUrl\": \"\",\n    \"authConfirmMethod-\":0\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/reauthorization",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "reauthorization"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/reauthorization",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "reauthorization"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"{{orgId_A}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    // \"sealId\": \"18665e0b-570f-4719-bdca-1ba3d13da31f\", // 香港章\n//     pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");\n //\"sealId\": \"{{org_seal_A}}\", // 香港章\n  \"sealId\": \"{{org_seal_B}}\", // 香港章\n// pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n        // \"applicationsIds\":[\"5111752348\"] ,\n        \"templateIds\": [\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n           // \"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n           //\"86bf8376d3cb4d3e843008b00b85ccdd\" // 开放接口模板\n        ]\n    },\n    \"autoSign\": true,\n    // \"effectiveTime-\": {{nowTime}},\n    // \"expireTime-\": {{nowTime_5}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                },
+                                {
+                                    "name": "回收的印章",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/reauthorization",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "reauthorization"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n\n   \"orgId\":\"babc748d88e14deb869a89ed8c87e195\",\n    \"transactorPsnId\": \"{{psnId}}\",\n  \n    \"sealAuthBizId\": \"2068c6c7-bd80-40cb-884c-7313c5f16d3e\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(1)}}\",\n    //\"longTermEffective\":true,\n    \"redirectUrl-\": \"\",\n    \"authConfirmMethod-\":0\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "新增跨企业印章授权",
+                            "description": "",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [],
+                                        "type": "text/javascript",
+                                        "packages": {}
+                                    }
+                                }
+                            ],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"orgId\": \"e0b17fbb6b3744e886bc971d5b302def\",\n    \"sealIds\": [\n        // \"88b775ff-9404-4773-8091-7c9ed777174f\", // 开放口额\n        // \"eac33b9e-2118-4deb-b00d-469a401c7931\"\n        \"ba031960-dfd3-4a99-82c2-975e10128598\"\n    ],\n    \"transactorPsnId\": \"8a48c66df52e40b4a5b29320eaa87117\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(120)}}\",\n    \"authorizedOrgInfo\": {\n        // \"orgName\": \"esigntest管理员敏感权限隔离集测二\",\n        // \"orgIDCardNum\": \"9100000060213406BA\"\n        //         \"orgName\": \"esigntest管理员敏感权限隔离集测一\",\n        // \"orgIDCardNum\": \"910000005909781001\"\n        // \"orgName\": \"esigntest盛琦002A\",\n        // \"orgIDCardNum\": \"921305202107220002\",\n        \"orgName\": \"esigntest桃浪企业B\",\n        \"orgIDCardNum\": \"9100000053387791MA\"\n    },\n    \"redirectUrl-\": \"https://www.xx.cn/\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/external-auth",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "external-auth"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/external-auth",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "external-auth"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"{{orgId_A}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    // \"sealId\": \"18665e0b-570f-4719-bdca-1ba3d13da31f\", // 香港章\n//     pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");\n //\"sealId\": \"{{org_seal_A}}\", // 香港章\n//   \"sealId\": \"{{org_seal_B}}\", // 香港章\n// pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n\n  //\"sealId\": \"efd4914c-c601-4fc0-b09f-45a16ef3b6dc\", // 桃浪测试印章\n   \"sealId\": \"6a822bc4-d211-4bb4-8f15-9e385c1d1fc5\", // 印章A\n\n\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n        // \"applicationsIds\":[\"5111752348\"] ,\n        \"templateIds\": [\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n           // \"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n           //\"86bf8376d3cb4d3e843008b00b85ccdd\" // 开放接口模板\n           \"288c2b610437408ebc886c7e2f29a28a\" // 钉钉\n\n        ],\n    },\n    \"autoSign\": true,\n    // \"effectiveTime-\": {{nowTime}},\n    // \"expireTime-\": {{nowTime_5}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                },
+                                {
+                                    "name": "回收的印章",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/external-auth",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "external-auth"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"babc748d88e14deb869a89ed8c87e195\",\n    \"sealIds\": [\n        // \"88b775ff-9404-4773-8091-7c9ed777174f\", // 开放口额\n        // \"eac33b9e-2118-4deb-b00d-469a401c7931\"\n        \"5abf9a21-c6e4-471c-afc7-7c7809f87dff\"\n    ],\n    \"transactorPsnId\": \"{{psnId}}\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(2)}}\",\n    \"authorizedOrgInfo\": {\n        // \"orgName\": \"esigntest管理员敏感权限隔离集测二\",\n        // \"orgIDCardNum\": \"9100000060213406BA\"\n        //         \"orgName\": \"esigntest管理员敏感权限隔离集测一\",\n        // \"orgIDCardNum\": \"910000005909781001\"\n        // \"orgName\": \"esigntest盛琦002A\",\n        // \"orgIDCardNum\": \"921305202107220002\",\n        \"orgName\": \"esigntest桃浪企业B\",\n        \"orgIDCardNum\": \"9100000053387791MA\"\n    },\n    \"redirectUrl-\": \"https://www.xx.cn/\"\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "查询印章授权书签署链接",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "GET",
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/authorization-sign-url",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "authorization-sign-url"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "orgId",
+                                            "value": "{{orgId}}",
+                                            "description": "",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "key": "sealAuthBizId",
+                                            "value": "37ccda7d-6fd3-4c7e-8a43-a602dd7a3dfc",
+                                            "description": "",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals/authorization-sign-url",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals",
+                                                "authorization-sign-url"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"{{orgId_A}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    // \"sealId\": \"18665e0b-570f-4719-bdca-1ba3d13da31f\", // 香港章\n//     pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");\n //\"sealId\": \"{{org_seal_A}}\", // 香港章\n//   \"sealId\": \"{{org_seal_B}}\", // 香港章\n// pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n\n  //\"sealId\": \"efd4914c-c601-4fc0-b09f-45a16ef3b6dc\", // 桃浪测试印章\n   \"sealId\": \"6a822bc4-d211-4bb4-8f15-9e385c1d1fc5\", // 印章A\n\n\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n        // \"applicationsIds\":[\"5111752348\"] ,\n        \"templateIds\": [\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n           // \"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n           //\"86bf8376d3cb4d3e843008b00b85ccdd\" // 开放接口模板\n           \"288c2b610437408ebc886c7e2f29a28a\" // 钉钉\n\n        ],\n    },\n    \"autoSign\": true,\n    // \"effectiveTime-\": {{nowTime}},\n    // \"expireTime-\": {{nowTime_5}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "印章管理开放页面",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"orgId\": \"{{orgIdA}}\",\n  \"transactorPsnId\": \"{{psnId}}\",\n  \"transactorPsnId-\": \"349871f0550343c88733953d229035f3\"\n\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals-manage-url",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals-manage-url"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "获取企业控制台链接",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"orgId\": \"babc748d88e14deb869a89ed8c87e195\",\n    \"transactorPsnId\":\"{{psnId}}\",\n    \"menu\": [\"org_info\",\"org_seal_manage\",\"org_member_manage\",\"org_place_order\",\"org_order_manage\"],\n//     org_info（企业信息页面）\n// org_seal_manage （企业印章管理页面）\n// org_member_manage（企业成员管理页面）\n// org_place_order （企业下单页面）\n// org_order_manage （企业订单管理页面）\n    \"pageConfig\": {\n        \"distributor\": false\n    },\n    \"showTopBar\": true\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/organizations/org-console-url",
+                                    "path": [
+                                        "v3",
+                                        "organizations",
+                                        "org-console-url"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "模拟",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/organizations/org-console-url",
+                                            "path": [
+                                                "v3",
+                                                "organizations",
+                                                "org-console-url"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"781c1b3de539438a98b4a13c97ea8e92\",\n    \"transactorPsnId\":\"{{psnId}}\",\n    \"menu\": [\"org_info\",\"org_seal_manage\",\"org_member_manage\",\"org_place_order\",\"org_order_manage\"],\n//     org_info（企业信息页面）\n// org_seal_manage （企业印章管理页面）\n// org_member_manage（企业成员管理页面）\n// org_place_order （企业下单页面）\n// org_order_manage （企业订单管理页面）\n    \"pageConfig\": {\n        \"distributor\": false\n    },\n    \"showTopBar\": true\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "pm.variables.set(\"seal_orgId\", \"4af6af757f7b45ab99d7f014c1f2f98b\");",
+                                    "pm.variables.set(\"seal_admin\", \"3e60c0b6f3fc4e1082e24b6836a589af\");",
+                                    "pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");",
+                                    "pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");",
+                                    "pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");",
+                                    "pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");",
+                                    "",
+                                    ""
+                                ],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "企业印章",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "印章管理开放页面",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"orgId\": \"0c5bd492**8bfbf\",\n  \"transactorPsnId\": \"c7e00294729***10541e7\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals-manage-url",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals-manage-url"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "授权模板",
+                                    "originalRequest": {
+                                        "method": "POST",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/v3/seals/org-seals-manage-url",
+                                            "path": [
+                                                "v3",
+                                                "seals",
+                                                "org-seals-manage-url"
+                                            ],
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "query": [],
+                                            "variable": []
+                                        },
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n    \"orgId\": \"{{orgId_A}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    // \"sealId\": \"18665e0b-570f-4719-bdca-1ba3d13da31f\", // 香港章\n//     pm.variables.set(\"org_seal_A\", \"70a5e954-cc47-4591-ac71-233f4973ecb0\");\n //\"sealId\": \"{{org_seal_A}}\", // 香港章\n//   \"sealId\": \"{{org_seal_B}}\", // 香港章\n// pm.variables.set(\"org_seal_B\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_C\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n// pm.variables.set(\"org_seal_F\", \"14a5928b-f953-4590-acb4-c35830a0b180\");\n\n  //\"sealId\": \"efd4914c-c601-4fc0-b09f-45a16ef3b6dc\", // 桃浪测试印章\n   \"sealId\": \"6a822bc4-d211-4bb4-8f15-9e385c1d1fc5\", // 印章A\n\n\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n        // \"applicationsIds\":[\"5111752348\"] ,\n        \"templateIds\": [\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n           // \"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n           //\"86bf8376d3cb4d3e843008b00b85ccdd\" // 开放接口模板\n           \"288c2b610437408ebc886c7e2f29a28a\" // 钉钉\n\n        ],\n    },\n    \"autoSign\": true,\n    // \"effectiveTime-\": {{nowTime}},\n    // \"expireTime-\": {{nowTime_5}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1\n}",
+                                            "options": {
+                                                "raw": {
+                                                    "language": "json"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "cookie": []
+                                }
+                            ],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "上传印章图片",
+                            "description": "",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [],
+                                        "type": "text/javascript",
+                                        "packages": {}
+                                    }
+                                }
+                            ],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "// {\n//     \"contentMd5\":\"dq0BoyT0zeFrJ4amspuMmQ==\",\n//     \"contentType\":\"application/octet-stream\",\n//     \"fileName\":\"这是个自定义图片印章.png\",\n//     \"fileSize\":1525\n// }\n\n\n{\"contentMd5\":\"rXYgPLuf62p3NChCgW97UQ==\",\"contentType\":\"application/octet-stream\",\"fileName\":\"深圳市龙华高新技术产业园区开发投资有限公司.jpg\",\"fileSize\":552}\n\n// {\n//     \"contentMd5\":\"dq0BoyT0zeFrJ4amspuMmQ==\",\n//     \"contentType\":\"application/octet-stream\",\n//     \"fileName\":\"这是个自定义图片印章.png\",\n//     \"fileSize\":1525\n// }",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/files/file-key",
+                                    "path": [
+                                        "v3",
+                                        "files",
+                                        "file-key"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "创建印章图片章",
+                            "description": "",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [],
+                                        "type": "text/javascript",
+                                        "packages": {}
+                                    }
+                                }
+                            ],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"orgId\": \"{{appId_orgId}}\",\n  \"sealImageFileKey\": \"$8ad530c5-8a73-4ee4-9552-d9ebc6527bc5$3341704840\",\n  \"sealName\": \"这是一个自定义的印章名称\",\n  \"sealWidth\": \"20\",\n  \"sealHeight\": \"20\",\n  \"sealBizType\": \"CONTRACT\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/create-by-image",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "create-by-image"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        },
+                        {
+                            "name": "创建模板章",
+                            "description": "",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [],
+                                        "type": "text/javascript",
+                                        "packages": {}
+                                    }
+                                }
+                            ],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"orgId\": \"{{orgIdA}}\",\n  \"sealName\": \"创建印章回调{{$date.now|format('yyyyMMddHHmmss')}}\",\n  \"sealHorizontalText\":\"{{$date.now|format('yyyyMMddHHmmss')}}\",\n  \"sealTemplateStyle\": \"PUBLIC_ROUND_STAR\",\n  \"sealOpacity\": 100,\n  \"sealColor\": \"RED\",\n  \"sealOldStyle\": \"OLD_12\",\n  \"sealSize\":\"40_40\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v3/seals/org-seals/create-by-template",
+                                    "path": [
+                                        "v3",
+                                        "seals",
+                                        "org-seals",
+                                        "create-by-template"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "seal-manager-rpc",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "回收印章",
+                            "description": "",
+                            "event": [],
+                            "auth": {},
+                            "request": {
+                                "auth": {},
+                                "method": "POST",
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"deviceId\": null,\n    \"token\": null,\n    \"oid\": \"ddbb939216504b44b0c2f6fa721ce79d\",\n    \"maxOfficialSealCount\": 5,\n    \"maxLegalSealCount\": 5\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/recycleOrRecoverSeal/input",
+                                    "path": [
+                                        "recycleOrRecoverSeal",
+                                        "input"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                }
+                            },
+                            "response": [],
+                            "protocolProfileBehavior": {
+                                "strictSSL": false,
+                                "followRedirects": true
+                            }
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "pm.request.headers.add(",
+                                    "    { key: \"X-Tsign-Service-Id\", value:\"seal-manager\"}",
+                                    ");"
+                                ],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [],
+                                "type": "text/javascript",
+                                "packages": {}
+                            }
+                        }
+                    ],
+                    "auth": {}
+                },
+                {
+                    "name": "删除个人印章",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "DELETE",
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "text"
+                                }
+                            }
+                        },
+                        "header": [
+                            {
+                                "key": "User-Agent",
+                                "value": "python-requests/2.24.0",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "X-Tsign-Open-App-Id",
+                                "value": "3438757422",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "X-Tsign-Open-Auth-Mode",
+                                "value": "simple",
+                                "description": "",
+                                "type": "string"
+                            },
+                            {
+                                "key": "X-Tsign-Service-Group",
+                                "value": "default",
+                                "description": "",
+                                "type": "string"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://in-test-openapi.tsign.cn/v1/accounts/fce77e522dbe42068833741a60f79ced/seals/9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2",
+                            "path": [
+                                "v1",
+                                "accounts",
+                                "fce77e522dbe42068833741a60f79ced",
+                                "seals",
+                                "9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2"
+                            ],
+                            "host": [
+                                "in-test-openapi",
+                                "tsign",
+                                "cn"
+                            ],
+                            "protocol": "http",
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "集测-书雪-作废章",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "User-Agent",
+                                        "value": "python-requests/2.24.0",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "Accept-Encoding",
+                                        "value": "gzip, deflate",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "*/*",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "Connection",
+                                        "value": "keep-alive",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "X-Tsign-Open-App-Id",
+                                        "value": "3438757422",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "X-Tsign-Open-Auth-Mode",
+                                        "value": "simple",
+                                        "description": "",
+                                        "disabled": false
+                                    },
+                                    {
+                                        "key": "X-Tsign-Service-Group",
+                                        "value": "default",
+                                        "description": "",
+                                        "disabled": false
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "http://in-test-openapi.tsign.cn/v1/accounts/fce77e522dbe42068833741a60f79ced/seals/9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2",
+                                    "path": [
+                                        "v1",
+                                        "accounts",
+                                        "fce77e522dbe42068833741a60f79ced",
+                                        "seals",
+                                        "9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2"
+                                    ],
+                                    "host": [
+                                        "in-test-openapi",
+                                        "tsign",
+                                        "cn"
+                                    ],
+                                    "protocol": "http",
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "text"
+                                        }
+                                    }
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [
+                            "",
+                            "",
+                            "pm.request.headers.add(",
+                            "    { key: \"X-Tsign-Open-App-Id\", value: pm.environment.get(\"appId\") }",
+                            ");",
+                            "",
+                            "pm.request.headers.add(",
+                            "",
+                            "    { key: \"X-Tsign-Open-App-Secret\", value: pm.environment.get(\"secret\") }",
+                            ");",
+                            "",
+                            "pm.request.headers.add(",
+                            "    { key: \"X-Tsign-Open-Auth-Mode\", value: \"Secret\" }",
+                            ");",
+                            "",
+                            "",
+                            "// pm.request.headers.add(",
+                            "//     { key: \"X-Tsign-Open-Auth-Mode\", value: \"simple\" }",
+                            "// );",
+                            "",
+                            "",
+                            "",
+                            "// pm.request.headers.add(",
+                            "//     { key: \"X-Tsign-Service-Group\", value: \"default\" }",
+                            "// );",
+                            "",
+                            "",
+                            "// pm.request.headers.add(",
+                            "//     { key: \"X-Tsign-Service-Group\", value:pm.environment.get(\"group\")}",
+                            "// );",
+                            "",
+                            "// pm.request.headers.add(",
+                            "//     { key: \"x-tsign-gray-tag\", value:pm.environment.get(\"group\")}",
+                            "// );",
+                            "",
+                            "",
+                            "",
+                            "",
+                            ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        }
+    ],
+    "variable": [],
+    "event": [],
+    "auth": {}
+}

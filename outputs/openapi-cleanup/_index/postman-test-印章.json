@@ -1,0 +1,881 @@
+[
+  {
+    "folder_path": "印章/印章V1",
+    "name": "V1-创建企业模板章",
+    "method": "POST",
+    "url": "/v1/organizations/{{psnId}}/seals/officialtemplate",
+    "raw_url": "{{baseUrl}}/v1/organizations/{{psnId}}/seals/officialtemplate",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    \"qtext\": \"\",\n    \"central\": \"STAR\",\n    \"color\": \"RED\",\n    \"alias\": \"印章-财务专用章-2\",\n    \"htext\": \"财务专用章\",\n    \"type\":\"TEMPLATE_ROUND\"\n        //\"topSurroundText\":\"HONGKONGSEAL\",\n      \n    //\"type\":\"TEMPLATE_HK\"//\"TEMPLATE_ROUND\",\n\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章V1",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章V1",
+    "name": "V1-创建个人印章",
+    "method": "POST",
+    "url": "/v1/accounts/{{person_id_mao}}/seals/personaltemplate",
+    "raw_url": "{{baseUrl}}/v1/accounts/{{person_id_mao}}/seals/personaltemplate",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "alias",
+          "type": "string"
+        },
+        {
+          "path": "color",
+          "type": "string"
+        },
+        {
+          "path": "type",
+          "type": "string"
+        },
+        {
+          "path": "type-",
+          "type": "string"
+        }
+      ],
+      "raw": "\n{\n    \"alias\": \"paas印章\",\n    \"color\": \"BLUE\",\n    \"type\":\"RECTANGLE\",\n    \"type-\": \"SQUARE\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章V1",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章V1",
+    "name": "V1-删除个人印章 ",
+    "method": "DELETE",
+    "url": "/v1/accounts/{{psnId}}/seals/{{sealId}}",
+    "raw_url": "{{baseUrl}}/v1/accounts/{{psnId}}/seals/{{sealId}}",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章V1",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章V1",
+    "name": "V1-删除企业印章",
+    "method": "DELETE",
+    "url": "/v1/organizations/{{orgId}}/seals/{{orgSealId}}",
+    "raw_url": "{{baseUrl}}/v1/organizations/{{orgId}}/seals/{{orgSealId}}",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章V1",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-saas",
+    "name": "企业内授权",
+    "method": "POST",
+    "url": "/addSealGrant/input",
+    "raw_url": "{{host}}/addSealGrant/input",
+    "headers": [
+      {
+        "key": "X-Tsign-Service-Id",
+        "value": "footstone-seal"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "accountOid",
+          "type": "string"
+        },
+        {
+          "path": "appId",
+          "type": "string"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "number"
+        },
+        {
+          "path": "expireTime",
+          "type": "number"
+        },
+        {
+          "path": "grantType",
+          "type": "number"
+        },
+        {
+          "path": "fallType",
+          "type": "string"
+        },
+        {
+          "path": "grantedAccountIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedRoleIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedUserName",
+          "type": "string"
+        },
+        {
+          "path": "grantedUserRole",
+          "type": "string"
+        },
+        {
+          "path": "h5",
+          "type": "boolean"
+        },
+        {
+          "path": "notifySetting",
+          "type": "boolean"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "orgOid",
+          "type": "string"
+        },
+        {
+          "path": "resourceId",
+          "type": "string"
+        },
+        {
+          "path": "roleKey",
+          "type": "string"
+        },
+        {
+          "path": "scopeList",
+          "type": "array"
+        },
+        {
+          "path": "scopeApprovalTemplateIds-",
+          "type": "array"
+        },
+        {
+          "path": "authConfirmMethod",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"appId\": \"7876649549\",\n    \"effectiveTime\": 1725465600000,\n    \"expireTime\": 1820073599000,\n    \"grantType\": 1,\n    \"fallType\": \"1\",\n    \"grantedAccountIds\": [\n        \"ALL\"\n    ],\n    \"grantedRoleIds\": [],\n    \"grantedUserName\": \"\",\n    \"grantedUserRole\": \"role_v3\",\n    \"h5\": false,\n    \"notifySetting\": true,\n    \"notifyUrl\": \"\",\n    \"orgOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"resourceId\": \"7ed378f0-ef53-4539-8c08-a0da2d562157\",\n    \"roleKey\": \"SEAL_USER\",\n    \"scopeList\": [\n        \"af262cbd58c045aea24dde769b06d4ac\"\n    ],\n    \"scopeApprovalTemplateIds-\": [],\n    \"authConfirmMethod\": 1\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-saas",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-saas",
+    "name": "批量新增一级授权",
+    "method": "POST",
+    "url": "/batchSealGrant/input",
+    "raw_url": "{{baseUrl}}/batchSealGrant/input",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    \"appId\": \"3438757422\",\n    \"authConfirmMethod\": 2,\n    \"effectiveTime\": 1727280000000,\n    \"expireTime\": 16725196800000, // 永久\n    \"fallType\": 1,\n    \"firstModule\": \"saas_seal_management\",\n    \"grantType\": 1,\n    \"grantedAccountIds\": [\n        // \"97f6ab832a3a465ebcf7c9380d5dd687\"\n        \"ALL\"\n    ],\n    \"h5\": false,\n    \"operatorOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"operatorTenantOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"roleKey\": \"SEAL_USER\",\n    \"scopeList\": [\n        //\"6e3520f672d84ed8a22754b5bba6d9f5\",//公章A+财务章B+法人章F1授权自动\n        // \"644db021e52249969a674a664cb3d21c\"\n        //\"79f46efe499e45719269834d33af5a85\" // 混合场合\n        \"9ea4bc81e5f6436ca3eeb74afbe1dfa6\",// M1\n       \"5aedb523dec94542af245805cc2a53cb\", // M2\n        \"0a05a47d1cfc45e2863a56a6c4c3c392\" //M3\n\n    ],\n    \"sealIds\": [\n        // \"70a5e954-cc47-4591-ac71-233f4973ecb0\", // 公章A\n        //  \"14a5928b-f953-4590-acb4-c35830a0b180\", // 印章BB\n        // \"ea128958-64df-4623-8933-be9e00de9f93\", // 财务章\n        // \"30f361f9-2a61-4153-9d4c-ce03cadb605b\" // 法人章\n        //印章C：\n       \"1234fbcd-27c2-47d5-aecc-0743c90e036e\",\n       // 印章D:\n       \"5979c6ce-46ba-4157-959c-4206331dc0fa\",\n\n\n    ],\n    \"sealOwnerAdmin\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"sealOwnerOid\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"secondaryModule\": \"\\u5370\\u7ae0\\u7ba1\\u7406\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-saas",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/footstone-seal-rpc",
+    "name": "分析模板的印章授权情况",
+    "method": "POST",
+    "url": "/analyseTemplateIdGrantedSeal/input",
+    "raw_url": "{{baseUrl}}/analyseTemplateIdGrantedSeal/input",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "templateId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"orgId\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"templateId\": \"6e3520f672d84ed8a22754b5bba6d9f5\"\n   \n   \n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/footstone-seal-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/footstone-seal-rpc",
+    "name": "查询用户可见范围的印章",
+    "method": "POST",
+    "url": "/querySealCanVisibleBySealBizTypeList/request",
+    "raw_url": "{{baseUrl}}/querySealCanVisibleBySealBizTypeList/request",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    \"orgId\": \"4af6af757f7b45ab99d7f014c1f2f98b\",\n    \"operatorOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n    \"operatorGid\": \"53819f95b036427b9926af6ef2701e28\",\n    \"bizTypeList\": [\n       // \"ALL\"\n        //\"PUBLIC\"\n        //\"COMMON\",\n        \"FINANCE\"\n        //\"LEGAL_PERSON\",\n        \"PERSONNEL\",\n       //\"CONTRACT\"\n    ]\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/footstone-seal-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/footstone-seal-rpc",
+    "name": "新增授权",
+    "method": "POST",
+    "url": "/addSealGrant/input",
+    "raw_url": "{{baseUrl}}/addSealGrant/input",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "accountOid",
+          "type": "string"
+        },
+        {
+          "path": "appId",
+          "type": "string"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "number"
+        },
+        {
+          "path": "expireTime",
+          "type": "number"
+        },
+        {
+          "path": "grantType",
+          "type": "number"
+        },
+        {
+          "path": "fallType",
+          "type": "string"
+        },
+        {
+          "path": "grantedAccountIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedRoleIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedUserName",
+          "type": "string"
+        },
+        {
+          "path": "grantedUserRole",
+          "type": "string"
+        },
+        {
+          "path": "h5",
+          "type": "boolean"
+        },
+        {
+          "path": "notifySetting",
+          "type": "boolean"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "orgOid",
+          "type": "string"
+        },
+        {
+          "path": "resourceId",
+          "type": "string"
+        },
+        {
+          "path": "roleKey",
+          "type": "string"
+        },
+        {
+          "path": "scopeList",
+          "type": "array"
+        },
+        {
+          "path": "scopeApprovalTemplateIds",
+          "type": "array"
+        },
+        {
+          "path": "scopeAppIds",
+          "type": "array"
+        },
+        {
+          "path": "authConfirmMethod",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n  \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n  \"appId\": \"3438757422\",\n  \"effectiveTime\": 1725465600000,\n  \"expireTime\": 1820073599000,\n  \"grantType\": 1,\n  \"fallType\": \"1\",\n  \"grantedAccountIds\": [\n    \"ALL\"\n  ],\n  \"grantedRoleIds\": [],\n  \"grantedUserName\": \"\",\n  \"grantedUserRole\": \"role_v3\",\n  \"h5\": false,\n  \"notifySetting\": true,\n  \"notifyUrl\": \"\",\n  \"orgOid\": \"99b793a53d4441618c584f233e825719\",\n  \"resourceId\": \"86ffefcb-3511-40ac-9ea3-195e800d3e6d\",\n  \"roleKey\": \"SEAL_USER\",\n  \"scopeList\": [],\n  \"scopeApprovalTemplateIds\": [],\n  \"scopeAppIds\": [\n    \"7876657587\"\n  ],\n  \"authConfirmMethod\": 1\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/footstone-seal-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/footstone-seal-rpc",
+    "name": "查询授权",
+    "method": "GET",
+    "url": "/v3/inner/seal/grant/second/list",
+    "raw_url": "{{baseUrl}}/v3/inner/seal/grant/second/list",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-Tenant-Id",
+        "value": "ebd4ec8090e549df8dfc0b6c796df97c"
+      },
+      {
+        "key": "X-Tsign-Open-Operator-Id",
+        "value": "{{psnId}}"
+      }
+    ],
+    "query": [
+      {
+        "name": "sealGrantBizId",
+        "value": "49e91dd3-622e-4db2-aa8a-7780f2bd9f5",
+        "location": "query"
+      },
+      {
+        "name": "orgId",
+        "value": "ebd4ec8090e549df8dfc0b6c796df97c",
+        "location": "query"
+      },
+      {
+        "name": "pageNum",
+        "value": "1",
+        "location": "query"
+      },
+      {
+        "name": "pageSize",
+        "value": "10",
+        "location": "query"
+      },
+      {
+        "name": "X-Tsign-Open-Tenant-Id",
+        "value": "ebd4ec8090e549df8dfc0b6c796df97c",
+        "location": "query"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "accountOid",
+          "type": "string"
+        },
+        {
+          "path": "appId",
+          "type": "string"
+        },
+        {
+          "path": "effectiveTime",
+          "type": "number"
+        },
+        {
+          "path": "expireTime",
+          "type": "number"
+        },
+        {
+          "path": "grantType",
+          "type": "number"
+        },
+        {
+          "path": "fallType",
+          "type": "string"
+        },
+        {
+          "path": "grantedAccountIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedRoleIds",
+          "type": "array"
+        },
+        {
+          "path": "grantedUserName",
+          "type": "string"
+        },
+        {
+          "path": "grantedUserRole",
+          "type": "string"
+        },
+        {
+          "path": "h5",
+          "type": "boolean"
+        },
+        {
+          "path": "notifySetting",
+          "type": "boolean"
+        },
+        {
+          "path": "notifyUrl",
+          "type": "string"
+        },
+        {
+          "path": "orgOid",
+          "type": "string"
+        },
+        {
+          "path": "resourceId",
+          "type": "string"
+        },
+        {
+          "path": "roleKey",
+          "type": "string"
+        },
+        {
+          "path": "scopeList",
+          "type": "array"
+        },
+        {
+          "path": "scopeApprovalTemplateIds",
+          "type": "array"
+        },
+        {
+          "path": "scopeAppIds",
+          "type": "array"
+        },
+        {
+          "path": "authConfirmMethod",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n  \"accountOid\": \"3e60c0b6f3fc4e1082e24b6836a589af\",\n  \"appId\": \"3438757422\",\n  \"effectiveTime\": 1725465600000,\n  \"expireTime\": 1820073599000,\n  \"grantType\": 1,\n  \"fallType\": \"1\",\n  \"grantedAccountIds\": [\n    \"ALL\"\n  ],\n  \"grantedRoleIds\": [],\n  \"grantedUserName\": \"\",\n  \"grantedUserRole\": \"role_v3\",\n  \"h5\": false,\n  \"notifySetting\": true,\n  \"notifyUrl\": \"\",\n  \"orgOid\": \"99b793a53d4441618c584f233e825719\",\n  \"resourceId\": \"86ffefcb-3511-40ac-9ea3-195e800d3e6d\",\n  \"roleKey\": \"SEAL_USER\",\n  \"scopeList\": [],\n  \"scopeApprovalTemplateIds\": [],\n  \"scopeAppIds\": [\n    \"7876657587\"\n  ],\n  \"authConfirmMethod\": 1\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/footstone-seal-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/footstone-seal-rpc",
+    "name": "新增授权 Copy",
+    "method": "POST",
+    "url": "/createSecondSealGrant/input",
+    "raw_url": "{{baseUrl}}/createSecondSealGrant/input",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n  \"sealGrantBizId\": \"49e91dd3-622e-4db2-aa8a-7780f2bd9f5\",\n  \"grantOrgId\":\"{{orgIdA}}\",\n   \"grantRoleKey\":\"SEAL_USER\", //授权角色，SEAL_EXAMINER-印章审批员, SEAL_USER-印章使用员\n  \"granterOid\":\"{{psnId}}\",\n  \"grantedOids\":[\"{{psnId}}\"],\n  \"grantedRoleIds\":[],\n  \"grantedDepartmentIds\":[],\n  \"templateIds\":[\"ALL\"],\n  \"scopeApprovalTemplateIds\":[],\n  \"scopeAppIds\":[],\n  \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n  \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(13)}}\",\n  \"fallType\":false,\n  \"notifySetting\":false,\n  \"onlyApprovalNotUse\":false,\n  \"appId\":\"{{appId}}\",\n  \"authConfirmMethod\": 1\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/footstone-seal-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "新增企业内授权",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/internal-auth",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/internal-auth",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    // \"orgId\": \"{{platform_orgId}}\",\n    \"orgId\": \"{{orgIdA}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n    //\"sealId\":\"a8f55747-163b-43b3-b3c9-70b9e2d7994e\", // 默认的公章\n    \"sealId\": \"fc082002-dbb4-4dd2-a33f-381ee5c016d8\", // 香港章\n    \"sealRole\": \"SEAL_USER\",\n    \"authorizedPsnIds\": [\n        // \" {{psn_cat2}}\"\n        // \"7167af2187644cb4b021e2d7f94a3080\"\n        \"ALL\"\n    ],\n    \"sealAuthScope\": {\n         \"applicationsIds\":[\"7876649209\"] ,\n        \"templateIds\": [\n           // \"ALL\"\n            // \"97993faf768e429791fd4e77c7e6a776\"  // 内部印章授权\n            // \"e451f9ac8b054eb2bf8d71e78cf5d4b4\" // 外部印章授权\n            //\"727516974c2e46d990bec539dc8ea6c8\" // 一级+二级授权\n        ]\n    },\n    \"autoSign\": true,\n    \"effectiveTime-\": {{$date.millisecondsTimestamp}},\n    \"expireTime-\": {{$date.millisecondsTimestamp|addMonths(3)}},\n    \"longTermEffective\": true,\n    \"authConfirmMethod\": 1,\n    \"customBizNum\":\"sssss\"\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "修改授权记录期限",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/reauthorization",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/reauthorization",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n\n   \"orgId\":\"{{orgIdA}}\",\n    \"transactorPsnId\": \"{{psnId}}\",\n  \n    \"sealAuthBizId\": \"6dc788ed-65e3-4564-9b9c-c1fd2ca30109\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(13)}}\",\n    //\"longTermEffective\":true,\n    \"redirectUrl\": \"\",\n    \"authConfirmMethod-\":0\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "新增跨企业印章授权",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/external-auth",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/external-auth",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    \"orgId\": \"e0b17fbb6b3744e886bc971d5b302def\",\n    \"sealIds\": [\n        // \"88b775ff-9404-4773-8091-7c9ed777174f\", // 开放口额\n        // \"eac33b9e-2118-4deb-b00d-469a401c7931\"\n        \"ba031960-dfd3-4a99-82c2-975e10128598\"\n    ],\n    \"transactorPsnId\": \"8a48c66df52e40b4a5b29320eaa87117\",\n    \"effectiveTime\": \"{{$date.millisecondsTimestamp}}\",\n    \"expireTime\": \"{{$date.millisecondsTimestamp|addMonths(120)}}\",\n    \"authorizedOrgInfo\": {\n        // \"orgName\": \"esigntest管理员敏感权限隔离集测二\",\n        // \"orgIDCardNum\": \"9100000060213406BA\"\n        //         \"orgName\": \"esigntest管理员敏感权限隔离集测一\",\n        // \"orgIDCardNum\": \"910000005909781001\"\n        // \"orgName\": \"esigntest盛琦002A\",\n        // \"orgIDCardNum\": \"921305202107220002\",\n        \"orgName\": \"esigntest桃浪企业B\",\n        \"orgIDCardNum\": \"9100000053387791MA\"\n    },\n    \"redirectUrl-\": \"https://www.xx.cn/\"\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "查询印章授权书签署链接",
+    "method": "GET",
+    "url": "/v3/seals/org-seals/authorization-sign-url",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/authorization-sign-url",
+    "headers": [],
+    "query": [
+      {
+        "name": "orgId",
+        "value": "{{orgId}}",
+        "location": "query"
+      },
+      {
+        "name": "sealAuthBizId",
+        "value": "37ccda7d-6fd3-4c7e-8a43-a602dd7a3dfc",
+        "location": "query"
+      }
+    ],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "印章管理开放页面",
+    "method": "POST",
+    "url": "/v3/seals/org-seals-manage-url",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals-manage-url",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId-",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"orgId\": \"{{orgIdA}}\",\n  \"transactorPsnId\": \"{{psnId}}\",\n  \"transactorPsnId-\": \"349871f0550343c88733953d229035f3\"\n\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/印章授权-开放接口",
+    "name": "获取企业控制台链接",
+    "method": "POST",
+    "url": "/v3/organizations/org-console-url",
+    "raw_url": "{{baseUrl}}/v3/organizations/org-console-url",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "{\n    \"orgId\": \"babc748d88e14deb869a89ed8c87e195\",\n    \"transactorPsnId\":\"{{psnId}}\",\n    \"menu\": [\"org_info\",\"org_seal_manage\",\"org_member_manage\",\"org_place_order\",\"org_order_manage\"],\n//     org_info（企业信息页面）\n// org_seal_manage （企业印章管理页面）\n// org_member_manage（企业成员管理页面）\n// org_place_order （企业下单页面）\n// org_order_manage （企业订单管理页面）\n    \"pageConfig\": {\n        \"distributor\": false\n    },\n    \"showTopBar\": true\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/印章授权-开放接口",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/企业印章",
+    "name": "印章管理开放页面",
+    "method": "POST",
+    "url": "/v3/seals/org-seals-manage-url",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals-manage-url",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "transactorPsnId",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"orgId\": \"0c5bd492**8bfbf\",\n  \"transactorPsnId\": \"c7e00294729***10541e7\"\n}"
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/企业印章",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/企业印章",
+    "name": "上传印章图片",
+    "method": "POST",
+    "url": "/v3/files/file-key",
+    "raw_url": "{{baseUrl}}/v3/files/file-key",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": "// {\n//     \"contentMd5\":\"dq0BoyT0zeFrJ4amspuMmQ==\",\n//     \"contentType\":\"application/octet-stream\",\n//     \"fileName\":\"这是个自定义图片印章.png\",\n//     \"fileSize\":1525\n// }\n\n\n{\"contentMd5\":\"rXYgPLuf62p3NChCgW97UQ==\",\"contentType\":\"application/octet-stream\",\"fileName\":\"深圳市龙华高新技术产业园区开发投资有限公司.jpg\",\"fileSize\":552}\n\n// {\n//     \"contentMd5\":\"dq0BoyT0zeFrJ4amspuMmQ==\",\n//     \"contentType\":\"application/octet-stream\",\n//     \"fileName\":\"这是个自定义图片印章.png\",\n//     \"fileSize\":1525\n// }"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/企业印章",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/企业印章",
+    "name": "创建印章图片章",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/create-by-image",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/create-by-image",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealImageFileKey",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealWidth",
+          "type": "string"
+        },
+        {
+          "path": "sealHeight",
+          "type": "string"
+        },
+        {
+          "path": "sealBizType",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"orgId\": \"{{appId_orgId}}\",\n  \"sealImageFileKey\": \"$8ad530c5-8a73-4ee4-9552-d9ebc6527bc5$3341704840\",\n  \"sealName\": \"这是一个自定义的印章名称\",\n  \"sealWidth\": \"20\",\n  \"sealHeight\": \"20\",\n  \"sealBizType\": \"CONTRACT\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/企业印章",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/企业印章",
+    "name": "创建模板章",
+    "method": "POST",
+    "url": "/v3/seals/org-seals/create-by-template",
+    "raw_url": "{{baseUrl}}/v3/seals/org-seals/create-by-template",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "orgId",
+          "type": "string"
+        },
+        {
+          "path": "sealName",
+          "type": "string"
+        },
+        {
+          "path": "sealHorizontalText",
+          "type": "string"
+        },
+        {
+          "path": "sealTemplateStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealOpacity",
+          "type": "number"
+        },
+        {
+          "path": "sealColor",
+          "type": "string"
+        },
+        {
+          "path": "sealOldStyle",
+          "type": "string"
+        },
+        {
+          "path": "sealSize",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n  \"orgId\": \"{{orgIdA}}\",\n  \"sealName\": \"创建印章回调{{$date.now|format('yyyyMMddHHmmss')}}\",\n  \"sealHorizontalText\":\"{{$date.now|format('yyyyMMddHHmmss')}}\",\n  \"sealTemplateStyle\": \"PUBLIC_ROUND_STAR\",\n  \"sealOpacity\": 100,\n  \"sealColor\": \"RED\",\n  \"sealOldStyle\": \"OLD_12\",\n  \"sealSize\":\"40_40\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/企业印章",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章/seal-manager-rpc",
+    "name": "回收印章",
+    "method": "POST",
+    "url": "/recycleOrRecoverSeal/input",
+    "raw_url": "{{baseUrl}}/recycleOrRecoverSeal/input",
+    "headers": [],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "deviceId",
+          "type": "null"
+        },
+        {
+          "path": "token",
+          "type": "null"
+        },
+        {
+          "path": "oid",
+          "type": "string"
+        },
+        {
+          "path": "maxOfficialSealCount",
+          "type": "number"
+        },
+        {
+          "path": "maxLegalSealCount",
+          "type": "number"
+        }
+      ],
+      "raw": "{\n    \"deviceId\": null,\n    \"token\": null,\n    \"oid\": \"ddbb939216504b44b0c2f6fa721ce79d\",\n    \"maxOfficialSealCount\": 5,\n    \"maxLegalSealCount\": 5\n}"
+    },
+    "example_response": "absent",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章/seal-manager-rpc",
+    "tag": "印章"
+  },
+  {
+    "folder_path": "印章",
+    "name": "删除个人印章",
+    "method": "DELETE",
+    "url": "/v1/accounts/fce77e522dbe42068833741a60f79ced/seals/9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2",
+    "raw_url": "http://in-test-openapi.tsign.cn/v1/accounts/fce77e522dbe42068833741a60f79ced/seals/9af2bd4d-6a2a-46cd-8057-4b4b51c0d4a2",
+    "headers": [
+      {
+        "key": "User-Agent",
+        "value": "python-requests/2.24.0"
+      },
+      {
+        "key": "Accept-Encoding",
+        "value": "gzip, deflate"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "Connection",
+        "value": "keep-alive"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "3438757422"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "simple"
+      },
+      {
+        "key": "X-Tsign-Service-Group",
+        "value": "default"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [],
+      "raw": ""
+    },
+    "example_response": "present",
+    "source_file": "印章服务.postman.json",
+    "sub_folder_path": "印章",
+    "tag": "印章"
+  }
+]

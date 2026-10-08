@@ -1,0 +1,41 @@
+{
+  "totalInputFiles": 3,
+  "totalRecords": 544,
+  "unparsedCount": 0,
+  "successRate": "100%",
+  "pathNonEmptyRate": "100%",
+  "methodNonEmptyRate": "100%",
+  "unparsedRate": "0%",
+  "tagSplitFiles": [
+    {
+      "tag": "实名认证-test",
+      "file": "postman-test-实名认证-test.json",
+      "count": 40
+    },
+    {
+      "tag": "实名认证-sml",
+      "file": "postman-test-实名认证-sml.json",
+      "count": 15
+    },
+    {
+      "tag": "正式环境",
+      "file": "postman-test-正式环境.json",
+      "count": 28
+    },
+    {
+      "tag": "_untagged",
+      "file": "postman-test-_untagged.json",
+      "count": 3
+    },
+    {
+      "tag": "电签业务",
+      "file": "postman-test-电签业务.json",
+      "count": 435
+    },
+    {
+      "tag": "印章",
+      "file": "postman-test-印章.json",
+      "count": 23
+    }
+  ]
+}

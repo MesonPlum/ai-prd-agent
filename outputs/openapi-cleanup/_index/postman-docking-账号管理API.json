@@ -1,0 +1,66 @@
+[
+  {
+    "folder_path": "账号管理API",
+    "name": "解绑e签宝SaaS账号登录凭证",
+    "method": "POST",
+    "url": "/v3/account-unbind-url",
+    "raw_url": "{{url}}/v3/account-unbind-url",
+    "headers": [
+      {
+        "key": "X-Tsign-Open-App-Id",
+        "value": "{{appId}}"
+      },
+      {
+        "key": "Content-Type",
+        "value": "application/json; charset=UTF-8"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Timestamp",
+        "value": "{{timeStamp}}"
+      },
+      {
+        "key": "Accept",
+        "value": "*/*"
+      },
+      {
+        "key": "X-Tsign-Open-Ca-Signature",
+        "value": "{{signature}}"
+      },
+      {
+        "key": "Content-MD5",
+        "value": "{{contentMd5}}"
+      },
+      {
+        "key": "X-Tsign-Open-Auth-Mode",
+        "value": "Signature"
+      }
+    ],
+    "query": [],
+    "body": {
+      "mode": "raw",
+      "structure": [
+        {
+          "path": "account",
+          "type": "string"
+        },
+        {
+          "path": "hideTopBar",
+          "type": "boolean"
+        },
+        {
+          "path": "redirectUrl",
+          "type": "string"
+        },
+        {
+          "path": "customBizNum",
+          "type": "string"
+        }
+      ],
+      "raw": "{\n    \"account\": \"139XXXX0000\",\n    \"hideTopBar\":false,\n    \"redirectUrl\":\"https://esign.cn\",\n    \"customBizNum\":\"标识本次解绑任务标识001\"\n}"
+    },
+    "example_response": "absent",
+    "source_file": "SaaS_API_V3版系列产品.postman_collection.json",
+    "sub_folder_path": "账号管理API",
+    "tag": "账号管理API"
+  }
+]
