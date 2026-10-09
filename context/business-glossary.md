@@ -48,6 +48,8 @@
 | 认证授权流程 | 产品概念 | 用户完成实名认证并授予应用访问资源权限的完整流程 | 标识符 authFlowId,有效期 30 天 | E-001 |
 | 授权范围 | 产品概念 | appId 对用户资源的具体操作权限集合 | 字段名 authorizedScopes;常见值:get_org_identity_info / org_initiate_sign / manage_org_seal 等 | E-001 |
 | 用印审批 | 产品概念 | 印章使用前的审批流程 | 流程内含审批人(SEAL_EXAMINER)和用印人(SEAL_USER)两种角色 | E-001 |
+| 自动落章 | 产品概念 | 印章授权时可配置的自动盖章开关；开启后当签署区满足条件（授权全体成员 + 指定具体模板编号）时，系统自动完成盖章，无需人工操作 | 字段名 autoSign（boolean，默认 false）；与流程级 autoFinish 不同，属印章维度行为控制；仅 InternalSealAuth 接口支持 | seal-api Phase 2 |
+| 自定义业务编号 | 系统字段 | 开发者在发起印章授权（内部/外部）时传入的业务侧关联编号，用于对账或业务追踪 | 字段名 customBizNum（string）；格式由集成方自定义，e签宝侧不校验；内部/外部授权接口均支持 | seal-api Phase 2 |
 | 催签 | 产品概念 | 提醒待签方尽快完成签署的动作 | 通过 pdf-sign3/yws940 接口触发 | E-001 |
 | 流程延期 | 产品概念 | 延长签署截止时间的动作 | — | E-001 |
 | 流程完结 | 产品概念 | 所有签署任务完成后,正式关闭流程并触发文件归档 | 可通过 autoFinish=true 自动完结,或主动调用结束接口 | E-001 |

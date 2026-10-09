@@ -9,7 +9,7 @@
 
 | API 名称 | 文件路径 | 当前版本 | 关联 PRD | 最后同步日期 | 备注 |
 |---------|---------|---------|---------|------------|------|
-| auth-api | openapi/auth-api.yaml | 3.0 | F-001 | 2026-05-21 | 初始导入（忠实），含 7 个 REST endpoint + 3 个 Webhook + 24 条错误码。OAC-* 多维度待升级。 |
+| auth-api | openapi/auth-api.yaml | 3.0 | F-001 | 2026-05-26 | 初始导入（忠实），含 7 个 REST endpoint + 3 个 Webhook + 24 条错误码。OAC-* 多维度待升级。Phase 2 三源比对清洗完成：+1参数（changeOrgAdmin，机构授权时可将经办人设为新管理员）。 |
 
 ## 模块：文件与流程模板
 
@@ -27,7 +27,7 @@
 
 | API 名称 | 文件路径 | 当前版本 | 关联 PRD | 最后同步日期 | 备注 |
 |---------|---------|---------|---------|------------|------|
-| seal-api | openapi/seal-api.yaml | 3.0 | F-005 | 2026-05-21 | 初始导入（忠实），含 22 个 REST endpoint + 9 个 Webhook + 35 条错误码。OAC-* 多维度待升级。 |
+| seal-api | openapi/seal-api.yaml | 3.0 | F-005 | 2026-05-26 | 初始导入（忠实），含 26 个 REST endpoint + 9 个 Webhook + 35 条错误码。OAC-* 多维度待升级。Phase 2 三源比对清洗完成：+6参数（sealSuffix/sealHorizontalText/sealBottomText/sealOutsideSurroundText 4个内部字段不对外 + customBizNum + autoSign）。 |
 
 ## 模块：企业成员管理
 
